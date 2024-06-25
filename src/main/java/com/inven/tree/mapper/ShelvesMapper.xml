@@ -3,6 +3,7 @@
 <mapper namespace="com.inven.tree.mapper.ShelvesMapper">
 
     <!-- 모든 Shelves를 가져오는 SQL -->
+<<<<<<< HEAD
     <select id="allShelves" resultMap="shelves">
         SELECT * FROM shelves
     </select>
@@ -21,6 +22,30 @@
         WHERE w.corp_idx = #{corpIdx}
     </select>
     
+=======
+    <select id="selectAllShelves" resultMap="shelves">
+        SELECT shelf_idx, wh_idx, rack_id, shelf_id, shelf_status
+        FROM shelves
+    </select>
+    
+	<delete id="deleteShelves" parameterType="list">
+	    DELETE FROM shelves WHERE shelf_idx IN
+	    <foreach item="shelfId" collection="list" open="(" separator="," close=")">
+	        #{shelfId}
+	    </foreach>
+	</delete>
+    
+	<!-- 선반 정보 업데이트 또는 추가 -->
+	<insert id="updateOrInsertShelves" parameterType="Shelves">
+	    <!-- MySQL의 경우 ON DUPLICATE KEY UPDATE 구문을 사용할 수 있습니다. -->
+	    INSERT INTO shelves (wh_idx, rack_id, shelf_id, shelf_status)
+	    VALUES (#{whIdx}, #{rackId}, #{shelfId}, #{shelfStatus})
+	    ON DUPLICATE KEY UPDATE
+	    rack_id = VALUES(rack_id),
+	    shelf_id = VALUES(shelf_id),
+	    shelf_status = VALUES(shelf_status)
+	</insert>
+>>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
     
     <resultMap type="com.inven.tree.model.Shelves"
 		id="shelves">

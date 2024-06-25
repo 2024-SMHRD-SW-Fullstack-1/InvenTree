@@ -15,18 +15,34 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
+<<<<<<< HEAD
                 .allowedOrigins("http://localhost:3000/tree")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
                 .maxAge(3600);
+=======
+                .allowedOrigins("http://localhost:3000") // 허용할 클라이언트 주소
+                .allowedMethods("GET", "POST", "PUT", "DELETE","OPTIONS") // 허용할 HTTP 메소드
+                .allowedHeaders("*") // 허용할 헤더
+                .allowCredentials(true) // 인증 정보 허용 여부
+                .maxAge(3600); // preflight 요청 최대 유효 기간 (초 단위)
+>>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
     }
     
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+<<<<<<< HEAD
         registry.addInterceptor(new SessionInterceptor()).addPathPatterns("/api/**");
     }
 
+=======
+    	// 새로운 인터셉터인 SessionInterceptor를 인터셉터 레지스트리에 등록
+    	// 이 인터셉터는 "/api/**" 경로에 매칭되는 모든 요청에 대해 동작
+    	registry.addInterceptor(new SessionInterceptor()).addPathPatterns("/api/**");
+    }
+    
+>>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
     @Bean
     public CommonsMultipartResolver multipartResolver() {
         CommonsMultipartResolver resolver = new CommonsMultipartResolver();
@@ -34,4 +50,8 @@ public class WebConfig implements WebMvcConfigurer {
         resolver.setMaxUploadSize(1000000000); // 예: 최대 1MB
         return resolver;
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f

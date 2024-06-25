@@ -16,6 +16,12 @@ public class Products {
     @JsonProperty("prodBarcode")
     private String prodBarcode;
 
+<<<<<<< HEAD
+=======
+    @JsonProperty("prodImg")
+    private String prodImg;
+
+>>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
     @JsonProperty("prodCnt")
     private int prodCnt;
 
@@ -27,8 +33,11 @@ public class Products {
 
     @JsonProperty("corpIdx")
     private String corpIdx;
+<<<<<<< HEAD
     
     
+=======
+>>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
 
     // Getters and Setters
     public int getProdIdx() {
@@ -63,6 +72,16 @@ public class Products {
         this.prodBarcode = prodBarcode;
     }
 
+<<<<<<< HEAD
+=======
+    public String getProdImg() {
+        return prodImg;
+    }
+
+    public void setProdImg(String prodImg) {
+        this.prodImg = prodImg;
+    }
+>>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
 
     public int getProdCnt() {
         return prodCnt;

@@ -22,7 +22,10 @@
         <typeAlias type="com.inven.tree.model.Shelves" alias="Shelves"/>
         <typeAlias type="com.inven.tree.model.Stocks" alias="Stocks"/>
         <typeAlias type="com.inven.tree.model.Warehouses" alias="Warehouses"/>
+<<<<<<< HEAD
         <typeAlias type="com.inven.tree.model.Subsidiary" alias="Subsidiary"/>
+=======
+>>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
     </typeAliases>
 
     <mappers>
@@ -34,6 +37,11 @@
         <mapper resource="com/inven/tree/mapper/ShelvesMapper.xml"/>
         <mapper resource="com/inven/tree/mapper/StocksMapper.xml"/>
         <mapper resource="com/inven/tree/mapper/WarehousesMapper.xml"/>
+<<<<<<< HEAD
         <mapper resource="com/inven/tree/mapper/SubsidiaryMapper.xml"/>
     </mappers>
 </configuration>
+=======
+    </mappers>
+</configuration>
+>>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f

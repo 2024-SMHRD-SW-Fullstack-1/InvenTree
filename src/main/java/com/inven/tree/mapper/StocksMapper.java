@@ -17,6 +17,7 @@ public interface StocksMapper {
 
     List<Stocks> selectStocksByIds(@Param("list") List<Integer> stockIds);
 
+<<<<<<< HEAD
     List<Map<String, Object>> selectStocksWithDetailsFiltered(@Param("offset") int offset,
             @Param("size") int size,
             @Param("filterColumn") String filterColumn,
@@ -26,4 +27,17 @@ public interface StocksMapper {
 int countFilteredEntries(@Param("filterColumn") String filterColumn,
 @Param("filterValue") String filterValue,
 @Param("corpIdx") String corpIdx);
+=======
+    List<Map<String, Object>> selectStocksWithDetailsFiltered(
+            @Param("offset") int offset, 
+            @Param("size") int size, 
+            @Param("filterColumn") String filterColumn, 
+            @Param("filterValue") String filterValue
+        );
+
+        int countFilteredEntries(
+            @Param("filterColumn") String filterColumn, 
+            @Param("filterValue") String filterValue
+        );
+>>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
 }

@@ -12,7 +12,10 @@ import lombok.NoArgsConstructor;
 
 public class Warehouses {
 	// 창고 식별자 
+<<<<<<< HEAD
 	
+=======
+>>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
     private Integer whIdx; //pk
 
     // 회사 식별자 

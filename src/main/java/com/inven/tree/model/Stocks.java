@@ -18,6 +18,7 @@ public class Stocks {
 
     @JsonProperty("stockedAt")
     private Timestamp stockedAt;
+<<<<<<< HEAD
     
     @JsonProperty("subIdx")
     private Integer subIdx;
@@ -25,6 +26,8 @@ public class Stocks {
     
     
     
+=======
+>>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
 
   
 
@@ -49,6 +52,7 @@ public class Stocks {
         return prodIdx;
     }
 
+<<<<<<< HEAD
     public Integer getSubIdx() {
 		return subIdx;
 	}
@@ -58,6 +62,9 @@ public class Stocks {
 	}
 
 	public void setProdIdx(int prodIdx) {
+=======
+    public void setProdIdx(int prodIdx) {
+>>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
         this.prodIdx = prodIdx;
     }
 
