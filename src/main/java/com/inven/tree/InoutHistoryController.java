@@ -39,7 +39,6 @@ public class InoutHistoryController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String filterColumn,
-<<<<<<< HEAD
             @RequestParam(required = false) String filterValue,
             @RequestParam String corpIdx) {
 
@@ -49,16 +48,6 @@ public class InoutHistoryController {
         try {
             List<Map<String, Object>> stockEntries = stocksMapper.selectStocksWithDetailsFiltered(0, Integer.MAX_VALUE, filterColumn, filterValue, corpIdx);
             List<Map<String, Object>> releaseEntries = releasesMapper.selectReleasesWithDetailsFiltered(0, Integer.MAX_VALUE, filterColumn, filterValue, corpIdx);
-=======
-            @RequestParam(required = false) String filterValue) {
-
-        logger.info("Received request with filterColumn: {}, filterValue: {}, page: {}, size: {}",
-                    new Object[]{filterColumn, filterValue, page, size});
-
-        try {
-            List<Map<String, Object>> stockEntries = stocksMapper.selectStocksWithDetailsFiltered(0, Integer.MAX_VALUE, filterColumn, filterValue);
-            List<Map<String, Object>> releaseEntries = releasesMapper.selectReleasesWithDetailsFiltered(0, Integer.MAX_VALUE, filterColumn, filterValue);
->>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
 
             logger.info("Stock Entries: {}", stockEntries);
             logger.info("Release Entries: {}", releaseEntries);
