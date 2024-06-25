@@ -42,7 +42,6 @@ public class ProductsController {
             List<Products> products = productsMapper.selectProductsByCorpIdx(corpIdx);
             return ResponseEntity.ok(products);
         } catch (Exception e) {
-            logger.error("Error retrieving products", e);
             return ResponseEntity.status(500).body(null);
         }
     }
@@ -53,7 +52,6 @@ public class ProductsController {
             List<Subsidiary> subsidiaries = subsidiaryMapper.selectIncomingSubsidiariesByCorpIdx(corpIdx);
             return ResponseEntity.ok(subsidiaries);
         } catch (Exception e) {
-            logger.error("Error retrieving subsidiaries", e);
             return ResponseEntity.status(500).body(null);
         }
     }
@@ -64,13 +62,11 @@ public class ProductsController {
             List<Subsidiary> subsidiaries = subsidiaryMapper.selectOutgoingSubsidiariesByCorpIdx(corpIdx);
             return ResponseEntity.ok(subsidiaries);
         } catch (Exception e) {
-            logger.error("Error retrieving subsidiaries", e);
             return ResponseEntity.status(500).body(null);
         }
     }
 
     @PostMapping("/stockProducts")
-    @SuppressWarnings("unchecked")
     public ResponseEntity<String> stockProducts(@RequestBody Map<String, Object> requestData) {
         try {
             List<Map<String, Object>> productsList = (List<Map<String, Object>>) requestData.get("productsList");
@@ -85,25 +81,19 @@ public class ProductsController {
                 String corpIdx = (String) productData.get("corpIdx");
                 Integer prodCnt = (Integer) productData.get("prodCnt");
 
-                logger.info("Processing product with barcode: {}", prodBarcode);
-
                 Integer prodIdx = productsMapper.selectProdIdxByBarcode(prodBarcode);
                 if (prodIdx == null) {
-                    logger.error("Product not found for barcode: {}", prodBarcode);
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product not found for barcode: " + prodBarcode);
                 }
 
                 // 재고 정보를 stocks 테이블에 추가
                 productsMapper.insertStock(corpIdx, prodIdx, prodCnt, new Timestamp(System.currentTimeMillis()), subIdx);
-                logger.info("Inserted stock for product with barcode: {}", prodBarcode);
 
                 // 제품 테이블의 제품 수량 업데이트
                 productsMapper.updateProductCount(prodIdx, prodCnt);
-                logger.info("Updated product count for product with barcode: {}", prodBarcode);
             }
             return ResponseEntity.ok("Success");
         } catch (Exception e) {
-            logger.error("Error stocking products", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error stocking products");
         }
     }
@@ -118,27 +108,22 @@ public class ProductsController {
                 Integer subIdx = (Integer) productData.get("subIdx");
 
                 if (prodBarcode == null || corpIdx == null || prodCnt == null || subIdx == null) {
-                    logger.error("Missing required fields in product data: {}", productData);
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing required fields in product data");
                 }
 
                 Integer prodIdx = productsMapper.selectProdIdxByBarcode(prodBarcode);
                 if (prodIdx == null) {
-                    logger.error("Product not found for barcode: {}", prodBarcode);
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product not found for barcode: " + prodBarcode);
                 }
 
                 // 재고 정보를 releases 테이블에 추가
                 releaseMapper.insertRelease(corpIdx, prodIdx, prodCnt, new Timestamp(System.currentTimeMillis()), subIdx);
-                logger.info("Inserted release for product with barcode: {}", prodBarcode);
 
                 // 제품 테이블의 제품 수량 업데이트
                 productsMapper.updateProductCount(prodIdx, -prodCnt);
-                logger.info("Updated product count for product with barcode: {}", prodBarcode);
             }
             return ResponseEntity.ok("Success");
         } catch (Exception e) {
-            logger.error("Error releasing products", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error releasing products");
         }
     }

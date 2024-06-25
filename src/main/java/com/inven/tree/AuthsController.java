@@ -82,11 +82,11 @@ public class AuthsController {
 	        }
 
 	        // auths에 corpIdx 설정
-	        for (Auths auth : auths) {
-	            auth.setCorpIdx(loginCorpIdx); // corpIdx 설정
-	            System.out.println(auth);
-	            authsMapper.insertAuths(auth); // 데이터베이스에 삽입
-	        }
+//	        for (Auths auth : auths) {
+//	            auth.setCorpIdx(loginCorpIdx); // corpIdx 설정
+//	            System.out.println(auth);
+//	            authsMapper.insertAuths(auth); // 데이터베이스에 삽입
+//	        }
 
 	        return ResponseEntity.ok("Auths inserted successfully.");
 	    } catch (Exception e) {

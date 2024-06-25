@@ -252,7 +252,7 @@ public class ReportController {
         }
     }
 
-    @GetMapping("/product")
+    @GetMapping("/productDetail")
     public ResponseEntity<Map<String, Object>> getProduct(@RequestParam("filterType") String filterType,
                                                           @RequestParam("filterValue") String filterValue) {
         Map<String, Object> response = new HashMap<>();
