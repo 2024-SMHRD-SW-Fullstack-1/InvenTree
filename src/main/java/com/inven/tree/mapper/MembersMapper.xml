@@ -1,85 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.inven.tree.mapper.MembersMapper">
-<<<<<<< HEAD
 
-    <!-- login을 위한 Membes 확인 SQL -->
-    <select id="login" parameterType="com.inven.tree.model.Members" resultType="int">
-        SELECT COUNT(*) 
-        FROM members 
-        WHERE mb_id = #{mbId} 
-          AND mb_pw = #{mbPw}
-          AND corp_idx = #{corpIdx}
-    </select>
-	
-	<!-- 모든 Members 조회 SQL -->
-    <select id="findAll" resultType="com.inven.tree.model.Members">
-=======
-    <select id="login" parameterType="com.inven.tree.model.Members" resultType="int">
-        SELECT COUNT(*)
-        FROM members
-        WHERE mb_id = #{mbId}
-          AND mb_pw = #{mbPw}
-          AND corp_idx = #{corpIdx}
-    </select>
-
-    <select id="findAllMembers" resultType="com.inven.tree.model.Members">
-        SELECT
-            mb_id AS mbId,
-            mb_pw AS mbPw,
-            mb_name AS mbName,
-            mb_phone AS mbPhone,
-            mb_theme AS mbTheme,
-            corp_idx AS corpIdx,
-            joined_at AS joinedAt
-        FROM members
-    </select>
-
-    <insert id="save" parameterType="com.inven.tree.model.Members">
-        INSERT INTO members (mb_id, mb_pw, mb_name, mb_phone, mb_theme, corp_idx, joined_at)
-        VALUES (#{mbId}, #{mbPw}, #{mbName}, #{mbPhone}, #{mbTheme}, #{corpIdx}, #{joinedAt})
-    </insert>
-
-    <delete id="delete" parameterType="com.inven.tree.model.Members">
-        DELETE FROM members WHERE mb_id = #{mbId} AND corp_idx = #{corpIdx}
-    </delete>
-
-    <delete id="deleteAuthsByMemberId" parameterType="String">
-        DELETE FROM auths WHERE mb_id = #{mbId}
-    </delete>
-
-    <select id="findAllAuths" resultType="com.inven.tree.model.Auths">
-        SELECT
-            auth_idx AS authIdx,
-            mb_id AS mbId,
-            inventory_yn AS inventoryYn,
-            ship_yn AS shipYn,
-            chart_yn AS chartYn,
-            set_yn AS setYn
-        FROM auths
-    </select>
-    
-    <select id="findMembersByCorpIdx" resultType="com.inven.tree.model.Members">
->>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
-        SELECT 
-            mb_id AS mbId,
-            mb_pw AS mbPw,
-            mb_name AS mbName,
-            mb_phone AS mbPhone,
-            mb_theme AS mbTheme,
-<<<<<<< HEAD
-            corp_idx AS corpIdx
-        FROM 
-            members
-    </select>
-
-
+	<!-- 로그인 메소드 -->
+	<select id="login" parameterType="com.inven.tree.model.Members"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM members
+		WHERE mb_id = #{mbId}
+		AND mb_pw =
+		#{mbPw}
+		AND corp_idx = #{corpIdx}
+	</select>
+	<!-- 모든 멤버정보 가져오기 -->
+	<select id="findAllMembers"
+		resultType="com.inven.tree.model.Members">
+		SELECT
+		mb_id AS mbId,
+		mb_pw AS mbPw,
+		mb_name AS mbName,
+		mb_phone AS mbPhone,
+		mb_theme AS mbTheme,
+		corp_idx AS corpIdx,
+		joined_at
+		AS joinedAt
+		FROM members
+	</select>
+	<!-- 멤버 정보 저장하기 -->
+	<insert id="save" parameterType="com.inven.tree.model.Members">
+		INSERT INTO members (mb_id,
+		mb_pw, mb_name, mb_phone, mb_theme, corp_idx,
+		joined_at)
+		VALUES
+		(#{mbId}, #{mbPw}, #{mbName}, #{mbPhone}, #{mbTheme}, #{corpIdx},
+		#{joinedAt})
+	</insert>
+	<!-- 멤버 정보 삭제 -->
+	<delete id="delete" parameterType="com.inven.tree.model.Members">
+		DELETE FROM members WHERE
+		mb_id = #{mbId} AND corp_idx = #{corpIdx}
+	</delete>
+	<!-- 멤버 권한 삭제 -->
+	<delete id="deleteAuthsByMemberId" parameterType="String">
+		DELETE FROM
+		auths WHERE mb_id = #{mbId}
+	</delete>
+	<!-- 모든 권한정보 가져오기 -->
+	<select id="findAllAuths"
+		resultType="com.inven.tree.model.Auths">
+		SELECT
+		auth_idx AS authIdx,
+		mb_id AS mbId,
+		inventory_yn AS
+		inventoryYn,
+		ship_yn AS shipYn,
+		chart_yn AS chartYn,
+		set_yn AS setYn
+		FROM
+		auths
+	</select>
+	<!-- 사용자의 회사코드로 멤버정보 불러오기 -->
+	<select id="findMembersByCorpIdx"
+		resultType="com.inven.tree.model.Members">
+		SELECT
+		mb_id AS mbId,
+		mb_pw AS mbPw,
+		mb_name AS mbName,
+		mb_phone AS mbPhone,
+		mb_theme AS mbTheme,
+		corp_idx AS corpIdx,
+		joined_at
+		AS joinedAt
+		FROM members
+		WHERE corp_idx = #{corpIdx}
+	</select>
 </mapper>
-=======
-            corp_idx AS corpIdx,
-            joined_at AS joinedAt
-        FROM members
-        WHERE corp_idx = #{corpIdx}
-    </select>
-</mapper>
->>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f

@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-<<<<<<< HEAD
-Built-By: sr139
-=======
-Built-By: admin
->>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
-Build-Jdk: 11.0.22
-Created-By: Maven Integration for Eclipse
-

@@ -4,21 +4,6 @@ import com.inven.tree.model.Warehouses;
 
 import java.util.List;
 
-<<<<<<< HEAD
-public interface WarehousesMapper {
-	// 모든 창고 정보 불러오기
-    List<Warehouses> allWarehouses();
-    
-    void deleteWarehouses(List<Integer> ids);
-
-	void addWarehouse(Warehouses warehouse);
-
-	void updateWarehouse(Warehouses warehouse);
-	
-//	회사코드로 창고 추출 
-	  List<Warehouses> findByCorpIdx(String corpIdx);
-}
-=======
 import org.apache.ibatis.annotations.Param;
 
 public interface WarehousesMapper {
@@ -35,6 +20,8 @@ public interface WarehousesMapper {
     // 창고 추가
     void insertWarehouses(Warehouses warehouses);
 
+	//회사코드로 창고정보 추출 (재고현황 때문에 추가한 메소드) 
+	List<Warehouses> findByCorpIdx(String corpIdx);
+
 
 }
->>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f

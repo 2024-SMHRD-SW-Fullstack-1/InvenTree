@@ -6,21 +6,12 @@
     <resultMap id="corporatesResultMap" type="com.inven.tree.model.Corporates">
         <id property="corpIdx" column="corp_idx"/>
         <result property="corpName" column="corp_name"/>
-<<<<<<< HEAD
-=======
         <result property="corpOwner" column="corp_owner"/>
         <result property="corpTel" column="corp_tel"/>
->>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
     </resultMap>
 
     <!-- 모든 Corporates를 가져오는 SQL -->
     <select id="selectAllCorporates" resultMap="corporatesResultMap">
-<<<<<<< HEAD
-        SELECT * FROM corporates
-    </select>
-
-    
-=======
         SELECT * FROM corporates WHERE corp_idx = #{corpIdx}
     </select>
 
@@ -29,6 +20,5 @@
         UPDATE corporates SET corp_name = #{corpName}, corp_owner = #{corpOwner}, corp_tel = #{corpTel}
         WHERE corp_idx = #{corpIdx}
 	</update>
->>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
 
 </mapper>

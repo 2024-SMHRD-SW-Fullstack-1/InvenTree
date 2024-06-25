@@ -26,11 +26,7 @@ public class Members {
 
     // 회사 코드 
     private String corpIdx; //fk
-<<<<<<< HEAD
-
-=======
     
     // 가입 일자
     private String joinedAt; // 새로 추가된 필드
->>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
 }

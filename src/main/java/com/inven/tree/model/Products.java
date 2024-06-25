@@ -4,114 +4,92 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.sql.Timestamp;
 
 public class Products {
-    @JsonProperty("prodIdx")
-    private int prodIdx;
+	@JsonProperty("prodIdx")
+	private int prodIdx;
 
-    @JsonProperty("prodName")
-    private String prodName;
+	@JsonProperty("prodName")
+	private String prodName;
 
-    @JsonProperty("prodInfo")
-    private String prodInfo;
+	@JsonProperty("prodInfo")
+	private String prodInfo;
 
-    @JsonProperty("prodBarcode")
-    private String prodBarcode;
+	@JsonProperty("prodBarcode")
+	private String prodBarcode;
 
-<<<<<<< HEAD
-=======
-    @JsonProperty("prodImg")
-    private String prodImg;
+	@JsonProperty("prodCnt")
+	private int prodCnt;
 
->>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
-    @JsonProperty("prodCnt")
-    private int prodCnt;
+	@JsonProperty("prodMake")
+	private String prodMake;
 
-    @JsonProperty("prodMake")
-    private String prodMake;
+	@JsonProperty("createdAt")
+	private Timestamp createdAt;
 
-    @JsonProperty("createdAt")
-    private Timestamp createdAt;
+	@JsonProperty("corpIdx")
+	private String corpIdx;
 
-    @JsonProperty("corpIdx")
-    private String corpIdx;
-<<<<<<< HEAD
-    
-    
-=======
->>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
+	// Getters and Setters
+	public int getProdIdx() {
+		return prodIdx;
+	}
 
-    // Getters and Setters
-    public int getProdIdx() {
-        return prodIdx;
-    }
+	public void setProdIdx(int prodIdx) {
+		this.prodIdx = prodIdx;
+	}
 
-    public void setProdIdx(int prodIdx) {
-        this.prodIdx = prodIdx;
-    }
+	public String getProdName() {
+		return prodName;
+	}
 
-    public String getProdName() {
-        return prodName;
-    }
+	public void setProdName(String prodName) {
+		this.prodName = prodName;
+	}
 
-    public void setProdName(String prodName) {
-        this.prodName = prodName;
-    }
+	public String getProdInfo() {
+		return prodInfo;
+	}
 
-    public String getProdInfo() {
-        return prodInfo;
-    }
+	public void setProdInfo(String prodInfo) {
+		this.prodInfo = prodInfo;
+	}
 
-    public void setProdInfo(String prodInfo) {
-        this.prodInfo = prodInfo;
-    }
+	public String getProdBarcode() {
+		return prodBarcode;
+	}
 
-    public String getProdBarcode() {
-        return prodBarcode;
-    }
+	public void setProdBarcode(String prodBarcode) {
+		this.prodBarcode = prodBarcode;
+	}
 
-    public void setProdBarcode(String prodBarcode) {
-        this.prodBarcode = prodBarcode;
-    }
+	public int getProdCnt() {
+		return prodCnt;
+	}
 
-<<<<<<< HEAD
-=======
-    public String getProdImg() {
-        return prodImg;
-    }
+	public void setProdCnt(int prodCnt) {
+		this.prodCnt = prodCnt;
+	}
 
-    public void setProdImg(String prodImg) {
-        this.prodImg = prodImg;
-    }
->>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
+	public String getProdMake() {
+		return prodMake;
+	}
 
-    public int getProdCnt() {
-        return prodCnt;
-    }
+	public void setProdMake(String prodMake) {
+		this.prodMake = prodMake;
+	}
 
-    public void setProdCnt(int prodCnt) {
-        this.prodCnt = prodCnt;
-    }
+	public Timestamp getCreatedAt() {
+		return createdAt;
+	}
 
-    public String getProdMake() {
-        return prodMake;
-    }
+	public void setCreatedAt(Timestamp createdAt) {
+		this.createdAt = createdAt;
+	}
 
-    public void setProdMake(String prodMake) {
-        this.prodMake = prodMake;
-    }
+	public String getCorpIdx() {
+		return corpIdx;
+	}
 
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public String getCorpIdx() {
-        return corpIdx;
-    }
-
-    public void setCorpIdx(String corpIdx) {
-        this.corpIdx = corpIdx;
-    }
+	public void setCorpIdx(String corpIdx) {
+		this.corpIdx = corpIdx;
+	}
 }

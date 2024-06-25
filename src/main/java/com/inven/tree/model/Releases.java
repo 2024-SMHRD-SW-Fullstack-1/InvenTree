@@ -23,7 +23,6 @@ public class Releases {
     // 출고 일자 
     @JsonProperty("releasedAt")
     private String releasedAt;
-<<<<<<< HEAD
     
     // 출고 업체코드
     @JsonProperty("subIdx")
@@ -36,8 +35,6 @@ public class Releases {
 	public void setSubIdx(Integer subIdx) {
 		this.subIdx = subIdx;
 	}
-=======
->>>>>>> de1af2c2ec8d46f767daf91bcf994fd12640878f
 
 	public int getReleaseIdx() {
 		return releaseIdx;
