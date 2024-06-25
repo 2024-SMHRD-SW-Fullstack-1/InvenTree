@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inven.tree.mapper.CorporatesMapper">
+
+    <!-- ResultMap 정의 -->
+    <resultMap id="corporatesResultMap" type="com.inven.tree.model.Corporates">
+        <id property="corpIdx" column="corp_idx"/>
+        <result property="corpName" column="corp_name"/>
+        <result property="corpOwner" column="corp_owner"/>
+        <result property="corpTel" column="corp_tel"/>
+    </resultMap>
+
+    <!-- 모든 Corporates를 가져오는 SQL -->
+    <select id="selectAllCorporates" resultMap="corporatesResultMap">
+        SELECT *
+		FROM warehouses w
+		INNER JOIN shelves s on w.wh_idx = s.wh_idx
+		WHERE w.corp_idx = #{corpIdx}
+    </select>
+
+    <!-- 회사 정보 변경 -->
+    <update id="updateCorporates" parameterType="Corporates">
+        UPDATE corporates SET corp_name = #{corpName}, corp_owner = #{corpOwner}, corp_tel = #{corpTel}
+        WHERE corp_idx = #{corpIdx}
+	</update>
+
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inven.tree.mapper.ShelvesMapper">
+
+    <!-- 모든 Shelves를 가져오는 SQL -->
+    <select id="selectAllShelves" resultMap="shelves">
+        SELECT shelf_idx, wh_idx, rack_id, shelf_id, shelf_status
+        FROM shelves
+    </select>
+    
+    <select id="selectAllShelvesBywhIdx" resultMap="shelves">
+    	SELECT *
+    	FROM shelves
+    	WHERE wh_idx IN
+    	<foreach collection="warehouseIdsToDelete" item="whIds" open="(" close=")" separator=",">
+    		#{whIds}
+    	</foreach>
+    </select>
+    
+    <!-- 추가1 -->
+	<delete id="deleteShelvesByShelfIdxAndWhIdx">
+	    DELETE FROM shelves
+	    WHERE shelf_idx IN 
+	    <foreach collection="shelfIdsToDelete" item="shelfIds" open="(" separator="," close=")">
+	        #{shelfIds}
+	    </foreach>
+	    AND wh_idx IN 
+	    <foreach collection="warehouseIdsToDelete" item="whIds" open="(" separator="," close=")">
+	        #{whIds}
+	    </foreach>
+	</delete>
+    
+	<!-- 선반 정보 업데이트 -->
+    <update id="updateShelf" parameterType="Shelves">
+        UPDATE shelves
+        SET
+            rack_id = #{rackId},
+            shelf_id = #{shelfId}
+        WHERE shelf_idx = #{shelfIdx}
+    </update>
+    
+    <resultMap type="com.inven.tree.model.Shelves"
+		id="shelves">
+		<id property="shelfIdx" column="shelf_idx" /> <!-- primary key -->
+		<result property="whIdx" column="wh_idx" />
+		<result property="rackId" column="rack_id" />
+		<result property="shelfId" column="shelf_id" />
+		<result property="shelfStatus" column="shelf_status" />
+	</resultMap>
+</mapper>
