@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inven.tree.mapper.ShelvesMapper">
+
+    <!-- 모든 Shelves를 가져오는 SQL -->
+    <select id="allShelves" resultMap="shelves">
+        SELECT * FROM shelves
+    </select>
+    
+    <delete id="deleteShelves" parameterType="list">
+    	delete from shelves where wh_idx IN
+    	<foreach item="ids" collection="list" open="(" separator="," close=")">
+    	#{ids}
+    	</foreach>
+    </delete>
+    
+       <select id="findByCorpIdx" resultMap="shelves">
+        SELECT s.shelf_idx, s.wh_idx, s.rack_id, s.shelf_id, s.shelf_status 
+        FROM shelves s 
+        JOIN warehouses w ON s.wh_idx = w.wh_idx 
+        WHERE w.corp_idx = #{corpIdx}
+    </select>
+    
+    
+    <resultMap type="com.inven.tree.model.Shelves"
+		id="shelves">
+		<id property="shelfIdx" column="shelf_idx" /> <!-- primary key -->
+		<result property="whIdx" column="wh_idx" />
+		<result property="rackId" column="rack_id" />
+		<result property="shelfId" column="shelf_id" />
+		<result property="shelfStatus" column="shelf_status" />
+	</resultMap>
+</mapper>

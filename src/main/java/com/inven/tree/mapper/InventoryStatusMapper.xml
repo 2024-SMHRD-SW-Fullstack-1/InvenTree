@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.inven.tree.mapper.InventoryStatusMapper">
+ <resultMap id="InventoryStatusResultMap" type="com.inven.tree.model.InventoryStatus">
+        <id property="prodBarcode" column="prod_barcode" />
+        <result property="prodName" column="prod_name" />
+        <result property="prodCnt" column="prod_cnt" />
+        <result property="bidlName" column="bidl_name" />
+        <result property="shelfId" column="shelf_id" />
+        <result property="rackId" column="rack_id" />
+        <result property="prodInfo" column="prod_info" />
+    </resultMap>
+
+    <select id="findByCorpIdx" resultMap="InventoryStatusResultMap">
+        SELECT p.prod_barcode, p.prod_name, p.prod_cnt, w.bidl_name, s.shelf_id, s.rack_id, p.prod_info 
+        FROM products p 
+        JOIN warehouses w ON p.wh_idx = w.wh_idx 
+        JOIN shelves s ON p.shelf_idx = s.shelf_idx 
+        WHERE p.corp_idx = #{corpIdx}
+    </select>
+
+    <insert id="insert" parameterType="com.inven.tree.model.InventoryStatus">
+        INSERT INTO products (prod_barcode, prod_name, prod_cnt, wh_idx, shelf_idx, prod_info) 
+        VALUES (#{inventoryStatus.prodBarcode}, #{inventoryStatus.prodName}, #{inventoryStatus.prodCnt}, 
+        (SELECT wh_idx FROM warehouses WHERE bidl_name = #{inventoryStatus.bidlName} LIMIT 1), 
+        (SELECT shelf_idx FROM shelves WHERE shelf_id = #{inventoryStatus.shelfId} LIMIT 1), 
+        #{inventoryStatus.prodInfo})
+    </insert>
+
+    <update id="update" parameterType="com.inven.tree.model.InventoryStatus">
+        UPDATE products 
+        SET prod_name = #{inventoryStatus.prodName}, prod_cnt = #{inventoryStatus.prodCnt}, 
+        wh_idx = (SELECT wh_idx FROM warehouses WHERE bidl_name = #{inventoryStatus.bidlName} LIMIT 1), 
+        shelf_idx = (SELECT shelf_idx FROM shelves WHERE shelf_id = #{inventoryStatus.shelfId} LIMIT 1), 
+        prod_info = #{inventoryStatus.prodInfo}
+        WHERE prod_barcode = #{inventoryStatus.prodBarcode}
+    </update>
+
+    <delete id="delete" parameterType="string">
+        DELETE FROM products WHERE prod_barcode = #{prodBarcode}
+    </delete>
+
+    <select id="existsByProdBarcode" resultType="boolean" parameterType="string">
+        SELECT COUNT(*) > 0 FROM products WHERE prod_barcode = #{prodBarcode}
+    </select>
+</mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inven.tree.mapper.MembersMapper">
+
+    <!-- login을 위한 Membes 확인 SQL -->
+    <select id="login" parameterType="com.inven.tree.model.Members" resultType="int">
+        SELECT COUNT(*) 
+        FROM members 
+        WHERE mb_id = #{mbId} 
+          AND mb_pw = #{mbPw}
+          AND corp_idx = #{corpIdx}
+    </select>
+	
+	<!-- 모든 Members 조회 SQL -->
+    <select id="findAll" resultType="com.inven.tree.model.Members">
+        SELECT 
+            mb_id AS mbId,
+            mb_pw AS mbPw,
+            mb_name AS mbName,
+            mb_phone AS mbPhone,
+            mb_theme AS mbTheme,
+            corp_idx AS corpIdx
+        FROM 
+            members
+    </select>
+
+
+</mapper>
