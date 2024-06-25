@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.inven.tree.mapper.ReleasesMapper">
+
+    <resultMap id="releasesResultMap" type="com.inven.tree.model.Releases">
+        <id property="releaseIdx" column="release_idx"/>
+        <result property="corpIdx" column="corp_idx"/>
+        <result property="prodIdx" column="prod_idx"/>
+        <result property="releaseCnt" column="release_cnt"/>
+        <result property="releasedAt" column="released_at"/>
+    </resultMap>
+
+    <insert id="insertRelease">
+        INSERT INTO releases (corp_idx, prod_idx, release_cnt, released_at)
+        VALUES (#{corpIdx}, #{prodIdx}, #{releaseCnt}, #{releasedAt})
+    </insert>
+
+    <select id="selectAllReleases" resultMap="releasesResultMap">
+        SELECT * FROM releases
+    </select>
+
+    <select id="selectByCorpIdxAndDate" resultMap="releasesResultMap">
+        SELECT * 
+        FROM releases
+        WHERE corp_idx = #{corpIdx}
+        AND YEAR(released_at) = #{year}
+        AND MONTH(released_at) = #{month}
+        <if test="prodIdx != null">
+            AND prod_idx = #{prodIdx}
+        </if>
+    </select>
+
+    <select id="selectReleasesWithDetailsFiltered" resultType="map">
+    SELECT 
+        r.release_idx AS releaseIdx, 
+        c.corp_name AS company, 
+        p.prod_barcode AS productCode, 
+        p.prod_name AS productName, 
+        r.release_cnt AS releaseCnt,
+        DATE_FORMAT(r.released_at, '%Y-%m-%d %H:%i:%s') AS date,
+        '출고' AS type
+    FROM releases r
+    JOIN corporates c ON r.corp_idx = c.corp_idx
+    JOIN products p ON r.prod_idx = p.prod_idx
+    <where>
+        <if test="filterColumn != null and filterColumn != '' and filterValue != null and filterValue != ''">
+            <choose>
+                <when test="filterColumn == 'company'">
+                    c.corp_name LIKE CONCAT('%', #{filterValue}, '%')
+                </when>
+                <when test="filterColumn == 'productCode'">
+                    p.prod_barcode LIKE CONCAT('%', #{filterValue}, '%')
+                </when>
+                <when test="filterColumn == 'productName'">
+                    p.prod_name LIKE CONCAT('%', #{filterValue}, '%')
+                </when>
+                <when test="filterColumn == 'quantity'">
+                    r.release_cnt = #{filterValue}
+                </when>
+                <when test="filterColumn == 'date'">
+                    DATE(r.released_at) = DATE(#{filterValue})
+                </when>
+                <when test="filterColumn == 'type'">
+                    '출고' = #{filterValue}
+                </when>
+            </choose>
+        </if>
+    </where>
+    ORDER BY r.released_at DESC
+    LIMIT #{size} OFFSET #{offset}
+</select>
+
+    <select id="countFilteredEntries" resultType="int">
+        SELECT COUNT(*)
+        FROM releases r
+        JOIN corporates c ON r.corp_idx = c.corp_idx
+        JOIN products p ON r.prod_idx = p.prod_idx
+        <where>
+            <if test="filterColumn != null and filterColumn != '' and filterValue != null and filterValue != ''">
+                <choose>
+                    <when test="filterColumn == 'company'">
+                        c.corp_name LIKE CONCAT('%', #{filterValue}, '%')
+                    </when>
+                    <when test="filterColumn == 'productCode'">
+                        p.prod_barcode LIKE CONCAT('%', #{filterValue}, '%')
+                    </when>
+                    <when test="filterColumn == 'productName'">
+                        p.prod_name LIKE CONCAT('%', #{filterValue}, '%')
+                    </when>
+                    <when test="filterColumn == 'quantity'">
+                        r.release_cnt = #{filterValue}
+                    </when>
+                    <when test="filterColumn == 'date'">
+                        DATE(r.released_at) = DATE(#{filterValue})
+                    </when>
+                    <when test="filterColumn == 'type'">
+                        '출고' = #{filterValue}
+                    </when>
+                </choose>
+            </if>
+        </where>
+    </select>
+
+</mapper>

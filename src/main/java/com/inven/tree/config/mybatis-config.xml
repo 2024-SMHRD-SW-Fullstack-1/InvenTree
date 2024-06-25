@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration   
+        PUBLIC "-//mybatis.org/DTD Config 3.0/EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="cacheEnabled" value="true" />
+		<setting name="lazyLoadingEnabled" value="true" />
+		<setting name="multipleResultSetsEnabled" value="true" />
+		<setting name="useColumnLabel" value="true" />
+		<setting name="useGeneratedKeys" value="true" />
+		<setting name="defaultExecutorType" value="SIMPLE" />
+		<setting name="defaultStatementTimeout" value="25000" />
+		<setting name="callSettersOnNulls" value="true" />
+		<setting name="jdbcTypeForNull" value="NULL" />
+	</settings>
+
+	<typeAliases>
+		<typeAlias type="com.inven.tree.model.Auths" alias="Auths" />
+		<typeAlias type="com.inven.tree.model.Corporates"
+			alias="Corporates" />
+		<typeAlias type="com.inven.tree.model.Members"
+			alias="Members" />
+		<typeAlias type="com.inven.tree.model.Products"
+			alias="Products" />
+		<typeAlias type="com.inven.tree.model.Releases"
+			alias="Releases" />
+		<typeAlias type="com.inven.tree.model.Shelves"
+			alias="Shelves" />
+		<typeAlias type="com.inven.tree.model.Stocks" alias="Stocks" />
+		<typeAlias type="com.inven.tree.model.Warehouses"
+			alias="Warehouses" />
+	</typeAliases>
+
+	<mappers>
+		<mapper resource="com/inven/tree/mapper/AuthsMapper.xml" />
+		<mapper resource="com/inven/tree/mapper/CorporatesMapper.xml" />
+		<mapper resource="com/inven/tree/mapper/MembersMapper.xml" />
+		<mapper resource="com/inven/tree/mapper/ProductsMapper.xml" />
+		<mapper resource="com/inven/tree/mapper/ReleasesMapper.xml" />
+		<mapper resource="com/inven/tree/mapper/ShelvesMapper.xml" />
+		<mapper resource="com/inven/tree/mapper/StocksMapper.xml" />
+		<mapper resource="com/inven/tree/mapper/WarehousesMapper.xml" />
+	</mappers>
+</configuration>

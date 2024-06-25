@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.inven.tree.mapper.SubsidiaryMapper">
+
+    <select id="selectSubsidiaryByNameIgnoreCase" resultType="com.inven.tree.model.Subsidiary">
+        SELECT * FROM subsidiary WHERE LOWER(sub_name) = LOWER(#{subName})
+    </select>
+
+    <select id="selectDistinctByColumnAndCorpIdx" resultType="string">
+        SELECT DISTINCT ${column} FROM subsidiary WHERE corp_idx = #{corpIdx}
+    </select>
+
+</mapper>

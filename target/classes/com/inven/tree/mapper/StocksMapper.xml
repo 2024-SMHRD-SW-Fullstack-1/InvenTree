@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.inven.tree.mapper.StocksMapper">
+
+    <resultMap id="stocksResultMap" type="com.inven.tree.model.Stocks">
+        <id property="stockIdx" column="stock_idx"/>
+        <result property="corpIdx" column="corp_idx"/>
+        <result property="prodIdx" column="prod_idx"/>
+        <result property="stockCnt" column="stock_cnt"/>
+        <result property="stockedAt" column="stocked_at"/>
+    </resultMap>
+
+    <insert id="insertStock">
+        INSERT INTO stocks (corp_idx, prod_idx, stock_cnt, stocked_at)
+        VALUES (#{corpIdx}, #{prodIdx}, #{stockCnt}, #{stockedAt})
+    </insert>
+
+    <select id="selectAllStocks" resultMap="stocksResultMap">
+        SELECT * FROM stocks
+    </select>
+
+    <select id="selectByCorpIdxAndDate" resultMap="stocksResultMap">
+        SELECT * 
+        FROM stocks
+        WHERE corp_idx = #{corpIdx}
+        AND YEAR(stocked_at) = #{year}
+        AND MONTH(stocked_at) = #{month}
+        <if test="prodIdx != null">
+            AND prod_idx = #{prodIdx}
+        </if>
+    </select>
+
+    <select id="selectStocksWithDetailsFiltered" resultType="map">
+    SELECT 
+        s.stock_idx AS stockIdx, 
+        c.corp_name AS company, 
+        p.prod_barcode AS productCode, 
+        p.prod_name AS productName, 
+        s.stock_cnt AS stockCnt,
+        DATE_FORMAT(s.stocked_at, '%Y-%m-%d %H:%i:%s') AS date,
+        '입고' AS type
+    FROM stocks s
+    JOIN corporates c ON s.corp_idx = c.corp_idx
+    JOIN products p ON s.prod_idx = p.prod_idx
+    <where>
+        <if test="filterColumn != null and filterColumn != '' and filterValue != null and filterValue != ''">
+            <choose>
+                <when test="filterColumn == 'company'">
+                    c.corp_name LIKE CONCAT('%', #{filterValue}, '%')
+                </when>
+                <when test="filterColumn == 'productCode'">
+                    p.prod_barcode LIKE CONCAT('%', #{filterValue}, '%')
+                </when>
+                <when test="filterColumn == 'productName'">
+                    p.prod_name LIKE CONCAT('%', #{filterValue}, '%')
+                </when>
+                <when test="filterColumn == 'quantity'">
+                    s.stock_cnt = #{filterValue}
+                </when>
+                <when test="filterColumn == 'date'">
+                    DATE(s.stocked_at) = DATE(#{filterValue})
+                </when>
+                <when test="filterColumn == 'type'">
+                    '입고' = #{filterValue}
+                </when>
+            </choose>
+        </if>
+    </where>
+    ORDER BY s.stocked_at DESC
+    LIMIT #{size} OFFSET #{offset}
+</select>
+
+    <select id="countFilteredEntries" resultType="int">
+        SELECT COUNT(*)
+        FROM stocks s
+        JOIN corporates c ON s.corp_idx = c.corp_idx
+        JOIN products p ON s.prod_idx = p.prod_idx
+        <where>
+            <if test="filterColumn != null and filterColumn != '' and filterValue != null and filterValue != ''">
+                <choose>
+                    <when test="filterColumn == 'company'">
+                        c.corp_name LIKE CONCAT('%', #{filterValue}, '%')
+                    </when>
+                    <when test="filterColumn == 'productCode'">
+                        p.prod_barcode LIKE CONCAT('%', #{filterValue}, '%')
+                    </when>
+                    <when test="filterColumn == 'productName'">
+                        p.prod_name LIKE CONCAT('%', #{filterValue}, '%')
+                    </when>
+                    <when test="filterColumn == 'quantity'">
+                        s.stock_cnt = #{filterValue}
+                    </when>
+                    <when test="filterColumn == 'date'">
+                        DATE(s.stocked_at) = DATE(#{filterValue})
+                    </when>
+                    <when test="filterColumn == 'type'">
+                        '입고' = #{filterValue}
+                    </when>
+                </choose>
+            </if>
+        </where>
+    </select>
+
+</mapper>

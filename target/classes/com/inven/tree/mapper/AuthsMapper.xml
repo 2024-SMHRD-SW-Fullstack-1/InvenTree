@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inven.tree.mapper.AuthsMapper">
+    <select id="findAuthById" parameterType="String" resultType="Auths">
+        SELECT
+            auth_idx AS authIdx,
+            mb_id AS mbId,
+            inventory_yn AS inventoryYn,
+            ship_yn AS shipYn,
+            chart_yn AS chartYn,
+            set_yn AS setYn
+        FROM auths
+        WHERE mb_id = #{mbId}
+    </select>
+</mapper>

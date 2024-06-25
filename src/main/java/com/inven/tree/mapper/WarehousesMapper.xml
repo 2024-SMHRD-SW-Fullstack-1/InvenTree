@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inven.tree.mapper.WarehousesMapper">
+
+	<!-- 모든 Warehouses를 가져오는 SQL -->
+	<select id="allWarehouses" resultMap="warehouses">
+		SELECT * FROM warehouses
+	</select>
+	
+	<!-- 선택된 창고들 삭제하는 SQL -->
+    <delete id="deleteWarehouses" parameterType="list">
+    	DELETE FROM warehouses WHERE wh_idx IN
+    	<foreach item="ids" collection="list" open="(" separator="," close=")">
+    	    #{ids}
+    	</foreach>
+	</delete>
+
+	<resultMap type="com.inven.tree.model.Warehouses"
+		id="warehouses">
+		<id property="whIdx" column="wh_idx" /> <!-- primary key -->
+		<result property="corpIdx" column="corp_idx" />
+		<result property="bidlName" column="bidl_name" />
+		<result property="mbId" column="mb_id" />
+		<result property="whAddr" column="wh_addr" />
+		<result property="whStatus" column="wh_status" />
+	
+	</resultMap>
+</mapper>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.inven.tree.mapper.ProductsMapper">
+
+	<resultMap id="productsResultMap"
+		type="com.inven.tree.model.Products">
+		<id property="prodIdx" column="prod_idx" />
+		<result property="prodName" column="prod_name" />
+		<result property="prodInfo" column="prod_info" />
+		<result property="prodBarcode" column="prod_barcode" />
+		<result property="prodCnt" column="prod_cnt" />
+		<result property="prodMake" column="prod_make" />
+		<result property="createdAt" column="created_at" />
+		<result property="corpIdx" column="corp_idx" />
+	</resultMap>
+
+	<!-- Select Queries -->
+	<select id="selectCorpIdxByName" resultType="String">
+		SELECT corp_idx FROM corporates WHERE corp_idx = #{corpIdx}
+	</select>
+
+	<select id="selectProdIdxByBarcode" resultType="Integer">
+		SELECT prod_idx FROM products WHERE prod_barcode = #{prodBarcode}
+	</select>
+
+	<select id="selectAllProducts" resultMap="productsResultMap">
+		SELECT * FROM products
+	</select>
+
+	<select id="selectMonthlyStockAndReleaseData" resultType="map">
+        SELECT 
+            MONTH(stocked_at) as month,
+            SUM(stock_cnt) as totalStockCount,
+            SUM(release_cnt) as totalReleaseCount,
+            AVG(stock_cnt) as avgStockCount,
+            AVG(release_cnt) as avgReleaseCount
+        FROM 
+            (SELECT stocked_at, stock_cnt, 0 as release_cnt FROM stocks WHERE corp_idx = #{corpIdx}
+            UNION ALL
+            SELECT released_at as stocked_at, 0 as stock_cnt, release_cnt FROM releases WHERE corp_idx = #{corpIdx}) as combined
+        WHERE 
+            YEAR(stocked_at) = #{year}
+            <if test="filterType != null and filterValue != null">
+                AND <choose>
+                    <when test="filterType == 'productCode'">prod_idx = #{filterValue}</when>
+                    <when test="filterType == 'productName'">prod_name = #{filterValue}</when>
+                    <when test="filterType == 'company'">corp_idx = #{filterValue}</when>
+                </choose>
+            </if>
+        GROUP BY month
+    </select>
+
+	<select id="selectProductByName" resultMap="productsResultMap">
+		SELECT * FROM products WHERE prod_name = #{productName}
+	</select>
+
+	<select id="selectProductByNameIgnoreCase"
+		resultMap="productsResultMap">
+		SELECT * FROM products WHERE LOWER(prod_name) = LOWER(#{prodName}) OR
+		prod_idx = #{prodName}
+	</select>
+
+	<select id="selectProductById" resultMap="productsResultMap">
+		SELECT * FROM products WHERE prod_idx = #{prodIdx}
+	</select>
+
+	<select id="selectProductsByCorpIdx"
+		resultMap="productsResultMap">
+		SELECT * FROM products WHERE corp_idx = #{corpIdx}
+	</select>
+
+	<select id="selectProductCodesByCorpIdx" resultType="String">
+		SELECT prod_idx FROM products WHERE corp_idx = #{corpIdx}
+	</select>
+
+	<select id="selectProductNamesByCorpIdx" resultType="String">
+		SELECT prod_name FROM products WHERE corp_idx = #{corpIdx}
+	</select>
+
+	<select id="selectCompaniesByCorpIdx" resultType="String">
+		SELECT corp_idx FROM products WHERE corp_idx = #{corpIdx}
+	</select>
+
+	<select id="selectDistinctByColumnAndCorpIdx"
+		resultType="String">
+		SELECT DISTINCT
+		<choose>
+			<when test="column == 'productCode'">
+				prod_idx
+			</when>
+			<when test="column == 'productName'">
+				prod_name
+			</when>
+			<when test="column == 'company'">
+				corp_idx
+			</when>
+			<otherwise>
+				${column}
+			</otherwise>
+		</choose>
+		FROM products
+		WHERE corp_idx = #{corpIdx}
+	</select>
+
+	<select id="selectByCorpIdxAndDate"
+		resultMap="productsResultMap">
+		SELECT * FROM products
+		WHERE corp_idx = #{corpIdx}
+		AND created_at BETWEEN #{startDate} AND #{endDate}
+	</select>
+
+	<select id="selectProductsByFilter"
+		resultMap="productsResultMap">
+		SELECT * FROM products
+		WHERE
+		<choose>
+			<when test="filterType == 'productCode'">
+				prod_idx = #{filterValue}
+			</when>
+			<when test="filterType == 'productName'">
+				prod_name = #{filterValue}
+			</when>
+			<when test="filterType == 'company'">
+				corp_idx IN (SELECT corp_idx FROM subsidiary WHERE sub_name =
+				#{filterValue})
+			</when>
+		</choose>
+	</select>
+
+	<!-- Insert Queries -->
+	<insert id="insertStock">
+		INSERT INTO stocks (corp_idx, prod_idx, stock_cnt, stocked_at)
+		VALUES (#{corpIdx}, #{prodIdx}, #{stockCnt}, #{stockedAt})
+	</insert>
+
+	<insert id="insertRelease">
+		INSERT INTO releases (corp_idx, prod_idx, release_cnt, released_at)
+		VALUES (#{corpIdx}, #{prodIdx}, #{releaseCnt}, #{releasedAt})
+	</insert>
+
+	<!-- Update Queries -->
+	<update id="updateProductCount">
+		UPDATE products SET prod_cnt = prod_cnt + #{prodCnt} WHERE prod_idx =
+		#{prodIdx}
+	</update>
+
+</mapper>
