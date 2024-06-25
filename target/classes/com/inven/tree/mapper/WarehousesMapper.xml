@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.inven.tree.mapper.WarehousesMapper">
-	<!--  -->
+	
+	<!-- 창고 맵 -->
     <resultMap type="com.inven.tree.model.Warehouses" id="warehouses">
         <id property="whIdx" column="wh_idx" /> <!-- primary key -->
         <result property="corpIdx" column="corp_idx" />
@@ -10,7 +11,7 @@
         <result property="whAddr" column="wh_addr" />
         <result property="whStatus" column="wh_status" />
     </resultMap>
-    
+    <!-- 창고 선반 맵 -->
 	<resultMap type="map" id="warehousesWithShelvesMap">
 	    <id property="whIdx" column="wh_idx" />
 	    <result property="corpIdx" column="corp_idx" />
@@ -23,6 +24,7 @@
 	    <result property="rackId" column="rack_id" />
 	</resultMap>
 	
+	<!-- corpIdx로 창고 선반 테이블 출력  -->
 	<select id="getWarehousesAndShelvesByCorpIdx" resultMap="warehousesWithShelvesMap">
 	    SELECT w.wh_idx, w.corp_idx, w.bidl_name, w.mb_id, w.wh_addr, w.wh_status,
 	           s.shelf_idx, s.shelf_id, s.rack_id
@@ -51,7 +53,13 @@
         UPDATE warehouses SET bidl_name = #{bidlName}, mb_id = #{mbId}, wh_addr = #{whAddr},
             wh_status = #{whStatus} WHERE wh_idx = #{whIdx}
 	</update>
-	
 
-	
+	<!-- 회사코드로 창고 추출 -->
+	<select id="findByCorpIdx" resultMap="warehouses">
+		SELECT wh_idx, corp_idx, bidl_name, mb_id, wh_addr, wh_status
+		FROM warehouses
+		WHERE corp_idx = #{corpIdx}
+	</select>
+
+
 </mapper>

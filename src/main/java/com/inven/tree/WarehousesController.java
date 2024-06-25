@@ -84,7 +84,7 @@ public class WarehousesController {
             }
 
             // 삭제 후 선반 데이터가 있는지 확인
-            List<Shelves> shelvesExist = shelvesMapper.selectAllShelvesBywhIdx(warehouseIdsToDelete); // 여기가 오류야
+            List<Shelves> shelvesExist = shelvesMapper.selectAllShelvesBywhIdx(warehouseIdsToDelete); 
             System.out.println("Existing Shelves after deletion: " + shelvesExist);
 
             // 선반 데이터가 없는 경우에만 창고 삭제

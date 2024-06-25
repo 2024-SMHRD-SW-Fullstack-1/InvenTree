@@ -8,6 +8,7 @@
         FROM shelves
     </select>
     
+    <!-- whIdx로 선반 출력 -->
     <select id="selectAllShelvesBywhIdx" resultMap="shelves">
     	SELECT *
     	FROM shelves
@@ -17,7 +18,7 @@
     	</foreach>
     </select>
     
-    <!-- 추가1 -->
+    <!-- whIdx로 선반 반복 출력 -->
 	<delete id="deleteShelvesByShelfIdxAndWhIdx">
 	    DELETE FROM shelves
 	    WHERE shelf_idx IN 
@@ -39,12 +40,24 @@
         WHERE shelf_idx = #{shelfIdx}
     </update>
     
-    <resultMap type="com.inven.tree.model.Shelves"
-		id="shelves">
+    <!-- ResultMap -->
+	<resultMap type="com.inven.tree.model.Shelves" id="shelves">
 		<id property="shelfIdx" column="shelf_idx" /> <!-- primary key -->
 		<result property="whIdx" column="wh_idx" />
 		<result property="rackId" column="rack_id" />
 		<result property="shelfId" column="shelf_id" />
 		<result property="shelfStatus" column="shelf_status" />
 	</resultMap>
+
+	<!--회사코드로 선반정보 추출(재고현황 선반 정보 불러오기 때문에 추가한 메소드 -->
+	<select id="findByCorpIdx" resultMap="shelves">
+		SELECT s.shelf_idx,
+		s.wh_idx, s.rack_id, s.shelf_id, s.shelf_status
+		FROM shelves s
+		JOIN
+		warehouses w ON s.wh_idx = w.wh_idx
+		WHERE w.corp_idx = #{corpIdx}
+	</select>
+	
+
 </mapper>

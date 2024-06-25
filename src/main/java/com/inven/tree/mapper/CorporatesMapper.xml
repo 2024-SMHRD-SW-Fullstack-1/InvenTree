@@ -12,10 +12,7 @@
 
     <!-- 모든 Corporates를 가져오는 SQL -->
     <select id="selectAllCorporates" resultMap="corporatesResultMap">
-        SELECT *
-		FROM warehouses w
-		INNER JOIN shelves s on w.wh_idx = s.wh_idx
-		WHERE w.corp_idx = #{corpIdx}
+        SELECT * FROM corporates WHERE corp_idx = #{corpIdx}
     </select>
 
     <!-- 회사 정보 변경 -->

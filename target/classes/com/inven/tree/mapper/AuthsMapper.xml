@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.inven.tree.mapper.AuthsMapper">
@@ -28,7 +29,7 @@
 	    WHERE corp_idx = #{corpIdx}
     </select>
     
-    	<!-- 선반 정보 업데이트 -->
+    <!-- 권한 정보 업데이트 -->
     <update id="updateAuth" parameterType="Auths">
         UPDATE auths
         SET
@@ -42,12 +43,13 @@
         AND auth_idx = #{authIdx}
     </update>
     
+    <!-- 권한 정보 삭제 -->
     <delete id="deleteAuths">
     delete from auths
     WHERE auth_idx = #{authIdx}
     </delete>
     
-    <!-- 권한 추가 -->
+    <!-- 권한 정보 추가 -->
 	<insert id="insertAuths" parameterType="Auths">
 	    INSERT INTO auths (auth_name, inventory_yn, ship_yn, chart_yn, set_yn, corp_idx)
 	    VALUES

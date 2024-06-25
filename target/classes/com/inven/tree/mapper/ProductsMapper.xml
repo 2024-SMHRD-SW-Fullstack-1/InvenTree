@@ -1,49 +1,47 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.inven.tree.mapper.ProductsMapper">
-
-    <resultMap id="productsResultMap" type="com.inven.tree.model.Products">
-        <id property="prodIdx" column="prod_idx" />
-        <result property="prodName" column="prod_name" />
-        <result property="prodInfo" column="prod_info" />
-        <result property="prodBarcode" column="prod_barcode" />
-        <result property="prodImg" column="prod_img" />
-        <result property="prodCnt" column="prod_cnt" />
-        <result property="prodMake" column="prod_make" />
-        <result property="createdAt" column="created_at" />
-        <result property="corpIdx" column="corp_idx" />
-    </resultMap>
-
-    <select id="selectAllProducts" resultMap="productsResultMap">
-        SELECT * FROM products
-    </select>
-
-    <select id="selectCorpIdxByName" resultType="String">
-        SELECT corp_idx 
-        FROM corporates 
-        WHERE corp_idx = #{corpIdx}
-    </select>
-
-    <select id="selectProdIdxByBarcode" resultType="Integer">
-        SELECT prod_idx 
-        FROM products 
-        WHERE prod_barcode = #{prodBarcode}
-    </select>
-
-    <insert id="insertStock">
-        INSERT INTO stocks (corp_idx, prod_idx, stock_cnt, stocked_at)
-        VALUES (#{corpIdx}, #{prodIdx}, #{stockCnt}, #{stockedAt})
-    </insert>
-
-    <insert id="insertRelease">
-        INSERT INTO releases (corp_idx, prod_idx, release_cnt, released_at)
-        VALUES (#{corpIdx}, #{prodIdx}, #{releaseCnt}, #{releasedAt})
-    </insert>
-    
-    <update id="updateProductCount">
-        UPDATE products SET prod_cnt = prod_cnt + #{prodCnt} WHERE prod_idx = #{prodIdx}
-    </update>
+	<!-- Result Map -->
+	<resultMap id="productsResultMap"
+		type="com.inven.tree.model.Products">
+		<id property="prodIdx" column="prod_idx" />
+		<result property="prodName" column="prod_name" />
+		<result property="prodInfo" column="prod_info" />
+		<result property="prodBarcode" column="prod_barcode" />
+		<result property="prodCnt" column="prod_cnt" />
+		<result property="prodMake" column="prod_make" />
+		<result property="createdAt" column="created_at" />
+		<result property="corpIdx" column="corp_idx" />
+	</resultMap>
+	<!-- 사용자 회사 인덱스로 상품 추출 -->
+	<select id="selectProductsByCorpIdx" parameterType="string"
+		resultMap="productsResultMap">
+		SELECT * FROM products WHERE corp_idx = #{corpIdx}
+	</select>
+	<!-- 회사명으로 회사인덱스 추출 -->
+	<select id="selectCorpIdxByName" parameterType="string"
+		resultType="string">
+		SELECT corp_idx FROM corporations WHERE corp_name = #{corpName}
+	</select>
+	<!-- 상품바코드로 상품인덱스 추출 -->
+	<select id="selectProdIdxByBarcode" parameterType="string"
+		resultType="int">
+		SELECT prod_idx FROM products WHERE prod_barcode = #{prodBarcode}
+	</select>
+	<!-- 입고 등록 insert 메소드 -->
+	<insert id="insertStock">
+		INSERT INTO stocks (corp_idx, prod_idx, stock_cnt, stocked_at, sub_idx)
+		VALUES (#{corpIdx}, #{prodIdx}, #{prodCnt}, #{stockedAt}, #{subIdx})
+	</insert>
+	<!-- 재고 수량 수정 메소드 -->
+	<update id="updateProductCount">
+		UPDATE products SET prod_cnt = prod_cnt + #{prodCnt} WHERE prod_idx =
+		#{prodIdx}
+	</update>
+	<!-- 모든 상품정보 가져오는 메소드 (회사코드 상관 없이) -->
+	<select id="selectAllProducts" resultMap="productsResultMap">
+		SELECT * FROM products
+	</select>
 
 </mapper>

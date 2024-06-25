@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 public interface ShelvesMapper {
-    // 창고 식별자로 선반 정보 불러오기
+    // 창고 식별자로 창고 & 선반 정보 불러오기
     List<Shelves> selectAllShelves();
     
     List<Shelves> selectAllShelvesBywhIdx(@Param("warehouseIdsToDelete") List<Integer> whIdx);
@@ -18,8 +18,12 @@ public interface ShelvesMapper {
     @Transactional
     void deleteShelvesByShelfIdxAndWhIdx(@Param("shelfIdsToDelete") List<Integer> shelfIds, @Param("warehouseIdsToDelete") List<Integer> whIds);
     
-       
     // 선반 정보 변경 또는 추가
     void updateShelf(Shelves shelves);
 
+    // 회사코드로 선반정보 추출(재고현황 선반 정보 불러오기 때문에 추가한 메소드
+    List<Shelves> findByCorpIdx(String corpIdx);
 }
+
+
+

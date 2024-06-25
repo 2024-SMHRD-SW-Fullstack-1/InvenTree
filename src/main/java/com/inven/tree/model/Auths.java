@@ -12,7 +12,7 @@ import lombok.Data;
 public class Auths {
 	// 권한 식별자 
     private Integer authIdx; //pk
-    
+ 
     // 회사 식별자
     private String corpIdx; // fk
     

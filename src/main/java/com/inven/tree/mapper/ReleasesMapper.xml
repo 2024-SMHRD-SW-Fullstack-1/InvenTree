@@ -5,25 +5,27 @@
 
 <mapper namespace="com.inven.tree.mapper.ReleasesMapper">
 
-    <!-- ResultMap 정의 -->
+   <!-- ResultMap 정의 -->
     <resultMap id="releasesResultMap" type="com.inven.tree.model.Releases">
         <id property="releaseIdx" column="release_idx"/>
         <result property="corpIdx" column="corp_idx"/>
         <result property="prodIdx" column="prod_idx"/>
         <result property="releaseCnt" column="release_cnt"/>
         <result property="releasedAt" column="released_at"/>
-        <result property="shelfIdx" column="shelf_idx"/>
+        <result property="subIdx" column="sub_idx"/>
     </resultMap>
     
     <!-- 새로운 ResultMap 정의 (상세 정보 포함) -->
     <resultMap id="releasesDetailResultMap" type="map">
         <result property="releaseIdx" column="release_idx"/>
-        <result property="company" column="corp_name"/>
+        <result property="corpIdx" column="corp_idx"/>
+        <result property="company" column="sub_name"/>
         <result property="productCode" column="prod_barcode"/>
         <result property="productName" column="prod_name"/>
         <result property="releaseCnt" column="release_cnt"/>
         <result property="releasedAt" column="released_at"/>
-        <result property="type" column="type"/>
+        <result property="isRelease" column="is_release"/>
+        <result property="subIdx" column="sub_idx"/>
     </resultMap>
 
     <!-- 모든 Releases를 가져오는 SQL -->
@@ -33,8 +35,8 @@
 
     <!-- releases 테이블에 데이터 삽입 SQL -->
     <insert id="insertRelease">
-        INSERT INTO releases (corp_idx, prod_idx, release_cnt, released_at)
-        VALUES (#{corpIdx}, #{prodIdx}, #{releaseCnt}, #{releasedAt})
+        INSERT INTO releases (corp_idx, prod_idx, release_cnt, released_at, sub_idx)
+        VALUES (#{corpIdx}, #{prodIdx}, #{releaseCnt}, #{releasedAt}, #{subIdx})
     </insert>
 
     <!-- ID 목록에 해당하는 Releases를 가져오는 SQL -->
@@ -46,24 +48,28 @@
         </foreach>
     </select>
 
-    <!-- 필터링 및 페이징된 Releases와 상세 정보를 가져오는 SQL -->
-    <select id="selectReleasesWithDetailsFiltered" resultType="map">
-    SELECT 
-        r.release_idx AS releaseIdx, 
-        c.corp_name AS company, 
-        p.prod_barcode AS productCode, 
-        p.prod_name AS productName, 
-        r.release_cnt AS releaseCnt,
-        DATE_FORMAT(r.released_at, '%Y-%m-%d %H:%i:%s') AS date,
-        '출고' AS type
-    FROM releases r
-    JOIN corporates c ON r.corp_idx = c.corp_idx
-    JOIN products p ON r.prod_idx = p.prod_idx
-    <where>
+
+  <!-- 필터링 및 페이징된 Releases와 상세 정보를 가져오는 SQL -->
+    <select id="selectReleasesWithDetailsFiltered" resultMap="releasesDetailResultMap">
+        SELECT 
+            r.release_idx AS releaseIdx, 
+            r.corp_idx AS corpIdx,
+            sub.sub_name AS company, 
+            p.prod_barcode AS productCode, 
+            p.prod_name AS productName, 
+            r.release_cnt AS releaseCnt,
+            DATE_FORMAT(r.released_at, '%Y-%m-%d %H:%i:%s') AS date,
+            'Y' AS isRelease,
+            r.sub_idx AS subIdx
+        FROM releases r
+        JOIN subsidiary sub ON r.sub_idx = sub.sub_idx
+        JOIN products p ON r.prod_idx = p.prod_idx
+        WHERE r.corp_idx = #{corpIdx}
         <if test="filterColumn != null and filterColumn != '' and filterValue != null and filterValue != ''">
+            AND 
             <choose>
                 <when test="filterColumn == 'company'">
-                    c.corp_name LIKE CONCAT('%', #{filterValue}, '%')
+                    sub.sub_name LIKE CONCAT('%', #{filterValue}, '%')
                 </when>
                 <when test="filterColumn == 'productCode'">
                     p.prod_barcode LIKE CONCAT('%', #{filterValue}, '%')
@@ -82,41 +88,38 @@
                 </when>
             </choose>
         </if>
-    </where>
-    ORDER BY r.released_at DESC
-    LIMIT #{size} OFFSET #{offset}
-</select>
+        ORDER BY r.released_at DESC
+    </select>
 
     <!-- 필터링된 항목의 총 개수를 세는 SQL -->
     <select id="countFilteredEntries" resultType="int">
         SELECT COUNT(*)
         FROM releases r
-        JOIN corporates c ON r.corp_idx = c.corp_idx
+        JOIN subsidiary sub ON r.sub_idx = sub.sub_idx
         JOIN products p ON r.prod_idx = p.prod_idx
-        <where>
-            <if test="filterColumn != null and filterColumn != '' and filterValue != null and filterValue != ''">
-                <choose>
-                    <when test="filterColumn == 'company'">
-                        c.corp_name LIKE CONCAT('%', #{filterValue}, '%')
-                    </when>
-                    <when test="filterColumn == 'productCode'">
-                        p.prod_barcode LIKE CONCAT('%', #{filterValue}, '%')
-                    </when>
-                    <when test="filterColumn == 'productName'">
-                        p.prod_name LIKE CONCAT('%', #{filterValue}, '%')
-                    </when>
-                    <when test="filterColumn == 'quantity'">
-                        r.release_cnt = #{filterValue}
-                    </when>
-                    <when test="filterColumn == 'date'">
-                        DATE(r.released_at) = DATE(#{filterValue})
-                    </when>
-                    <when test="filterColumn == 'type'">
-                        '출고' = #{filterValue}
-                    </when>
-                </choose>
-            </if>
-        </where>
+        WHERE r.corp_idx = #{corpIdx}
+        <if test="filterColumn != null and filterColumn != '' and filterValue != null and filterValue != ''">
+            AND 
+            <choose>
+                <when test="filterColumn == 'company'">
+                    sub.sub_name LIKE CONCAT('%', #{filterValue}, '%')
+                </when>
+                <when test="filterColumn == 'productCode'">
+                    p.prod_barcode LIKE CONCAT('%', #{filterValue}, '%')
+                </when>
+                <when test="filterColumn == 'productName'">
+                    p.prod_name LIKE CONCAT('%', #{filterValue}, '%')
+                </when>
+                <when test="filterColumn == 'quantity'">
+                    r.release_cnt = #{filterValue}
+                </when>
+                <when test="filterColumn == 'date'">
+                    DATE(r.released_at) = DATE(#{filterValue})
+                </when>
+                <when test="filterColumn == 'type'">
+                    '출고' = #{filterValue}
+                </when>
+            </choose>
+        </if>
     </select>
-
 </mapper>
