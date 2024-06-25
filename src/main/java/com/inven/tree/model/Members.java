@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-//회원 테이블
+// 회원 테이블
 public class Members {
     // 회원 아이디 
-    private String mbId; //pk
+    private String mbId; // pk
 
     // 회원 비밀번호 
     private String mbPw;
@@ -25,7 +25,7 @@ public class Members {
     private String mbTheme;
 
     // 회사 코드 
-    private String corpIdx; //fk
+    private String corpIdx; // fk
     
     // 권한 식별자
     private int authIdx;

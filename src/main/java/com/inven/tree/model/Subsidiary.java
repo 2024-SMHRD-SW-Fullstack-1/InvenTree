@@ -1,19 +1,34 @@
 package com.inven.tree.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Subsidiary {
-    private int subIdx;      // 계열사 고유키
-    private String corpIdx;  // 회사 고유키 참조
-    private String subName;  // 계열사 명
-    private String subOwner; // 계열사 대표자명
-    private String subTel;   // 계열사 전화번호
-    private String subAddr;  // 계열사 주소
-    private String isRelease;// 출고업체 여부 (Y/N)
+    @JsonProperty("subIdx")
+    private Integer subIdx;     // 계열사 고유키
+
+    @JsonProperty("corpIdx")
+    private String corpIdx;     // 회사 고유키 참조
+
+    @JsonProperty("subName")
+    private String subName;     // 계열사 명
+
+    @JsonProperty("subOwner")
+    private String subOwner;    // 계열사 대표자명
+
+    @JsonProperty("subTel")
+    private String subTel;      // 계열사 전화번호
+
+    @JsonProperty("subAddr")
+    private String subAddr;     // 계열사 주소
+
+    @JsonProperty("isRelease")
+    private String isRelease;   // 출고업체 여부 (Y/N)
 
     // 기본 생성자
     public Subsidiary() {}
 
     // 매개변수가 있는 생성자
-    public Subsidiary(int subIdx, String corpIdx, String subName, String subOwner, String subTel, String subAddr, String isRelease) {
+    public Subsidiary(Integer subIdx, String corpIdx, String subName, String subOwner, String subTel, String subAddr, String isRelease) {
         this.subIdx = subIdx;
         this.corpIdx = corpIdx;
         this.subName = subName;
@@ -24,11 +39,11 @@ public class Subsidiary {
     }
 
     // Getter and Setter methods
-    public int getSubIdx() {
+    public Integer getSubIdx() {
         return subIdx;
     }
 
-    public void setSubIdx(int subIdx) {
+    public void setSubIdx(Integer subIdx) {
         this.subIdx = subIdx;
     }
 

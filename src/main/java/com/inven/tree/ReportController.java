@@ -2,6 +2,7 @@ package com.inven.tree;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.HashMap;
@@ -49,6 +50,7 @@ public class ReportController {
     private SubsidiaryMapper subsidiaryMapper;
 
     private static final Logger logger = LoggerFactory.getLogger(ReportController.class);
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @GetMapping("/report")
     public ResponseEntity<Map<String, Object>> getReport(
@@ -60,7 +62,6 @@ public class ReportController {
         
         Map<String, Object> response = new HashMap<>();
         try {
-            // 로그 추가
             System.out.println("Received report request with year: " + year + ", month: " + month + ", filterType: " + filterType + ", filterValue: " + filterValue);
 
             String corpIdx = (String) session.getAttribute("corpIdx");
@@ -72,7 +73,6 @@ public class ReportController {
             response.put("corpIdx", corpIdx);
 
             if (month == null) {
-                // Fetch yearly data for each month
                 Map<Integer, Map<String, Object>> monthlyData = new HashMap<>();
                 for (int i = 1; i <= 12; i++) {
                     monthlyData.put(i, getMonthlyData(year, i, filterType, filterValue, corpIdx));
@@ -80,7 +80,6 @@ public class ReportController {
                 response.put("monthlyData", monthlyData);
                 return ResponseEntity.ok(response);
             } else {
-                // Fetch data for the specified month
                 Map<String, Object> monthlyReport = getMonthlyData(year, month, filterType, filterValue, corpIdx);
                 return ResponseEntity.ok(monthlyReport);
             }
@@ -103,7 +102,7 @@ public class ReportController {
             IntStream.rangeClosed(1, 5).forEach(week -> {
                 List<Stocks> weeklyStocks = stocksMapper.selectAllStocks().stream()
                     .filter(stock -> {
-                        LocalDateTime date = stock.getStockedAt().toLocalDateTime();
+                        LocalDateTime date = LocalDateTime.parse(stock.getStockedAt(), formatter);
                         return date.getYear() == year && date.getMonthValue() == month && date.get(weekFields.weekOfMonth()) == week;
                     })
                     .collect(Collectors.toList());
@@ -118,7 +117,7 @@ public class ReportController {
 
                 List<Releases> weeklyReleases = releasesMapper.selectAllReleases().stream()
                     .filter(release -> {
-                        LocalDateTime date = release.getReleasedAt().toLocalDateTime();
+                        LocalDateTime date = LocalDateTime.parse(release.getReleasedAt(), formatter);
                         return date.getYear() == year && date.getMonthValue() == month && date.get(weekFields.weekOfMonth()) == week;
                     })
                     .collect(Collectors.toList());
@@ -202,7 +201,7 @@ public class ReportController {
             IntStream.rangeClosed(1, endDate.getDayOfMonth()).forEach(day -> {
                 List<Stocks> dailyStocks = stocksMapper.selectAllStocks().stream()
                     .filter(stock -> {
-                        LocalDateTime date = stock.getStockedAt().toLocalDateTime();
+                        LocalDateTime date = LocalDateTime.parse(stock.getStockedAt(), formatter);
                         boolean matchesDate = date.toLocalDate().equals(startDate.withDayOfMonth(day));
                         boolean matchesProduct = (prodIdx.get() == null) || (stock.getProdIdx() == prodIdx.get());
                         boolean matchesCorp = stock.getCorpIdx().equals(corpIdx);
@@ -211,7 +210,7 @@ public class ReportController {
                     .collect(Collectors.toList());
                 List<Releases> dailyReleases = releasesMapper.selectAllReleases().stream()
                     .filter(release -> {
-                        LocalDateTime date = release.getReleasedAt().toLocalDateTime();
+                        LocalDateTime date = LocalDateTime.parse(release.getReleasedAt(), formatter);
                         boolean matchesDate = date.toLocalDate().equals(startDate.withDayOfMonth(day));
                         boolean matchesProduct = (prodIdx.get() == null) || (release.getProdIdx() == prodIdx.get());
                         boolean matchesCorp = release.getCorpIdx().equals(corpIdx);
@@ -286,5 +285,4 @@ public class ReportController {
             return ResponseEntity.status(500).body(response);
         }
     }
-
 }

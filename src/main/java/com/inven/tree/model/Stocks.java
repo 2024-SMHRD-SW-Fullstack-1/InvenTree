@@ -17,10 +17,10 @@ public class Stocks {
     private int stockCnt;
 
     @JsonProperty("stockedAt")
-    private Timestamp stockedAt;
+    private String stockedAt;
 
     @JsonProperty("subIdx")
-    private int subIdx;
+    private Integer subIdx;
 
     // Getters and Setters
     public int getStockIdx() {
@@ -55,19 +55,19 @@ public class Stocks {
         this.stockCnt = stockCnt;
     }
 
-    public Timestamp getStockedAt() {
+    public String getStockedAt() {
         return stockedAt;
     }
 
-    public void setStockedAt(Timestamp stockedAt) {
+    public void setStockedAt(String stockedAt) {
         this.stockedAt = stockedAt;
     }
 
-    public int getSubIdx() {
+    public Integer getSubIdx() {
         return subIdx;
     }
 
-    public void setSubIdx(int subIdx) {
+    public void setSubIdx(Integer subIdx) {
         this.subIdx = subIdx;
     }
 }

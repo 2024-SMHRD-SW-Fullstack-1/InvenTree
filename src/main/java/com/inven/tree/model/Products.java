@@ -17,7 +17,7 @@ public class Products {
     private String prodBarcode;
 
     @JsonProperty("prodImg")
-    private String prodImg;
+    private String prodImg; // 이미지 필드 추가
 
     @JsonProperty("prodCnt")
     private int prodCnt;

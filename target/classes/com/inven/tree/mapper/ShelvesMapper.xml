@@ -3,23 +3,73 @@
 <mapper namespace="com.inven.tree.mapper.ShelvesMapper">
 
     <!-- 모든 Shelves를 가져오는 SQL -->
+    <select id="selectAllShelves" resultMap="shelves">
+        SELECT shelf_idx, wh_idx, rack_id, shelf_id, shelf_status
+        FROM shelves
+    </select>
+    
+    <!-- whIdx로 선반 출력 -->
+    <select id="selectAllShelvesBywhIdx" resultMap="shelves">
+        SELECT *
+        FROM shelves
+        WHERE wh_idx IN
+        <foreach collection="warehouseIdsToDelete" item="whIds" open="(" close=")" separator=",">
+            #{whIds}
+        </foreach>
+    </select>
+    
+    <!-- whIdx로 선반 반복 출력 -->
+    <delete id="deleteShelvesByShelfIdxAndWhIdx">
+        DELETE FROM shelves
+        WHERE shelf_idx IN 
+        <foreach collection="shelfIdsToDelete" item="shelfIds" open="(" separator="," close=")">
+            #{shelfIds}
+        </foreach>
+        AND wh_idx IN 
+        <foreach collection="warehouseIdsToDelete" item="whIds" open="(" separator="," close=")">
+            #{whIds}
+        </foreach>
+    </delete>
+    
+    <!-- 선반 정보 업데이트 -->
+    <update id="updateShelf" parameterType="Shelves">
+        UPDATE shelves
+        SET
+            rack_id = #{rackId},
+            shelf_id = #{shelfId}
+        WHERE shelf_idx = #{shelfIdx}
+    </update>
+    
+    <!-- 모든 Shelves를 가져오는 SQL -->
     <select id="allShelves" resultMap="shelves">
         SELECT * FROM shelves
     </select>
     
+    <!-- Shelves 삭제 -->
     <delete id="deleteShelves" parameterType="list">
-    	delete from shelves where wh_idx IN
-    	<foreach item="ids" collection="list" open="(" separator="," close=")">
-    	#{ids}
-    	</foreach>
+        DELETE FROM shelves WHERE wh_idx IN
+        <foreach item="ids" collection="list" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
     </delete>
     
-    <resultMap type="com.inven.tree.model.Shelves"
-		id="shelves">
-		<id property="shelfIdx" column="shelf_idx" /> <!-- primary key -->
-		<result property="whIdx" column="wh_idx" />
-		<result property="rackId" column="rack_id" />
-		<result property="shelfId" column="shelf_id" />
-		<result property="shelfStatus" column="shelf_status" />
-	</resultMap>
+    <!-- ResultMap -->
+    <resultMap type="com.inven.tree.model.Shelves" id="shelves">
+        <id property="shelfIdx" column="shelf_idx" /> <!-- primary key -->
+        <result property="whIdx" column="wh_idx" />
+        <result property="rackId" column="rack_id" />
+        <result property="shelfId" column="shelf_id" />
+        <result property="shelfStatus" column="shelf_status" />
+    </resultMap>
+
+    <!-- 회사코드로 선반정보 추출(재고현황 선반 정보 불러오기 때문에 추가한 메소드 -->
+    <select id="findByCorpIdx" resultMap="shelves">
+        SELECT s.shelf_idx,
+        s.wh_idx, s.rack_id, s.shelf_id, s.shelf_status
+        FROM shelves s
+        JOIN
+        warehouses w ON s.wh_idx = w.wh_idx
+        WHERE w.corp_idx = #{corpIdx}
+    </select>
+
 </mapper>

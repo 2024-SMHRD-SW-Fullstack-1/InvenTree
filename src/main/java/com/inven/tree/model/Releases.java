@@ -3,24 +3,31 @@ package com.inven.tree.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.sql.Timestamp;
 
+//출고 테이블
 public class Releases {
+    // 출고 식별자 
     @JsonProperty("releaseIdx")
     private int releaseIdx;
 
+    // 회사 식별자 
     @JsonProperty("corpIdx")
     private String corpIdx;
 
+    // 제품 식별자 
     @JsonProperty("prodIdx")
     private int prodIdx;
 
+    // 출고 수량 
     @JsonProperty("releaseCnt")
     private int releaseCnt;
 
+    // 출고 일자 
     @JsonProperty("releasedAt")
-    private Timestamp releasedAt;
-
-    @JsonProperty("subIdx") // 추가된 필드
-    private int subIdx;
+    private String releasedAt;
+    
+    // 출고 업체코드
+    @JsonProperty("subIdx")
+    private Integer subIdx;
 
     // Getters and Setters
     public int getReleaseIdx() {
@@ -55,19 +62,19 @@ public class Releases {
         this.releaseCnt = releaseCnt;
     }
 
-    public Timestamp getReleasedAt() {
+    public String getReleasedAt() {
         return releasedAt;
     }
 
-    public void setReleasedAt(Timestamp releasedAt) {
+    public void setReleasedAt(String releasedAt) {
         this.releasedAt = releasedAt;
     }
 
-    public int getSubIdx() { // 추가된 getter
+    public Integer getSubIdx() {
         return subIdx;
     }
 
-    public void setSubIdx(int subIdx) { // 추가된 setter
+    public void setSubIdx(Integer subIdx) {
         this.subIdx = subIdx;
     }
 }

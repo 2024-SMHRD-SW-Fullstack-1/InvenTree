@@ -1,6 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.inven.tree.mapper.AuthsMapper">
+    <!-- result map 설정 -->
+    <resultMap id="resultAuths" type="com.inven.tree.model.Auths">
+        <id property="authIdx" column="auth_idx"/> <!-- primary key -->
+        <result property="authName" column="auth_name"/>
+        <result property="inventoryYn" column="inventory_yn"/>
+        <result property="shipYn" column="ship_yn"/>
+        <result property="chartYn" column="chart_yn"/>
+        <result property="setYn" column="set_yn"/>
+        <result property="corpIdx" column="corp_idx"/><!-- fk -->
+    </resultMap>
+
+    <!-- corpIdx에 해당하는 Auths를 가져오는 SQL -->
+    <select id="selectAllAuthsByCorpIdx" resultMap="resultAuths">
+        SELECT
+            auth_idx AS authIdx,
+            auth_name AS authName,
+            inventory_yn AS inventoryYn,
+            ship_yn AS shipYn,
+            chart_yn AS chartYn,
+            set_yn AS setYn,
+            corp_idx AS corpIdx
+        FROM auths
+        WHERE corp_idx = #{corpIdx}
+    </select>
+    
+    <!-- 권한 정보 업데이트 -->
+    <update id="updateAuth" parameterType="Auths">
+        UPDATE auths
+        SET
+            auth_name = #{authName},
+            inventory_yn = #{inventoryYn},
+            ship_yn = #{shipYn},
+            chart_yn = #{chartYn},
+            set_yn = #{setYn}
+        WHERE corp_idx = #{corpIdx}
+        AND auth_idx = #{authIdx}
+    </update>
+    
+    <!-- 권한 정보 삭제 -->
+    <delete id="deleteAuths">
+        DELETE FROM auths
+        WHERE auth_idx = #{authIdx}
+    </delete>
+    
+    <!-- 권한 정보 추가 -->
+    <insert id="insertAuths" parameterType="Auths">
+        INSERT INTO auths (auth_name, inventory_yn, ship_yn, chart_yn, set_yn, corp_idx)
+        VALUES
+        (#{authName}, #{inventoryYn}, #{shipYn}, #{chartYn}, #{setYn}, #{corpIdx})
+    </insert>
+    
+    <!-- mbId에 해당하는 Auths를 가져오는 SQL -->
     <select id="findAuthById" parameterType="String" resultType="Auths">
         SELECT
             auth_idx AS authIdx,

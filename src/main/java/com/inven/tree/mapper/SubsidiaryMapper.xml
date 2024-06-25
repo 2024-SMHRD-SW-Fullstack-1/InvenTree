@@ -3,10 +3,48 @@
 
 <mapper namespace="com.inven.tree.mapper.SubsidiaryMapper">
 
+    <!-- ResultMap 정의 -->
+    <resultMap id="subsidiaryResultMap" type="com.inven.tree.model.Subsidiary">
+        <id property="subIdx" column="sub_idx" />
+        <result property="corpIdx" column="corp_idx" />
+        <result property="subName" column="sub_name" />
+        <result property="subOwner" column="sub_owner" />
+        <result property="subTel" column="sub_tel" />
+        <result property="subAddr" column="sub_addr" />
+        <result property="isRelease" column="is_release" />
+    </resultMap>
+
+    <!-- 입고 업체를 가져오는 SQL -->
+    <select id="selectIncomingSubsidiariesByCorpIdx" parameterType="string" resultMap="subsidiaryResultMap">
+        SELECT * FROM subsidiary WHERE corp_idx = #{corpIdx} AND is_release = 'N'
+    </select>
+
+    <!-- 출고 업체를 가져오는 SQL -->
+    <select id="selectOutgoingSubsidiariesByCorpIdx" parameterType="string" resultMap="subsidiaryResultMap">
+        SELECT * FROM subsidiary WHERE corp_idx = #{corpIdx} AND is_release = 'Y'
+    </select>
+
+    <!-- sub_name으로 sub_idx 찾기 -->
+    <select id="selectSubIdxByName" parameterType="map" resultType="int">
+        SELECT sub_idx FROM subsidiary WHERE sub_name = #{subName} AND is_release = #{isRelease}
+    </select>
+
+    <!-- sub_idx로 sub_name 찾기 -->
+    <select id="selectSubNameBySubIdx" parameterType="map" resultType="string">
+        SELECT sub_name FROM subsidiary WHERE sub_idx = #{subIdx} AND is_release = #{isRelease}
+    </select>
+
+    <!-- 모든 subsidiary를 가져오는 SQL -->
+    <select id="selectAllSubsidiary" resultMap="subsidiaryResultMap">
+        SELECT * FROM subsidiary
+    </select>
+
+    <!-- sub_name을 대소문자 구분 없이 조회 -->
     <select id="selectSubsidiaryByNameIgnoreCase" resultType="com.inven.tree.model.Subsidiary">
         SELECT * FROM subsidiary WHERE LOWER(sub_name) = LOWER(#{subName})
     </select>
 
+    <!-- 특정 컬럼의 distinct 값 조회 -->
     <select id="selectDistinctByColumnAndCorpIdx" resultType="string">
         SELECT DISTINCT ${column} FROM subsidiary WHERE corp_idx = #{corpIdx}
     </select>
