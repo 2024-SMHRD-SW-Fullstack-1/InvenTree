@@ -26,7 +26,5 @@ public class Members {
 
     // 회사 코드 
     private String corpIdx; //fk
-    
-    // 가입 일자
-    private String joinedAt; // 새로 추가된 필드
+
 }

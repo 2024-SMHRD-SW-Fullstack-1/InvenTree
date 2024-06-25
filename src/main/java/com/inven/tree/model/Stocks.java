@@ -18,6 +18,13 @@ public class Stocks {
 
     @JsonProperty("stockedAt")
     private Timestamp stockedAt;
+    
+    @JsonProperty("subIdx")
+    private Integer subIdx;
+    
+    
+    
+    
 
   
 
@@ -42,7 +49,15 @@ public class Stocks {
         return prodIdx;
     }
 
-    public void setProdIdx(int prodIdx) {
+    public Integer getSubIdx() {
+		return subIdx;
+	}
+
+	public void setSubIdx(Integer subIdx) {
+		this.subIdx = subIdx;
+	}
+
+	public void setProdIdx(int prodIdx) {
         this.prodIdx = prodIdx;
     }
 

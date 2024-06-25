@@ -13,16 +13,23 @@ public interface ReleasesMapper {
     void insertRelease(@Param("corpIdx") String corpIdx, @Param("prodIdx") int prodIdx, @Param("releaseCnt") int releaseCnt, @Param("releasedAt") Timestamp releasedAt);
     List<Releases> selectAllReleases();
 
-    List<Map<String, Object>> selectReleasesWithDetailsFiltered(
-            @Param("offset") int offset, 
-            @Param("size") int size, 
-            @Param("filterColumn") String filterColumn, 
-            @Param("filterValue") String filterValue
-        );
+    List<Releases> selectReleasesByIds(@Param("list") List<Integer> ids);
+    
+    void insertRelease(@Param("corpIdx") String corpIdx, @Param("prodIdx") Integer prodIdx, 
+            @Param("releaseCnt") Integer releaseCnt, @Param("releasedAt") Timestamp releasedAt, 
+            @Param("subIdx") Integer subIdx);
 
-        int countFilteredEntries(
-            @Param("filterColumn") String filterColumn, 
-            @Param("filterValue") String filterValue
-        );
+    List<Map<String, Object>> selectReleasesWithDetailsFiltered(@Param("offset") int offset,
+            @Param("size") int size,
+            @Param("filterColumn") String filterColumn,
+            @Param("filterValue") String filterValue,
+            @Param("corpIdx") String corpIdx);
+
+int countFilteredEntries(@Param("filterColumn") String filterColumn,
+@Param("filterValue") String filterValue,
+@Param("corpIdx") String corpIdx);
+    
+    
+       
 }
 

@@ -17,15 +17,13 @@ public interface StocksMapper {
 
     List<Stocks> selectStocksByIds(@Param("list") List<Integer> stockIds);
 
-    List<Map<String, Object>> selectStocksWithDetailsFiltered(
-            @Param("offset") int offset, 
-            @Param("size") int size, 
-            @Param("filterColumn") String filterColumn, 
-            @Param("filterValue") String filterValue
-        );
+    List<Map<String, Object>> selectStocksWithDetailsFiltered(@Param("offset") int offset,
+            @Param("size") int size,
+            @Param("filterColumn") String filterColumn,
+            @Param("filterValue") String filterValue,
+            @Param("corpIdx") String corpIdx);
 
-        int countFilteredEntries(
-            @Param("filterColumn") String filterColumn, 
-            @Param("filterValue") String filterValue
-        );
+int countFilteredEntries(@Param("filterColumn") String filterColumn,
+@Param("filterValue") String filterValue,
+@Param("corpIdx") String corpIdx);
 }

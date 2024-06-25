@@ -7,15 +7,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.inven.tree.mapper.MembersMapper;
 import com.inven.tree.model.Members;
-import com.inven.tree.model.Auths;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +23,7 @@ public class MembersController {
 
     @Autowired
     private MembersMapper membersMapper;
-
+    
     private InputValidation inputValidation = new InputValidation();
 
     @PostMapping("/login")
@@ -44,12 +39,12 @@ public class MembersController {
             logger.warn("Invalid ID format for user: {}", members.getMbId());
             return "invalid_id";
         }
-
+        
         if (!inputValidation.validatePassword(members.getMbPw())) {
             logger.warn("Invalid password format for user: {}", members.getMbId());
             return "invalid_password";
         }
-
+        
         if (!inputValidation.validateCorpCode(members.getCorpIdx())) {
             logger.warn("Invalid corporate code format for user: {}", members.getMbId());
             return "invalid_corp_code";
@@ -58,7 +53,6 @@ public class MembersController {
         int count = membersMapper.login(members);
         if (count > 0) {
             session.setAttribute("user", members); // 세션에 사용자 정보 저장
-            session.setAttribute("corpIdx", members.getCorpIdx()); // 세션에 회사코드 저장
             logger.info("Login success for user: {}", members.getMbId());
             return "success";
         }
@@ -67,46 +61,8 @@ public class MembersController {
     }
 
     @GetMapping("/members")
-    public List<Members> getMembers(HttpSession session) {
-        String corpIdx = (String) session.getAttribute("corpIdx");
-        logger.info("Fetching members for corpIdx: {}", corpIdx);
-        if (corpIdx != null) {
-            List<Members> members = membersMapper.findMembersByCorpIdx(corpIdx);
-            logger.info("Raw members data: {}", members);
-            for (Members member : members) {
-                logger.info("Member: {}", member);
-            }
-            return members;
-        }
-        return List.of(); // 회사코드가 없는 경우 빈 리스트 반환
-    }
-
-    @PostMapping("/members/save")
-    public void saveMembers(@RequestBody List<Members> members) {
-        for (Members member : members) {
-            membersMapper.save(member);
-        }
-    }
-
-    @PostMapping("/members/delete")
-    public void deleteMembers(@RequestBody List<Members> members) {
-        for (Members member : members) {
-            membersMapper.deleteAuthsByMemberId(member.getMbId());
-            membersMapper.delete(member);
-        }
-    }
-
-    @GetMapping("/members/auths")
-    public List<Auths> getAllAuths() {
-        List<Auths> auths = membersMapper.findAllAuths();
-        logger.info("Fetched auths: {}", auths);
-        return auths;
-    }
-
-    @PostMapping("/members/import")
-    public List<Members> importMembers(@RequestParam("file") MultipartFile file) {
-        // 파일을 파싱하고 Members 객체로 변환하는 로직을 추가하세요
-        return List.of();
+    public List<Members> getMembers() {
+        return membersMapper.findAll();
     }
 
     @GetMapping("/checkSession")
@@ -119,15 +75,5 @@ public class MembersController {
     public String logout(HttpSession session) {
         session.invalidate(); // 세션 무효화
         return "loggedOut";
-    }
-
-    @PostMapping("/members/saveWithAuths")
-    public void saveMembersWithAuths(@RequestBody List<Members> members, @RequestBody List<Auths> auths) {
-        for (Members member : members) {
-            membersMapper.save(member);
-        }
-        for (Auths auth : auths) {
-            membersMapper.saveAuth(auth);
-        }
     }
 }
