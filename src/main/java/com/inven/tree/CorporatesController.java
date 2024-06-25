@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.inven.tree.mapper.CorporatesMapper;
 import com.inven.tree.model.Corporates;
 
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
@@ -24,12 +25,12 @@ public class CorporatesController {
     private CorporatesMapper corpMapper;
 
     @GetMapping("/corporates")
-    public List<Corporates> getCorporates(@RequestParam("corpIdx") String corpIdx) { // 회사 리스트
+    public List<Corporates> getCorporates(@RequestParam("corpIdx") String corpIdx) { //회사 리스트
         return corpMapper.selectAllCorporates(corpIdx);
     }
-
+    
     @PutMapping("/corporates/update")
-    public ResponseEntity<String> updateCorporates(@RequestBody Corporates corporates) {
+    public ResponseEntity<String> updateCorporates(@RequestBody Corporates corporates){
         try {
             corpMapper.updateCorporates(corporates);
             return ResponseEntity.ok("Corporates updated successfully.");
