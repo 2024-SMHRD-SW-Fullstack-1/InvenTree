@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.inven.tree.mapper.AuthsMapper">
+    <!-- result map 설정 -->
+    <resultMap id="resultAuths" type="com.inven.tree.model.Auths">
+        <id property="authIdx" column="auth_idx"/> <!-- primary key -->
+        <result property="mbId" column="mb_id"/><!-- foreign key -->
+        <result property="inventoryYn" column="inventory_yn"/>
+        <result property="shipYn" column="ship_yn"/>
+        <result property="chartYn" column="chart_yn"/>
+        <result property="setYn" column="set_yn"/>
+    </resultMap>
+
+    <!-- result map 설정 -->
+    <resultMap id="resultAuthsAndMembers" type="map">
+        <id property="authIdx" column="auth_idx"/> 
+        <result property="mbId" column="mb_id"/>
+        <result property="inventoryYn" column="inventory_yn"/>
+        <result property="shipYn" column="ship_yn"/>
+        <result property="chartYn" column="chart_yn"/>
+        <result property="setYn" column="set_yn"/>
+        <result property="mbName" column="mb_name"/>
+    </resultMap>
+    
+    <!-- corpIdx에 해당하는 Auths를 가져오는 SQL -->
+    <select id="selectAllAuthsByCorpIdx" resultMap="resultAuthsAndMembers">
+	    SELECT m.mb_id, m.mb_name, 
+	    	   a.mb_id, a.inventory_yn, a.ship_yn, a.chart_yn, a.set_yn 
+		FROM auths AS a
+		JOIN members AS m ON a.mb_id = m.mb_id;
+	    
+    </select>
+    
+   	<!--  권한 업데이트 -->
+    <update id="updateAuth" parameterType="Auths">
+        UPDATE auths
+        SET
+            
+            inventory_yn = #{inventoryYn},
+            ship_yn = #{shipYn},
+            chart_yn = #{chartYn},
+            set_yn = #{setYn}
+            
+        WHERE mb_id = #{mbId}
+    </update>
+    
+    <delete id="deleteAuths">
+    delete from auths
+    WHERE auth_idx = #{authIdx}
+    </delete>
+    
+    <!-- 권한 추가 -->
+<!--<insert id="insertAuths" parameterType="Auths">
+	    INSERT INTO auths (auth_idx, inventory_yn, ship_yn, chart_yn, set_yn)
+	    VALUES
+	    (#{authName}, #{inventoryYn}, #{shipYn}, #{chartYn}, #{setYn})
+	</insert> -->
+    
+</mapper>
