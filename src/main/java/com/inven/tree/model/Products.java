@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.sql.Timestamp;
 
 public class Products {
+
 	@JsonProperty("prodIdx")
 	private int prodIdx;
 
@@ -130,4 +131,5 @@ public class Products {
 	public void setWhIdx(Integer whIdx) {
 		this.whIdx = whIdx;
 	}
+
 }

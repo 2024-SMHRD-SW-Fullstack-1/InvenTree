@@ -24,4 +24,5 @@ public class StocksController {
 	    public List<Stocks> getStocks() {
 	        return stocksMapper.selectAllStocks();
 	    }
+
 }
