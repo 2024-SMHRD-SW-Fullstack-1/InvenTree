@@ -11,6 +11,7 @@ import com.inven.tree.model.Products;
 
 @Mapper
 public interface ProductsMapper {
+
     // 사용자 회사 인덱스로 상품 추출
     List<Products> selectProductsByCorpIdx(@Param("corpIdx") String corpIdx);
 
@@ -67,4 +68,11 @@ public interface ProductsMapper {
                                                                @Param("corpIdx") String corpIdx,
                                                                @Param("filterType") String filterType,
                                                                @Param("filterValue") String filterValue);
+	// 재고현황으로 인해 추가된 메소드들
+	
+	
+    boolean existsByProdBarcode(String prodBarcode);
+    void updateProduct(Products product);
+    void insertProduct(Products product);
+    void deleteProductByBarcode(String prodBarcode);
 }

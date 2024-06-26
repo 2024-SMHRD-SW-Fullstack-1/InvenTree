@@ -4,103 +4,129 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.sql.Timestamp;
 
 public class Products {
-    @JsonProperty("prodIdx")
-    private int prodIdx;
 
-    @JsonProperty("prodName")
-    private String prodName;
+	@JsonProperty("prodIdx")
+	private int prodIdx;
 
-    @JsonProperty("prodInfo")
-    private String prodInfo;
+	@JsonProperty("prodName")
+	private String prodName;
 
-    @JsonProperty("prodBarcode")
-    private String prodBarcode;
+	@JsonProperty("prodInfo")
+	private String prodInfo;
 
-    @JsonProperty("prodImg")
-    private String prodImg; // 이미지 필드 추가
+	@JsonProperty("prodBarcode")
+	private String prodBarcode;
 
-    @JsonProperty("prodCnt")
-    private int prodCnt;
+	@JsonProperty("prodCnt")
+	private int prodCnt;
 
-    @JsonProperty("prodMake")
-    private String prodMake;
+	@JsonProperty("prodMake")
+	private String prodMake;
 
-    @JsonProperty("createdAt")
-    private Timestamp createdAt;
+	@JsonProperty("createdAt")
+	private Timestamp createdAt;
 
-    @JsonProperty("corpIdx")
-    private String corpIdx;
+	@JsonProperty("corpIdx")
+	private String corpIdx;
+	
+	//필드 3개 새로 추가 했음(재고 현황 때문에)
+	@JsonProperty("shelfIdx")
+	private Integer shelfIdx;
+	
+	@JsonProperty("rackId")
+	private String rackId;
 
-    // Getters and Setters
-    public int getProdIdx() {
-        return prodIdx;
-    }
+	@JsonProperty("whIdx")
+	private Integer whIdx;
+	
+	// Getters and Setters
+	public int getProdIdx() {
+		return prodIdx;
+	}
 
-    public void setProdIdx(int prodIdx) {
-        this.prodIdx = prodIdx;
-    }
+	public void setProdIdx(int prodIdx) {
+		this.prodIdx = prodIdx;
+	}
 
-    public String getProdName() {
-        return prodName;
-    }
+	public String getProdName() {
+		return prodName;
+	}
 
-    public void setProdName(String prodName) {
-        this.prodName = prodName;
-    }
+	public void setProdName(String prodName) {
+		this.prodName = prodName;
+	}
 
-    public String getProdInfo() {
-        return prodInfo;
-    }
+	public String getProdInfo() {
+		return prodInfo;
+	}
 
-    public void setProdInfo(String prodInfo) {
-        this.prodInfo = prodInfo;
-    }
+	public void setProdInfo(String prodInfo) {
+		this.prodInfo = prodInfo;
+	}
 
-    public String getProdBarcode() {
-        return prodBarcode;
-    }
+	public String getProdBarcode() {
+		return prodBarcode;
+	}
 
-    public void setProdBarcode(String prodBarcode) {
-        this.prodBarcode = prodBarcode;
-    }
+	public void setProdBarcode(String prodBarcode) {
+		this.prodBarcode = prodBarcode;
+	}
 
-    public String getProdImg() {
-        return prodImg;
-    }
+	public int getProdCnt() {
+		return prodCnt;
+	}
 
-    public void setProdImg(String prodImg) {
-        this.prodImg = prodImg;
-    }
+	public void setProdCnt(int prodCnt) {
+		this.prodCnt = prodCnt;
+	}
 
-    public int getProdCnt() {
-        return prodCnt;
-    }
+	public String getProdMake() {
+		return prodMake;
+	}
 
-    public void setProdCnt(int prodCnt) {
-        this.prodCnt = prodCnt;
-    }
+	public void setProdMake(String prodMake) {
+		this.prodMake = prodMake;
+	}
 
-    public String getProdMake() {
-        return prodMake;
-    }
+	public Timestamp getCreatedAt() {
+		return createdAt;
+	}
 
-    public void setProdMake(String prodMake) {
-        this.prodMake = prodMake;
-    }
+	public void setCreatedAt(Timestamp createdAt) {
+		this.createdAt = createdAt;
+	}
 
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
+	public String getCorpIdx() {
+		return corpIdx;
+	}
 
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
-    }
+	public void setCorpIdx(String corpIdx) {
+		this.corpIdx = corpIdx;
+	}
+	
+	//재고현황 때문에 3개 새로 추가했음
+	public Integer getShelfIdx() {
+		return shelfIdx;
+	}
 
-    public String getCorpIdx() {
-        return corpIdx;
-    }
+	public void setShelfIdx(Integer shelfIdx) {
+		this.shelfIdx = shelfIdx;
+	}
 
-    public void setCorpIdx(String corpIdx) {
-        this.corpIdx = corpIdx;
-    }
+	public String getRackId() {
+		return rackId;
+	}
+
+	public void setRackId(String rackId) {
+		this.rackId = rackId;
+	}
+
+	public Integer getWhIdx() {
+		return whIdx;
+	}
+
+	public void setWhIdx(Integer whIdx) {
+		this.whIdx = whIdx;
+	}
+
 }

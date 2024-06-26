@@ -5,6 +5,7 @@ import com.inven.tree.model.Auths;
 import com.inven.tree.model.Members;
 
 public interface MembersMapper {
+
     // 로그인 메소드
     int login(Members members);
 
@@ -28,4 +29,5 @@ public interface MembersMapper {
 
     // 사용자의 회사 코드로 멤버 정보 불러오기
     List<Members> findMembersByCorpIdx(String corpIdx);
+
 }

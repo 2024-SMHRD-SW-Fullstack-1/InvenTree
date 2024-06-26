@@ -65,4 +65,5 @@
         FROM members
         WHERE corp_idx = #{corpIdx}
     </select>
+
 </mapper>
