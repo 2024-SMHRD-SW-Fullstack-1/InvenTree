@@ -4,71 +4,70 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.sql.Timestamp;
 
 public class Stocks {
-    @JsonProperty("stockIdx")
-    private int stockIdx;
+	@JsonProperty("stockIdx")
+	private int stockIdx;
 
-    @JsonProperty("corpIdx")
-    private String corpIdx;
+	@JsonProperty("corpIdx")
+	private String corpIdx;
 
-    @JsonProperty("prodIdx")
-    private int prodIdx;
+	@JsonProperty("prodIdx")
+	private int prodIdx;
 
-    @JsonProperty("stockCnt")
-    private int stockCnt;
+	@JsonProperty("stockCnt")
+	private int stockCnt;
 
-    @JsonProperty("stockedAt")
-    private Timestamp stockedAt;
-    
-    @JsonProperty("subIdx")
-    private Integer subIdx;
+	@JsonProperty("stockedAt")
+	private String stockedAt;
 
-    // Getters and Setters
-    public int getStockIdx() {
-        return stockIdx;
-    }
+	@JsonProperty("subIdx")
+	private Integer subIdx;
 
-    public void setStockIdx(int stockIdx) {
-        this.stockIdx = stockIdx;
-    }
+	// Getters and Setters
+	public int getStockIdx() {
+		return stockIdx;
+	}
 
-    public String getCorpIdx() {
-        return corpIdx;
-    }
+	public void setStockIdx(int stockIdx) {
+		this.stockIdx = stockIdx;
+	}
 
-    public void setCorpIdx(String corpIdx) {
-        this.corpIdx = corpIdx;
-    }
+	public String getCorpIdx() {
+		return corpIdx;
+	}
 
-    public int getProdIdx() {
-        return prodIdx;
-    }
+	public void setCorpIdx(String corpIdx) {
+		this.corpIdx = corpIdx;
+	}
 
+	public int getProdIdx() {
+		return prodIdx;
+	}
 
-    public void setProdIdx(int prodIdx) {
-        this.prodIdx = prodIdx;
-    }
-    
-    public Integer getSubIdx() {
+	public void setProdIdx(int prodIdx) {
+		this.prodIdx = prodIdx;
+	}
+
+	public int getStockCnt() {
+		return stockCnt;
+	}
+
+	public void setStockCnt(int stockCnt) {
+		this.stockCnt = stockCnt;
+	}
+
+	public String getStockedAt() {
+		return stockedAt;
+	}
+
+	public void setStockedAt(String stockedAt) {
+		this.stockedAt = stockedAt;
+	}
+
+	public Integer getSubIdx() {
 		return subIdx;
 	}
 
 	public void setSubIdx(Integer subIdx) {
 		this.subIdx = subIdx;
 	}
-
-    public int getStockCnt() {
-        return stockCnt;
-    }
-
-    public void setStockCnt(int stockCnt) {
-        this.stockCnt = stockCnt;
-    }
-
-    public Timestamp getStockedAt() {
-        return stockedAt;
-    }
-
-    public void setStockedAt(Timestamp stockedAt) {
-        this.stockedAt = stockedAt;
-    }
 }

@@ -16,8 +16,8 @@ public interface AuthsMapper {
     void updateAuth(Auths auths);
     
     // 권한 정보 삭제
-    void deleteAuth(Auths auths);
+    void deleteAuths(Auths auths);
     
     // 권한 정보 추가
-    void insertAuth(Auths auths);
+    void insertAuths(Auths auths);
 }

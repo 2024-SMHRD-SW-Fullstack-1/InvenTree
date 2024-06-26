@@ -4,29 +4,29 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 //출고 테이블
 public class Releases {
-    // 출고 식별자 
-    @JsonProperty("releaseIdx")
-    private int releaseIdx;
+	// 출고 식별자
+	@JsonProperty("releaseIdx")
+	private int releaseIdx;
 
-    // 회사 식별자 
-    @JsonProperty("corpIdx")
-    private String corpIdx;
+	// 회사 식별자
+	@JsonProperty("corpIdx")
+	private String corpIdx;
 
-    // 제품 식별자 
-    @JsonProperty("prodIdx")
-    private int prodIdx;
+	// 제품 식별자
+	@JsonProperty("prodIdx")
+	private int prodIdx;
 
-    // 출고 수량 
-    @JsonProperty("releaseCnt")
-    private int releaseCnt;
+	// 출고 수량
+	@JsonProperty("releaseCnt")
+	private int releaseCnt;
 
-    // 출고 일자 
-    @JsonProperty("releasedAt")
-    private String releasedAt;
-    
-    // 출고 업체코드
-    @JsonProperty("subIdx")
-    private Integer subIdx;
+	// 출고 일자
+	@JsonProperty("releasedAt")
+	private String releasedAt;
+
+	// 출고 업체코드
+	@JsonProperty("subIdx")
+	private Integer subIdx;
 
 	public Integer getSubIdx() {
 		return subIdx;
@@ -76,7 +76,4 @@ public class Releases {
 		this.releasedAt = releasedAt;
 	}
 
-	
-
-    
 }

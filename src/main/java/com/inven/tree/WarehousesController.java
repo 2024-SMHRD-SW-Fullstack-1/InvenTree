@@ -72,6 +72,7 @@ public class WarehousesController {
 
         try {
             if (loginWhIdx == null || loginWhIdx.isEmpty()) {
+
                 System.out.println("오류1: warehouseIdsToDelete is empty");
                 return ResponseEntity.badRequest().body("warehouseIdsToDelete is empty");
             }
@@ -118,6 +119,41 @@ public class WarehousesController {
         }
     }
     
+    //재고현황 때문에 추가 개별창고 조회
+    @GetMapping("/warehouse/{whIdx}")
+    public ResponseEntity<Map<String, Object>> getWarehouseById(@PathVariable Integer whIdx) {
+        try {
+            Warehouses warehouse = warehousesMapper.selectWarehouseById(whIdx);
+            if (warehouse == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            List<Shelves> shelves = shelvesMapper.selectShelvesByWhIdx(whIdx);
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("whIdx", warehouse.getWhIdx());
+            result.put("bidlName", warehouse.getBidlName());
+            result.put("mbId", warehouse.getMbId());
+            result.put("whAddr", warehouse.getWhAddr());
+            result.put("whStatus", warehouse.getWhStatus());
+
+            if (!shelves.isEmpty()) {
+                List<Map<String, Object>> shelvesInfo = shelves.stream().map(shelf -> {
+                    Map<String, Object> shelfInfo = new HashMap<>();
+                    shelfInfo.put("shelfIdx", shelf.getShelfIdx());
+                    shelfInfo.put("rackId", shelf.getRackId());
+                    shelfInfo.put("shelfId", shelf.getShelfId());
+                    return shelfInfo;
+                }).collect(Collectors.toList());
+                result.put("shelves", shelvesInfo);
+            }
+
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
     
     //창고 정보 변경
     @PutMapping("/warehouse/update")

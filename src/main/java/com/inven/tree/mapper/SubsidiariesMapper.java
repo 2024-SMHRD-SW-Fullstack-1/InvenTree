@@ -1,8 +1,9 @@
 package com.inven.tree.mapper;
 
 import java.util.List;
-
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import com.inven.tree.model.Subsidiaries;
 
@@ -34,4 +35,15 @@ public interface SubsidiariesMapper {
 	
 	// 업체 정보 삭제
 	void deleteSubsidiary(Subsidiaries subsidiaries);
+
+    // 계열사명 대소문자 무시하고 추출
+    List<Subsidiaries> selectSubsidiaryByNameIgnoreCase(@Param("subName") String subName);
+
+    // 특정 컬럼과 회사 인덱스로 중복 제거된 데이터 추출
+    List<String> selectDistinctByColumnAndCorpIdx(@Param("column") String column, @Param("corpIdx") String corpIdx);
+
+    // 계열사명으로 계열사 인덱스 추출
+    @Select("SELECT sub_idx FROM subsidiary WHERE sub_name = #{subName}")
+    List<Integer> selectSubIdxByCompanyName(@Param("subName") String subName);
+
 }
