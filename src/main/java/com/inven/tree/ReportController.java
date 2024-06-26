@@ -62,11 +62,12 @@ public class ReportController {
         
         Map<String, Object> response = new HashMap<>();
         try {
-            System.out.println("Received report request with year: " + year + ", month: " + month + ", filterType: " + filterType + ", filterValue: " + filterValue);
+            logger.info("Received report request with year: " + year + ", month: " + month + ", filterType: " + filterType + ", filterValue: " + filterValue);
 
             String corpIdx = (String) session.getAttribute("corpIdx");
             if (corpIdx == null) {
                 response.put("error", "세션이 만료되었습니다. 다시 로그인해주세요.");
+                logger.error("Session expired. Please login again.");
                 return ResponseEntity.status(403).body(response);
             }
 
@@ -78,13 +79,16 @@ public class ReportController {
                     monthlyData.put(i, getMonthlyData(year, i, filterType, filterValue, corpIdx));
                 }
                 response.put("monthlyData", monthlyData);
+                logger.info("Monthly data: {}", monthlyData);
                 return ResponseEntity.ok(response);
             } else {
                 Map<String, Object> monthlyReport = getMonthlyData(year, month, filterType, filterValue, corpIdx);
+                logger.info("Monthly report: {}", monthlyReport);
                 return ResponseEntity.ok(monthlyReport);
             }
         } catch (Exception e) {
             response.put("error", "예상치 못한 오류가 발생했습니다: " + e.getMessage());
+            logger.error("Unexpected error occurred: ", e);
             return ResponseEntity.status(500).body(response);
         }
     }
@@ -137,8 +141,10 @@ public class ReportController {
             monthlyReport.put("weeklyReleaseCount", weeklyReleaseCount);
             monthlyReport.put("avgWeeklyStockCount", avgWeeklyStockCount);
             monthlyReport.put("avgWeeklyReleaseCount", avgWeeklyReleaseCount);
+            logger.info("Generated monthly report data for year: {}, month: {}", year, month);
         } catch (Exception e) {
             monthlyReport.put("error", "보고서 생성 중 오류가 발생했습니다: " + e.getMessage());
+            logger.error("Error generating monthly report: ", e);
         }
 
         return monthlyReport;
