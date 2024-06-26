@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.inven.tree.mapper.ProductsMapper;
 import com.inven.tree.mapper.ReleasesMapper;
 import com.inven.tree.mapper.StocksMapper;
-import com.inven.tree.mapper.SubsidiaryMapper;
+import com.inven.tree.mapper.SubsidiariesMapper;
 import com.inven.tree.model.Products;
 import com.inven.tree.model.Releases;
 import com.inven.tree.model.Stocks;
@@ -47,7 +47,7 @@ public class ReportController {
     private ProductsMapper productsMapper;
 
     @Autowired
-    private SubsidiaryMapper subsidiaryMapper;
+    private SubsidiariesMapper subsidiariesMapper;
 
     private static final Logger logger = LoggerFactory.getLogger(ReportController.class);
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -157,7 +157,7 @@ public class ReportController {
 
             List<String> filterList;
             if (filterColumn.equals("company")) {
-                filterList = subsidiaryMapper.selectDistinctByColumnAndCorpIdx("sub_name", corpIdx);
+                filterList = subsidiariesMapper.selectDistinctByColumnAndCorpIdx("sub_name", corpIdx);
             } else {
                 filterList = productsMapper.selectDistinctByColumnAndCorpIdx(filterColumn, corpIdx);
             }

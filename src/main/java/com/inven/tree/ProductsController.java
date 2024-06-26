@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.inven.tree.mapper.ProductsMapper;
 import com.inven.tree.mapper.ReleasesMapper;
-import com.inven.tree.mapper.SubsidiaryMapper;
+import com.inven.tree.mapper.SubsidiariesMapper;
 import com.inven.tree.model.Products;
-import com.inven.tree.model.Subsidiary;
+import com.inven.tree.model.Subsidiaries;
 
 @Controller
 @CrossOrigin(origins = "http://localhost:3000")
@@ -33,7 +33,7 @@ public class ProductsController {
     @Autowired
     private ReleasesMapper releaseMapper;
     @Autowired
-    private SubsidiaryMapper subsidiaryMapper;
+    private SubsidiariesMapper subsidiaryMapper;
     private static final Logger logger = LoggerFactory.getLogger(ProductsController.class);
 
     @GetMapping("/products/{corpIdx}")
@@ -47,9 +47,9 @@ public class ProductsController {
     }
 
     @GetMapping("/subsidiaries/incoming/{corpIdx}")
-    public ResponseEntity<List<Subsidiary>> getIncomingSubsidiariesByCorpIdx(@PathVariable String corpIdx) {
+    public ResponseEntity<List<Subsidiaries>> getIncomingSubsidiariesByCorpIdx(@PathVariable String corpIdx) {
         try {
-            List<Subsidiary> subsidiaries = subsidiaryMapper.selectIncomingSubsidiariesByCorpIdx(corpIdx);
+            List<Subsidiaries> subsidiaries = subsidiaryMapper.selectIncomingSubsidiariesByCorpIdx(corpIdx);
             return ResponseEntity.ok(subsidiaries);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
@@ -57,9 +57,9 @@ public class ProductsController {
     }
 
     @GetMapping("/subsidiaries/outgoing/{corpIdx}")
-    public ResponseEntity<List<Subsidiary>> getOutgoingSubsidiariesByCorpIdx(@PathVariable String corpIdx) {
+    public ResponseEntity<List<Subsidiaries>> getOutgoingSubsidiariesByCorpIdx(@PathVariable String corpIdx) {
         try {
-            List<Subsidiary> subsidiaries = subsidiaryMapper.selectOutgoingSubsidiariesByCorpIdx(corpIdx);
+            List<Subsidiaries> subsidiaries = subsidiaryMapper.selectOutgoingSubsidiariesByCorpIdx(corpIdx);
             return ResponseEntity.ok(subsidiaries);
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null);
