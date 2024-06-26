@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.inven.tree.mapper.SubsidiaryMapper;
-import com.inven.tree.model.Subsidiary;
+import com.inven.tree.mapper.SubsidiariesMapper;
+import com.inven.tree.model.Subsidiaries;
 
 
 @Controller
@@ -18,10 +18,10 @@ import com.inven.tree.model.Subsidiary;
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class SubsidiaryController {
 	 @Autowired
-	    private SubsidiaryMapper subsidiaryMapper;
+	    private SubsidiariesMapper subsidiaryMapper;
 	 @GetMapping("/subsidiary")
 	    @ResponseBody
-	    public List<Subsidiary> getSubsidiary() {
+	    public List<Subsidiaries> getSubsidiary() {
 	        return subsidiaryMapper.selectAllSubsidiary();
 	    }
 }

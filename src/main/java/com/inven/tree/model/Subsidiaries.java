@@ -2,7 +2,7 @@ package com.inven.tree.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Subsidiary {
+public class Subsidiaries {
     @JsonProperty("subIdx")
     private Integer subIdx;     // 계열사 고유키
 
@@ -25,10 +25,10 @@ public class Subsidiary {
     private String isRelease;   // 출고업체 여부 (Y/N)
 
     // 기본 생성자
-    public Subsidiary() {}
+    public Subsidiaries() {}
 
     // 매개변수가 있는 생성자
-    public Subsidiary(Integer subIdx, String corpIdx, String subName, String subOwner, String subTel, String subAddr, String isRelease) {
+    public Subsidiaries(Integer subIdx, String corpIdx, String subName, String subOwner, String subTel, String subAddr, String isRelease) {
         this.subIdx = subIdx;
         this.corpIdx = corpIdx;
         this.subName = subName;

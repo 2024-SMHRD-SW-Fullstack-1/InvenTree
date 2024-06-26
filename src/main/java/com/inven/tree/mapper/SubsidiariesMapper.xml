@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.inven.tree.mapper.SubsidiaryMapper">
+<mapper namespace="com.inven.tree.mapper.SubsidiariesMapper">
 
     <!-- ResultMap 정의 -->
-    <resultMap id="subsidiaryResultMap" type="com.inven.tree.model.Subsidiary">
+    <resultMap id="subsidiariesResultMap" type="com.inven.tree.model.Subsidiaries"> <!-- 여기도 type 속성이 변경됨 -->
         <id property="subIdx" column="sub_idx" />
         <result property="corpIdx" column="corp_idx" />
         <result property="subName" column="sub_name" />
@@ -15,12 +15,12 @@
     </resultMap>
 
     <!-- 입고 업체를 가져오는 SQL -->
-    <select id="selectIncomingSubsidiariesByCorpIdx" parameterType="string" resultMap="subsidiaryResultMap">
+    <select id="selectIncomingSubsidiariesByCorpIdx" parameterType="string" resultMap="subsidiariesResultMap"> <!-- 여기도 resultMap 속성이 변경됨 -->
         SELECT * FROM subsidiary WHERE corp_idx = #{corpIdx} AND is_release = 'N'
     </select>
 
     <!-- 출고 업체를 가져오는 SQL -->
-    <select id="selectOutgoingSubsidiariesByCorpIdx" parameterType="string" resultMap="subsidiaryResultMap">
+    <select id="selectOutgoingSubsidiariesByCorpIdx" parameterType="string" resultMap="subsidiariesResultMap"> <!-- 여기도 resultMap 속성이 변경됨 -->
         SELECT * FROM subsidiary WHERE corp_idx = #{corpIdx} AND is_release = 'Y'
     </select>
 
@@ -35,12 +35,12 @@
     </select>
 
     <!-- 모든 subsidiary를 가져오는 SQL -->
-    <select id="selectAllSubsidiary" resultMap="subsidiaryResultMap">
+    <select id="selectAllSubsidiary" resultMap="subsidiariesResultMap"> <!-- 여기도 resultMap 속성이 변경됨 -->
         SELECT * FROM subsidiary
     </select>
 
     <!-- sub_name을 대소문자 구분 없이 조회 -->
-    <select id="selectSubsidiaryByNameIgnoreCase" resultType="com.inven.tree.model.Subsidiary">
+    <select id="selectSubsidiaryByNameIgnoreCase" resultType="com.inven.tree.model.Subsidiaries"> <!-- 여기도 resultType 속성이 변경됨 -->
         SELECT * FROM subsidiary WHERE LOWER(sub_name) = LOWER(#{subName})
     </select>
 
