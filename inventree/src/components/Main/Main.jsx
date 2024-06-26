@@ -11,15 +11,18 @@ const Main = () => {
     const [entries, setEntries] = useState([]);
     const [report, setReport] = useState(null);
     const [monthlyReport, setMonthlyReport] = useState({});
-    const [productCount, setProductCount] = useState(0);
     const corpIdx = localStorage.getItem("corpIdx");
 
     const fetchEntries = useCallback(async () => {
+        console.log(`Fetching entries`);
         try {
             const response = await axios.get("http://localhost:8090/tree/api/stockEntries", {
-                params: { corpIdx },
+                params: {
+                    corpIdx,
+                },
                 withCredentials: true,
             });
+            console.log("Server response:", response.data);
             const { entries } = response.data;
             const mappedEntries = (entries || []).map((data) => ({
                 ...data,
@@ -28,7 +31,6 @@ const Main = () => {
                 date: data.date,
             }));
             setEntries(mappedEntries);
-            console.log("Fetched entries:", mappedEntries);
         } catch (error) {
             console.error("Error fetching entries:", error);
         }
@@ -106,7 +108,6 @@ const Main = () => {
                             className={style.pieChartContainer}
                             totalStockCount={totalStockCount}
                             totalReleaseCount={totalReleaseCount}
-                            productCount={productCount}
                         />
                         <MixChart data={monthlyReport} />
                     </div>
