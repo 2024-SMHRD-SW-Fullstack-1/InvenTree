@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inven.tree.mapper.WarehousesMapper">
+
+	<!-- 모든 Warehouses를 가져오는 SQL -->
+	<select id="selectAllWarehouses" resultMap="warehouses">
+		SELECT wh_idx, corp_idx, bidl_name, mb_id, wh_addr, wh_status FROM
+		warehouses WHERE corp_idx = #{corpIdx}
+	</select>
+
+	<!-- 선택된 창고들 삭제하는 SQL -->
+	<delete id="deleteWarehouses" parameterType="list">
+		DELETE FROM warehouses WHERE wh_idx IN
+		<foreach item="warehouseIds" collection="list" open="("
+			separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<!-- 창고 추가 -->
+	<insert id="insertWarehouses" parameterType="Warehouses">
+		INSERT INTO warehouses (wh_idx, corp_idx, bidl_name, mb_id, wh_addr,
+		wh_status)
+		VALUES (#{whIdx}, #{corpIdx}, #{bidlName}, #{mbId}, #{whAddr}, #{whStatus})
+	</insert>
+
+	<!-- 창고 정보 변경 -->
+	<update id="updateWarehouses" parameterType="Warehouses">
+		UPDATE warehouses SET bidl_name = #{bidlName}, mb_id = #{mbId}, wh_addr =
+		#{whAddr},
+		wh_status = #{whStatus} WHERE wh_idx = #{whIdx}
+	</update>
+	
+	<!-- 재고현황때문에 추가  -->
+	<!-- 회사코드로 창고 추출 -->
+	<select id="findByCorpIdx" resultMap="warehouses">
+		SELECT wh_idx, corp_idx, bidl_name, mb_id, wh_addr, wh_status
+		FROM warehouses
+		WHERE corp_idx = #{corpIdx}
+	</select>
+	
+	<select id="selectWarehouseByBidlName" resultType="com.inven.tree.model.Warehouses">
+    SELECT * FROM warehouses WHERE bidl_name = #{bidlName} LIMIT 1
+</select>
+
+<select id="selectWarehouseById" resultType="com.inven.tree.model.Warehouses">
+        SELECT * FROM warehouses WHERE wh_idx = #{whIdx}
+    </select>
+
+	<!-- Result Map -->
+	<resultMap type="com.inven.tree.model.Warehouses"
+		id="warehouses">
+		<id property="whIdx" column="wh_idx" /> <!-- primary key -->
+		<result property="corpIdx" column="corp_idx" />
+		<result property="bidlName" column="bidl_name" />
+		<result property="mbId" column="mb_id" />
+		<result property="whAddr" column="wh_addr" />
+		<result property="whStatus" column="wh_status" />
+	</resultMap>
+	
+	
+</mapper>
