@@ -72,6 +72,31 @@ public class InventoryStatusController {
 		}
 	}
 
+	@PostMapping("/save")
+	public ResponseEntity<String> saveInventoryStatus(@RequestBody List<InventoryStatus> inventoryStatusList) {
+		for (InventoryStatus status : inventoryStatusList) {
+			Warehouses warehouse = warehousesMapper.selectWarehouseByBidlName(status.getBidlName());
+		
+
+			Products product = new Products();
+			product.setProdBarcode(status.getProdBarcode());
+			product.setProdName(status.getProdName());
+			product.setProdCnt(status.getProdCnt());
+			product.setProdInfo(status.getProdInfo());
+
+			if (warehouse != null) {
+				product.setWhIdx(warehouse.getWhIdx());
+			}
+	
+			if (productsMapper.existsByProdBarcode(product.getProdBarcode())) {
+				productsMapper.updateProduct(product);
+			} else {
+				productsMapper.insertProduct(product);
+			}
+		}
+		return ResponseEntity.ok("재고 정보가 성공적으로 저장되었습니다.");
+	}
+
 	@PostMapping("/delete")
 	public ResponseEntity<String> deleteInventoryStatus(@RequestBody List<String> prodBarcodes) {
 		for (String prodBarcode : prodBarcodes) {
