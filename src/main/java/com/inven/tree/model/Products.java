@@ -28,19 +28,16 @@ public class Products {
 
 	@JsonProperty("corpIdx")
 	private String corpIdx;
-	
-	//필드 3개 새로 추가 했음(재고 현황 때문에)
+
+	// 필드 3개 새로 추가 했음(재고 현황 때문에)
 	@JsonProperty("shelfIdx")
 	private Integer shelfIdx;
-	
+
 	@JsonProperty("rackId")
 	private String rackId;
-	
-
 
 	@JsonProperty("whIdx")
 	private Integer whIdx;
-	
 
 	// Getters and Setters
 	public int getProdIdx() {
@@ -106,8 +103,8 @@ public class Products {
 	public void setCorpIdx(String corpIdx) {
 		this.corpIdx = corpIdx;
 	}
-	
-	//재고현황 때문에 3개 새로 추가했음
+
+	// 재고현황 때문에 3개 새로 추가했음
 	public Integer getShelfIdx() {
 		return shelfIdx;
 	}

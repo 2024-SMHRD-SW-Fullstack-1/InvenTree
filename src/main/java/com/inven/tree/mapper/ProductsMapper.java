@@ -75,13 +75,4 @@ public interface ProductsMapper {
     void updateProduct(Products product);
     void insertProduct(Products product);
     void deleteProductByBarcode(String prodBarcode);
-    
-    void updateProductDetails(@Param("prodIdx") Integer prodIdx,
-            @Param("prodBarcode") String prodBarcode,
-            @Param("prodName") String prodName,
-            @Param("prodCnt") Integer prodCnt,
-            @Param("whIdx") Integer whIdx,
-            @Param("shelfIdx") Integer shelfIdx,
-            @Param("rackId") String rackId,
-            @Param("prodInfo") String prodInfo);
 }

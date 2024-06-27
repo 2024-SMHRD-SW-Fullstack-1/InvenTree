@@ -15,7 +15,6 @@ public interface ReleasesMapper {
 	// 출고 등록 저장 메소드
 	void insertRelease(@Param("corpIdx") String corpIdx, @Param("prodIdx") int prodIdx,
 			@Param("releaseCnt") int releaseCnt, @Param("releasedAt") Timestamp releasedAt);
-
 	// 출고 정보 모두 불러오는 메소드
 	List<Releases> selectAllReleases();
 

@@ -1,12 +1,28 @@
 package com.inven.tree.model;
 
+import lombok.Data;
+
+@Data
+
+//권한 테이블
 public class Auths {
-	private Integer authIdx; // 권한 식별자 (pk)
-	private String mbId; // 회원 아이디 (fk)
-	private char inventoryYn; // 재고 권한
-	private char shipYn; // 입출고 권한
-	private char chartYn; // 통계 권한
-	private char setYn; // 설정 권한
+	// 권한 식별자 
+    private Integer authIdx; //pk
+ 
+    // 회원 아이디
+    private String mbId; // fk
+
+    // 재고 권한 
+    private char inventoryYn;
+    
+    // 입출고 권한 
+    private char shipYn;
+
+    // 통계 권한 
+    private char chartYn;
+    
+    // 설정권한
+    private char setYn;
 
 	// 기본 생성자
 	public Auths() {

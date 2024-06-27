@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,72 +25,30 @@ public class AuthsController {
 	@Autowired
 	private AuthsMapper authsMapper;
 	
+	// 권한 정보 불러오기
 	@GetMapping("/auths")
 	public List<Auths> getMembersWithAuthsByCorpIdx(HttpSession session) {
 	    String corpIdx = (String) session.getAttribute("corpIdx");
-	    System.out.println("확인용 : "+corpIdx); // 2번 출력됨
 	    return authsMapper.selectAllAuthsByCorpIdx(corpIdx);
 	}
 	
+	// 권한 정보 변경
 	@PutMapping("/auths/update")
 	public ResponseEntity<String> updateAuths(@RequestBody List<Auths> auths) {
 		System.out.println(auths);
 		try {
         	if(auths != null) {
         		for (Auths auth : auths) {
-        			authsMapper.updateAuth(auth);
+        			authsMapper.updateAuth(auth); // 권한 정보 변경
         		}
             }
-            return ResponseEntity.ok("Shelves updated successfully.");
+            return ResponseEntity.ok("권한 정보 변경 성공");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error updating shelves: " + e.getMessage());
+                    .body("권한 정보 변경 실패: " + e.getMessage());
         }
 	}
-	
-	@PutMapping("/auths/delete")
-	public ResponseEntity<String> deleteAuths(@RequestBody List<Auths> auths){
-		
-		try {
-        	if(auths != null) {
-        		for (Auths auth : auths) {
-        			authsMapper.deleteAuths(auth);
-        		}
-            }
-            return ResponseEntity.ok("Shelves updated successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error updating shelves: " + e.getMessage());
-        }
-		
-	}
-	
-	@PostMapping("/auths/insert")
-	public ResponseEntity<String> insertAuths(@RequestBody List<Auths> auths, HttpSession session) {
-		String loginCorpIdx = (String)session.getAttribute("corpIdx");
-		System.out.println(loginCorpIdx);
-		System.out.println("============================"+auths);
-	    try {
-	        // corpIdx가 null이거나 비어있는지 확인
-	        if (loginCorpIdx == null || loginCorpIdx.isEmpty()) {
-	        	System.out.println("회사코드가 없음");
-	            return ResponseEntity.badRequest().body("corpIdx not found in session.");
-	            
-	        }
 
-	        // auths에 corpIdx 설정
-//	        for (Auths auth : auths) {
-//	            auth.setCorpIdx(loginCorpIdx); // corpIdx 설정
-//	            System.out.println(auth);
-//	            authsMapper.insertAuths(auth); // 데이터베이스에 삽입
-//	        }
-
-	        return ResponseEntity.ok("Auths inserted successfully.");
-	    } catch (Exception e) {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	                .body("Error inserting Auths: " + e.getMessage());
-	    }
-	}
 	
 
 }
