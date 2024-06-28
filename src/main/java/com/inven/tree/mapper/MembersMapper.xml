@@ -22,6 +22,7 @@
             corp_idx AS corpIdx,
             joined_at AS joinedAt
         FROM members
+        WHERE is_admin = 'N'
     </select>
 
     <!-- 멤버 정보 저장하기 -->
@@ -63,7 +64,8 @@
             corp_idx AS corpIdx,
             joined_at AS joinedAt
         FROM members
-        WHERE corp_idx = #{corpIdx}
+        WHERE corp_idx = #{corpIdx} 
+        AND is_admin = 'N'
     </select>
 
 </mapper>

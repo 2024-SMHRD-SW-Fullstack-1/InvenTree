@@ -35,7 +35,6 @@ public class AuthsController {
 	// 권한 정보 변경
 	@PutMapping("/auths/update")
 	public ResponseEntity<String> updateAuths(@RequestBody List<Auths> auths) {
-		System.out.println(auths);
 		try {
         	if(auths != null) {
         		for (Auths auth : auths) {

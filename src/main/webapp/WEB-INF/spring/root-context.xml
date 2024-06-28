@@ -7,21 +7,15 @@
 
 	<!-- Root Context: defines shared resources visible to all other web components -->
 	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
-		<property name="driverClassName"
-			value="com.mysql.cj.jdbc.Driver" />
-		<property name="jdbcUrl"
-			value="jdbc:mysql://project-db-cgi.smhrd.com:3307/campus_24SW_FULL_p2_1?serverTimezone=UTC&amp;characterEncoding=UTF-8" />
+		<property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+		<property name="jdbcUrl" value="jdbc:mysql://project-db-cgi.smhrd.com:3307/campus_24SW_FULL_p2_1?serverTimezone=UTC&amp;characterEncoding=UTF-8" />
 		<property name="username" value="campus_24SW_FULL_p2_1" />
 		<property name="password" value="smhrd1" />
 
 		<!-- HikariCP 설정 추가 -->
-		<!-- 최대 커넥션 풀 크기 설정 -->
 		<property name="maximumPoolSize" value="10" />
-		<!-- 커넥션 최대 수명 설정 (30분) -->
 		<property name="maxLifetime" value="1800000" />  <!-- 30 minutes -->
-		<!-- 유휴 커넥션 타임아웃 설정 (10분) -->
 		<property name="idleTimeout" value="600000" />   <!-- 10 minutes -->
-		<!-- 커넥션 타임아웃 설정 (30초) -->
 		<property name="connectionTimeout" value="30000" />  <!-- 30 seconds -->
 	</bean>
 
@@ -33,16 +27,21 @@
 	<!-- MyBatis SqlSessionFactory 설정 -->
 	<bean class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<property name="configLocation"	value="classpath:/com/inven/tree/config/mybatis-config.xml"/>
+		<property name="configLocation" value="classpath:/com/inven/tree/config/mybatis-config.xml" />
 	</bean>
 
 	<!-- MyBatis Mapper 스캔 설정 -->
-	<mybatis-spring:scan
-		base-package="com.inven.tree.mapper" />
+	<mybatis-spring:scan base-package="com.inven.tree.mapper" />
 		
-	<!-- Captcha Config -->
-    <bean id="captchaConfig" class="com.inven.tree.config.CaptchaConfig">
-        <property name="clientId" value="NM1_5c2XREKhGDaNG2_6" />
-        <property name="clientSecret" value="LB5ipMCt9E" />
-    </bean>
+	<!-- Google reCAPTCHA 설정 -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:C:/workspace-sts-3.9.18.RELEASE/Project/reCAPTCHA.txt</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- RecaptchaConfig 빈 추가 -->
+	<bean id="recaptchaConfig" class="com.inven.tree.config.RecaptchaConfig"/>
 </beans>

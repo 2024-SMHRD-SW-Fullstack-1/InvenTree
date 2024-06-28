@@ -62,7 +62,6 @@ public class ReportController {
         
         Map<String, Object> response = new HashMap<>();
         try {
-            logger.info("Received report request with year: " + year + ", month: " + month + ", filterType: " + filterType + ", filterValue: " + filterValue);
 
             String corpIdx = (String) session.getAttribute("corpIdx");
             if (corpIdx == null) {
@@ -79,11 +78,9 @@ public class ReportController {
                     monthlyData.put(i, getMonthlyData(year, i, filterType, filterValue, corpIdx));
                 }
                 response.put("monthlyData", monthlyData);
-                logger.info("Monthly data: {}", monthlyData);
                 return ResponseEntity.ok(response);
             } else {
                 Map<String, Object> monthlyReport = getMonthlyData(year, month, filterType, filterValue, corpIdx);
-                logger.info("Monthly report: {}", monthlyReport);
                 return ResponseEntity.ok(monthlyReport);
             }
         } catch (Exception e) {
@@ -141,7 +138,6 @@ public class ReportController {
             monthlyReport.put("weeklyReleaseCount", weeklyReleaseCount);
             monthlyReport.put("avgWeeklyStockCount", avgWeeklyStockCount);
             monthlyReport.put("avgWeeklyReleaseCount", avgWeeklyReleaseCount);
-            logger.info("Generated monthly report data for year: {}, month: {}", year, month);
         } catch (Exception e) {
             monthlyReport.put("error", "보고서 생성 중 오류가 발생했습니다: " + e.getMessage());
             logger.error("Error generating monthly report: ", e);
