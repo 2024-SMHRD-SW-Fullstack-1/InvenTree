@@ -1,7 +1,7 @@
 .notificationPanel {
-  position: absolute;
-  top: 130%; /* 알림 아이콘 바로 아래에 위치 */
-  right: -200%;
+  position: fixed; /* absolute -> fixed 변경 */
+  top: 70px; /* 원하는 위치로 조절 */
+  right: 20px; /* 원하는 위치로 조절 */
   width: 330px;
   max-height: 511px; /* 최대 높이 설정 (넘치면 스크롤바가 나타남) */
   overflow-y: auto; /* 넘칠 경우 스크롤바 표시 */
@@ -18,22 +18,21 @@
   align-items: center;
   padding: 10px;
   border-bottom: 1px solid #ccc;
-  font-size: 18px; 
-  margin: 0; 
+  font-size: 18px;
+  margin: 0;
 }
 
-.notificationIcon2{
-  max-width: 6%; 
+.notificationIcon2 {
+  max-width: 6%;
   margin-right: 5px;
   vertical-align: middle;
 }
 
-.notificationicon3{
-  max-width: 6%; 
-  margin-right: 10px; 
+.notificationicon3 {
+  max-width: 6%;
+  margin-right: 10px;
   vertical-align: middle;
 }
-
 
 .notificationLink {
   text-decoration: none; /* 링크의 밑줄 제거 */
@@ -45,7 +44,7 @@
   align-items: center;
   padding: 0px;
   cursor: pointer;
-  border-bottom: 1px solid #eee; 
+  border-bottom: 1px solid #eee;
   background-color: #ffffff;
   padding: 15px;
   margin-top: 10px;
@@ -60,25 +59,23 @@
   margin: 0px;
 }
 
-.notificationDate{
+.notificationDate {
   display: flex;
-  align-items: center; 
+  align-items: center;
   font-size: 12px;
   font-weight: bold;
-  color: #A3A3A3;
+  color: #a3a3a3;
 }
 
 /* .notificationicon {
   display: block;
 } */
 
-
 .notificationSummary {
   font-size: 14px;
   font-weight: bold;
   margin: 5px 0 2px 0;
-  color: #4F4F4F;
-  
+  color: #4f4f4f;
 }
 
 .notificationDescription {
@@ -89,7 +86,6 @@
 }
 
 .notificationType {
-
   font-size: 12px;
   font-weight: bold;
   color: #347249;
@@ -98,22 +94,20 @@
   flex-direction: column;
   /* border: 1px solid #d7e0d6; */
   padding: 4px;
-  border-radius: 12px; 
-  background-color: #b1dfb9; 
+  border-radius: 12px;
+  background-color: #b1dfb9;
   width: fit-content; /* 상자의 너비를 내용에 맞게 설정 */
 }
 
-:global(.dark-mode) .notificationPanel{
+:global(.dark-mode) .notificationPanel {
   background: linear-gradient(to top, rgba(61, 61, 61, 0.95), rgba(46, 61, 46, 0.95));
   border: 1px solid #ccc;
   color: #c5c5c5;
 }
 
-
 :global(.dark-mode) .notificationItem {
   border: 1px solid #eee;
   background-color: #181818;
-  
 }
 
 :global(.dark-mode) .notificationSummary {
