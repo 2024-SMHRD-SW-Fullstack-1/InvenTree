@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,9 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.inven.tree.config.RecaptchaConfig;
 import com.inven.tree.mapper.MembersMapper;
-import com.inven.tree.model.Members;
 import com.inven.tree.model.Auths;
-import com.inven.tree.InputValidation;
+import com.inven.tree.model.Members;
 
 @RestController
 @RequestMapping("/api")
@@ -152,7 +152,6 @@ public class MembersController {
     @PostMapping("/members/delete")
     public void deleteMembers(@RequestBody List<Members> members) {
         for (Members member : members) {
-            membersMapper.deleteAuthsByMemberId(member.getMbId());
             membersMapper.delete(member);
         }
     }
@@ -176,6 +175,43 @@ public class MembersController {
         }
         for (Auths auth : auths) {
             membersMapper.saveAuth(auth);
+        }
+    }
+
+    @GetMapping("/userInfo")
+    public ResponseEntity<?> getUserInfo(HttpSession session) {
+        try {
+            Members user = (Members) session.getAttribute("user");
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not logged in");
+            }
+
+            Members memberInfo = membersMapper.findByIdAndCorpIdx(user.getMbId(), user.getCorpIdx());
+            if (memberInfo == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Member not found");
+            }
+
+            if (String.valueOf(memberInfo.getIsAdmin()).equals("Y")) {  // char를 String으로 변환하여 비교
+                memberInfo.setRole("관리자");
+            } else {
+                Auths auths = membersMapper.findAuthsByMbIdAndCorpIdx(user.getMbId(), user.getCorpIdx());
+                if (auths == null) {
+                    memberInfo.setRole("사원");  // 권한 정보가 없을 때 "사원"으로 설정
+                } else {
+                    StringBuilder roles = new StringBuilder();
+                    if (String.valueOf(auths.getInventoryYn()).equals("Y")) roles.append("재고/");
+                    if (String.valueOf(auths.getShipYn()).equals("Y")) roles.append("입출고/");
+                    if (String.valueOf(auths.getChartYn()).equals("Y")) roles.append("통계/");
+                    if (String.valueOf(auths.getSetYn()).equals("Y")) roles.append("설정/");
+                    if (roles.length() > 0) roles.setLength(roles.length() - 1); // 마지막 슬래시 제거
+                    memberInfo.setRole(roles.toString());
+                }
+            }
+
+            return ResponseEntity.ok(memberInfo);
+        } catch (Exception e) {
+            logger.error("Failed to get user info", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to get user info");
         }
     }
 }
