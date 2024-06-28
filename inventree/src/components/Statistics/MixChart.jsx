@@ -79,7 +79,7 @@ const MixChart = ({ data }) => {
       },
       legend: {
         display: true,
-        position: 'bottom',
+        position: 'right',
         labels: {
           color: '#B4B6C4',
           font: {

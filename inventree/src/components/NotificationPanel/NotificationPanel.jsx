@@ -1,83 +1,137 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import style from "./NotificationPanel.module.css";
-import notificationIcon2 from "../../assets/images/알림2.png";
-import notificationIcon3 from "../../assets/images/알림3.png";
+import React, { useEffect, useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import isEqual from 'lodash/isEqual';
+import style from './NotificationPanel.module.css';
+import notificationIcon2 from '../../assets/images/알림2.png';
+import notificationIcon3 from '../../assets/images/알림3.png';
 
 const NotificationPanel = () => {
-    const notifications = [
-        {
-            id: 1,
-            date: "2024-06-25",
-            summary: "재고현황이 업데이트 되었습니다.",
-            description: "2024년 6월 25일에 재고현황이 업데이트 되었습니다.",
-            type: "재고현황",
-            link: "/inventory",
-        },
-        {
-            id: 2,
-            date: "2024-06-24",
-            summary: "출고 처리가 완료되었습니다.",
-            description: "2024년 6월 24일에 출고 처리가 완료되었습니다.",
-            type: "출고 내역",
-            link: "/shipment",
-        },
-        {
-            id: 3,
-            date: "2024-06-23",
-            summary: "새로운 공지사항이 있습니다.",
-            description: "2024년 6월 23일에 새로운 공지사항이 등록되었습니다.",
-            type: "공지사항",
-            link: "/announcement",
-        },
-        {
-            id: 4,
-            date: "2024-06-22",
-            summary: "정기 점검이 예정되어 있습니다.",
-            description: "2024년 6월 22일에 정기 점검이 예정되어 있습니다.",
-            type: "정기 점검",
-            link: "/maintenance",
-        },
-        // 추가적인 알림 메시지들을 여기에 추가
-    ];
+  const [notifications, setNotifications] = useState(() => {
+    const savedNotifications = localStorage.getItem('notifications');
+    return savedNotifications ? JSON.parse(savedNotifications) : [];
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [etag, setEtag] = useState(null); // ETag 상태 추가
 
-    const handleNotificationClick = (link) => {
-        // 클릭한 알림에 따라 해당 페이지로 이동
-        console.log(`Navigating to ${link}`);
-        // history.push(link); // 필요에 따라 라우팅 처리
+  const uniqueIdRef = useRef(0);
+  const prevNotifications = useRef([]);
+  const isInitialRender = useRef(true);
+  const panelRef = useRef(null);
+  const scrollPosition = useRef(0);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetch('http://localhost:8090/tree/api/notifications', {
+          method: 'GET',
+          headers: {
+            'If-None-Match': etag || '',
+          },
+          credentials: 'include',
+        });
+
+        if (response.status === 304) {
+          setIsLoading(false);
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch notifications');
+        }
+
+        const data = await response.json();
+        const newEtag = response.headers.get('ETag');
+        setEtag(newEtag);
+
+        handleNewNotifications(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    return (
-        <div className={style.notificationPanel}>
-            <div className={style.header}>
-                <img src={notificationIcon2} className={style.notificationIcon2} alt="Notification Icon" />
-                <span className={style.title}>스마트 알림</span>
-            </div>
-            {notifications.map((notification) => (
-                <Link to={`${notification.link}`} key={notification.id} className={style.notificationLink}>
-                    <div
-                        key={notification.id}
-                        className={style.notificationItem}
-                        onClick={() => handleNotificationClick(`/${notification.type}`)}
-                    >
-                        <div className={style.notificationDetails}>
-                            <div className={style.notificationDate}>
-                                <img
-                                    src={notificationIcon3}
-                                    className={style.notificationicon3}
-                                    alt="Notification Icon"
-                                />
-                                <p>{notification.date}</p>
-                            </div>
-                            <p className={style.notificationSummary}>{notification.summary}</p>
-                            <p className={style.notificationDescription}>{notification.description}</p>
-                            <p className={style.notificationType}>{notification.type}</p>
-                        </div>
-                    </div>
-                </Link>
-            ))}
-        </div>
-    );
+    const intervalId = setInterval(fetchNotifications, 30000);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(intervalId);
+    // handleNewNotifications에 의존도를 넣으면 오히려 렌더링 느려지므로 절대 넣지 말것!!
+  }, [etag]);
+
+  const handleNewNotifications = (data) => {
+    const newNotifications = data.flatMap((item) => {
+      const { type, message } = item;
+      return message
+        .split('\n')
+        .filter((n) => n.trim())
+        .map((n) => ({
+          id: uniqueIdRef.current++,
+          date: new Date().toISOString().split('T')[0],
+          summary: n,
+          description: n,
+          type: type,
+          link: getLinkFromType(type),
+        }));
+    });
+
+    const hasChanges = !isEqual(newNotifications, prevNotifications.current);
+
+    if (hasChanges || isInitialRender.current) {
+      setNotifications(newNotifications);
+      prevNotifications.current = newNotifications;
+      isInitialRender.current = false;
+
+      // Save notifications to localStorage
+      localStorage.setItem('notifications', JSON.stringify(newNotifications));
+
+      if (panelRef.current) {
+        panelRef.current.scrollTop = scrollPosition.current;
+      }
+    }
+  };
+
+  const getLinkFromType = (type) => {
+    if (type === '대량 입출고') return '/InoutHistory';
+    if (type === '재고 변동 상위 품목') return '/InventoryStatus';
+    if (type === '비정상적 재고 변동') return '/InventoryStatus';
+    return '/main';
+  };
+
+  return (
+    <div className={style.notificationPanel} ref={panelRef} style={{ maxHeight: '500px', overflowY: 'auto' }}>
+      <div className={style.header}>
+        <img src={notificationIcon2} className={style.notificationIcon2} alt="Notification Icon" />
+        <span className={style.title}>스마트 알림</span>
+      </div>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p>{error}</p>
+      ) : (
+        notifications
+          .filter((notification) => notification)
+          .map((notification) => (
+            <Link to={notification?.link || '/'} key={notification.id} className={style.notificationLink}>
+              <div className={style.notificationItem}>
+                <div className={style.notificationDetails}>
+                  <div className={style.notificationDate}>
+                    <img src={notificationIcon3} className={style.notificationIcon3} alt="Notification Icon" />
+                    <p>{notification.date}</p>
+                  </div>
+                  <p className={style.notificationSummary}>{notification.summary}</p>
+                  <p className={style.notificationDescription}>{notification.description}</p>
+                  <p className={style.notificationType}>{notification.type}</p>
+                </div>
+              </div>
+            </Link>
+          ))
+      )}
+    </div>
+  );
 };
 
 export default NotificationPanel;

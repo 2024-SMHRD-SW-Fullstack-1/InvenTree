@@ -1,213 +1,213 @@
 .tableContainer {
-    margin-left: 100px;
-    margin-right: 100px;
+  margin-left: 100px;
+  margin-right: 100px;
 }
 
 .headerContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
 .buttonContainer {
-    display: flex;
-    gap: 5px;
+  display: flex;
+  gap: 5px;
 }
 
 .defaultButton {
-    background-color: transparent;
-    color: black;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    flex-direction: row;
+  background-color: transparent;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-direction: row;
 }
 
 .defaultButton:hover {
-    background-color: #f0f0f0;
+  background-color: #f0f0f0;
 }
 
 .defaultButton img {
-    width: 20px;
-    height: 20px;
+  width: 20px;
+  height: 20px;
 }
 
 .addRowButton {
-    padding: 10px 20px;
-    margin: 5px;
-    border: none;
-    color: white;
-    cursor: pointer;
-    border-radius: 4px;
-    background-color: #9eb696;
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  background-color: #9eb696;
 }
 
 .addRowButton:hover {
-    background-color: #6fa16f;
+  background-color: #6fa16f;
 }
 
 .table {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .table thead {
-    background-color: #e0e8d8;
+  background-color: #e0e8d8;
 }
 
 .table th,
 .table td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
 }
 
 .table th {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .table tbody tr:hover {
-    background-color: #f5f5f5;
+  background-color: #f5f5f5;
 }
 
 .checkbox {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    border: 2px solid #7eb47e;
-    border-radius: 3px;
-    outline: none;
-    cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #7eb47e;
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
 }
 
 .checkbox:checked {
-    background-color: #7eb47e;
-    border: none;
-    position: relative;
+  background-color: #7eb47e;
+  border: none;
+  position: relative;
 }
 
 .checkbox:checked::after {
-    content: "✔";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 14px;
+  content: '✔';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
 }
 
 .searchFilterContainer {
-    margin-left: 320px;
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    margin-top: 10px;
+  margin-left: 320px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 10px;
 }
 
 .searchInputContainer {
-    position: relative;
-    display: flex;
-    align-items: center;
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .searchInputContainer .icon {
-    position: absolute;
-    left: 10px;
-    width: 20px;
-    height: 20px;
+  position: absolute;
+  left: 10px;
+  width: 20px;
+  height: 20px;
 }
 
 .searchInput {
-    padding: 10px 10px 10px 40px;
-    border: 1px solid #ccc;
-    border-radius: 12px;
-    width: 300px;
+  padding: 10px 10px 10px 40px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  width: 300px;
 }
 
 .searchInput::placeholder {
-    color: #bbb;
+  color: #bbb;
 }
 
 .filterButton {
-    background-color: white;
-    border: 1px solid #7eb47e;
-    padding: 5px 15px;
-    cursor: pointer;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+  background-color: white;
+  border: 1px solid #7eb47e;
+  padding: 5px 15px;
+  cursor: pointer;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .filterButton .icon {
-    width: 20px;
-    height: 20px;
+  width: 20px;
+  height: 20px;
 }
 
 .filterButton:hover {
-    background-color: #f0f0f0;
+  background-color: #f0f0f0;
 }
 
 .inputText:not(.searchInput),
 .inputDate {
-    border: none;
-    outline: none;
+  border: none;
+  outline: none;
 }
 
 .inputText:not(.searchInput):hover,
 .inputDate:hover,
 .inputText:not(.searchInput):focus,
 .inputDate:focus {
-    border: none;
-    outline: none;
+  border: none;
+  outline: none;
 }
 
 @media only screen and (max-width: 768px) {
-    .title {
-        margin-left: 3%;
-    }
+  .title {
+    margin-left: 3%;
+  }
 
-    .tableContainer {
-        margin-left: 3%;
-    }
+  .tableContainer {
+    margin-left: 3%;
+  }
 
-    .headerContainer {
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-        flex-wrap: wrap;
-    }
+  .headerContainer {
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
 
-    .buttonContainer {
-        order: 3;
-        width: 100%;
-        justify-content: flex-start;
-    }
+  .buttonContainer {
+    order: 3;
+    width: 100%;
+    justify-content: flex-start;
+  }
 
-    .searchFilterContainer {
-        justify-content: center;
-        margin-left: 0;
-    }
+  .searchFilterContainer {
+    justify-content: center;
+    margin-left: 0;
+  }
 
-    .searchInput {
-        width: 100%;
-        max-width: 300px;
-    }
+  .searchInput {
+    width: 100%;
+    max-width: 300px;
+  }
 
-    .searchInputContainer {
-        flex: 1;
-    }
+  .searchInputContainer {
+    flex: 1;
+  }
 
-    .defaultButton {
-        flex-direction: column;
-        align-items: center;
-        gap: 3px;
-    }
+  .defaultButton {
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
 }
