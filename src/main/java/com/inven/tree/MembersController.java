@@ -27,6 +27,7 @@ import com.inven.tree.config.RecaptchaConfig;
 import com.inven.tree.mapper.MembersMapper;
 import com.inven.tree.model.Auths;
 import com.inven.tree.model.Members;
+import com.inven.tree.InputValidation;
 
 @RestController
 @RequestMapping("/api")
@@ -199,10 +200,10 @@ public class MembersController {
                     memberInfo.setRole("사원");  // 권한 정보가 없을 때 "사원"으로 설정
                 } else {
                     StringBuilder roles = new StringBuilder();
-                    if (String.valueOf(auths.getInventoryYn()).equals("Y")) roles.append("재고/");
-                    if (String.valueOf(auths.getShipYn()).equals("Y")) roles.append("입출고/");
-                    if (String.valueOf(auths.getChartYn()).equals("Y")) roles.append("통계/");
-                    if (String.valueOf(auths.getSetYn()).equals("Y")) roles.append("설정/");
+                    if ("Y".equals(String.valueOf(auths.getInventoryYn()))) roles.append("재고/");
+                    if ("Y".equals(String.valueOf(auths.getShipYn()))) roles.append("입출고/");
+                    if ("Y".equals(String.valueOf(auths.getChartYn()))) roles.append("통계/");
+                    if ("Y".equals(String.valueOf(auths.getSetYn()))) roles.append("설정/");
                     if (roles.length() > 0) roles.setLength(roles.length() - 1); // 마지막 슬래시 제거
                     memberInfo.setRole(roles.toString());
                 }
