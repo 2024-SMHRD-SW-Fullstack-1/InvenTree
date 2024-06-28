@@ -148,11 +148,13 @@
 	</select>
 
 	<!-- Insert Queries -->
-	
+
 	<!-- 입고 등록 insert 메소드 -->
 	<insert id="insertStock">
-		INSERT INTO stocks (corp_idx, prod_idx, stock_cnt, stocked_at, sub_idx)
-		VALUES (#{corpIdx}, #{prodIdx}, #{prodCnt}, #{stockedAt}, #{subIdx})
+		INSERT INTO stocks (corp_idx, prod_idx, stock_cnt,
+		stocked_at, sub_idx)
+		VALUES (#{corpIdx}, #{prodIdx}, #{prodCnt},
+		#{stockedAt}, #{subIdx})
 	</insert>
 
 	<insert id="insertRelease">
@@ -168,5 +170,42 @@
 		WHERE prod_idx =
 		#{prodIdx}
 	</update>
+
+	<!-- 밑에 네개 재고현황때문에 만들음 -->
+	<update id="updateProductSelective">
+		UPDATE products
+		<set>
+			<if test="prodBarcode != null">prod_barcode = #{prodBarcode},</if>
+			<if test="prodName != null">prod_name = #{prodName},</if>
+			<if test="prodCnt != 0">prod_cnt = #{prodCnt},</if>
+			<if test="prodInfo != null">prod_info = #{prodInfo},</if>
+			<if test="whIdx != 0">wh_idx = #{whIdx},</if>
+			<if test="shelfIdx != 0">shelf_idx = #{shelfIdx},</if>
+			<if test="rackId != null">rack_id = #{rackId},</if>
+			<if test="corpIdx != null">corp_idx = #{corpIdx}</if>
+		</set>
+		WHERE prod_idx = #{prodIdx}
+	</update>
+
+	<delete id="deleteProduct" parameterType="int">
+		DELETE FROM products WHERE prod_idx = #{prodIdx}
+	</delete>
+
+	<insert id="insertProduct">
+		INSERT INTO products (prod_barcode, prod_name, prod_cnt, prod_info, wh_idx,
+		shelf_idx, rack_id, corp_idx)
+		VALUES (#{product.prodBarcode}, #{product.prodName}, #{product.prodCnt},
+		#{product.prodInfo}, #{product.whIdx}, #{product.shelfIdx},
+		#{product.rackId}, #{product.corpIdx})
+	</insert>
+
+	<select id="selectProductByIdx"
+		resultType="com.inven.tree.model.Products">
+		SELECT * FROM products WHERE prod_idx = #{prodIdx}
+	</select>
+	<select id="selectProductByBarcode"
+		resultMap="productsResultMap">
+		SELECT * FROM products WHERE prod_barcode = #{prodBarcode}
+	</select>
 
 </mapper>

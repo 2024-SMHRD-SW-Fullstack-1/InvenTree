@@ -1,5 +1,7 @@
 package com.inven.tree.model;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,4 +30,6 @@ public class Warehouses {
 
     // 창고 상태
     private String whStatus;
+    
+    private List<Shelves> shelves;  // Shelves 리스트 재고현황 때문에 만들음
 }

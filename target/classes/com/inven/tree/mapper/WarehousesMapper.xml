@@ -26,6 +26,26 @@
 		<result property="shelfId" column="shelf_id" />
 		<result property="rackId" column="rack_id" />
 	</resultMap>
+	
+	<!-- 재고 현황때문에 새로만든 맵 -->
+	<resultMap type="com.inven.tree.model.Warehouses" id="warehousesMap">
+        <id property="whIdx" column="wh_idx" />
+        <result property="corpIdx" column="corp_idx" />
+        <result property="bidlName" column="bidl_name" />
+        <result property="mbId" column="mb_id" />
+        <result property="whAddr" column="wh_addr" />
+        <result property="whStatus" column="wh_status" />
+    </resultMap>
+     <select id="selectAllWarehouses" resultMap="warehousesMap">
+        SELECT * FROM warehouses WHERE corp_idx = #{corpIdx}
+    </select>
+      <select id="selectWarehousesAndShelvesMap" resultType="map">
+        SELECT w.wh_idx, w.corp_idx, w.bidl_name, w.mb_id, w.wh_addr, w.wh_status,
+               s.shelf_idx, s.shelf_id, s.rack_id, s.wh_idx AS shelf_wh_idx
+        FROM warehouses w
+        LEFT JOIN shelves s ON w.wh_idx = s.wh_idx
+        WHERE w.corp_idx = #{corpIdx}
+    </select>
 
 	<!-- corpIdx로 창고 선반 테이블 출력 -->
 	<select id="getWarehousesAndShelvesByCorpIdx"

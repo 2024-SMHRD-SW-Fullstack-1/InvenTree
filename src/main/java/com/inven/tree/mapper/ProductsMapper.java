@@ -71,8 +71,18 @@ public interface ProductsMapper {
 	// 재고현황으로 인해 추가된 메소드들
 	
 	
-    boolean existsByProdBarcode(String prodBarcode);
-    void updateProduct(Products product);
-    void insertProduct(Products product);
-    void deleteProductByBarcode(String prodBarcode);
+
+    void updateProductSelective(Products product);
+
+    void deleteProduct(@Param("prodIdx") int prodIdx);
+    
+    void insertProduct(@Param("product") Products product);
+    
+    Products selectProductByIdx(@Param("prodIdx") int prodIdx);
+    
+    Products selectProductByBarcode(@Param("prodBarcode") String prodBarcode);
+    
+
+    
+    
 }

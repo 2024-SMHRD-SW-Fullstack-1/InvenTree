@@ -22,5 +22,11 @@ public class ProductImportData {
 
     @JsonProperty("corpName")
     private String corpName;
-
+    
+    @JsonProperty("shelfId")
+    private String shelfId; // 추가
+    @JsonProperty("rackId")
+    private String rackId;  // 추가
+    @JsonProperty("prodInfo")
+    private String prodInfo; // 추가
 }

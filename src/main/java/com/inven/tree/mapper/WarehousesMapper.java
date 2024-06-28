@@ -1,10 +1,11 @@
 package com.inven.tree.mapper;
 
-import com.inven.tree.model.Warehouses;
-
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
+
+import com.inven.tree.model.Warehouses;
 
 public interface WarehousesMapper {
 
@@ -34,5 +35,7 @@ public interface WarehousesMapper {
 
 	// 창고인덱스로 창고정보 추출(재고 현황 때문에 추가한 메소드)
 	Warehouses selectWarehouseById(Integer whIdx);
+	
+	List<Map<String, Object>> selectWarehousesAndShelvesMap(@Param("corpIdx") String corpIdx);
 
 }
