@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.inven.tree.mapper.MembersMapper;
 import com.inven.tree.mapper.ShelvesMapper;
 import com.inven.tree.mapper.WarehousesMapper;
+import com.inven.tree.model.Members;
 import com.inven.tree.model.Shelves;
 import com.inven.tree.model.Warehouses;
 
@@ -35,6 +37,9 @@ public class WarehousesController {
     
     @Autowired
     private ShelvesMapper shelvesMapper;
+    
+    @Autowired
+    private MembersMapper membersMapper;
     
     // 창고 선반 corpIdx로 조회
     @GetMapping("/warehouse")
@@ -177,5 +182,12 @@ public class WarehousesController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("선반 정보 추가 에러: " + e.getMessage());
         }
+    }
+    
+    @GetMapping("/warehouses/members")
+    public List<Members> getMembers(HttpSession session) {
+        String corpIdx = (String) session.getAttribute("corpIdx");
+            List<Members> members = membersMapper.findMembersByCorpIdx(corpIdx);
+        return members;
     }
 }

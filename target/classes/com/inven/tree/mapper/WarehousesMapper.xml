@@ -25,6 +25,7 @@
 		<result property="shelfIdx" column="shelf_idx" />
 		<result property="shelfId" column="shelf_id" />
 		<result property="rackId" column="rack_id" />
+		<result property="mbName" column="mb_id" />
 	</resultMap>
 	
 	<!-- 재고 현황때문에 새로만든 맵 -->

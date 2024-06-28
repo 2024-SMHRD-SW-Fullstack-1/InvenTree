@@ -27,8 +27,8 @@
 
     <!-- 멤버 정보 저장하기 -->
     <insert id="save" parameterType="com.inven.tree.model.Members">
-        INSERT INTO members (mb_id, mb_pw, mb_name, mb_phone, mb_theme, corp_idx, joined_at)
-        VALUES (#{mbId}, #{mbPw}, #{mbName}, #{mbPhone}, #{mbTheme}, #{corpIdx}, #{joinedAt})
+        INSERT INTO members (mb_id, mb_pw, mb_name, mb_phone, mb_theme, corp_idx)
+        VALUES (#{mbId}, #{mbPw}, #{mbName}, #{mbPhone}, #{mbTheme}, #{corpIdx})
     </insert>
 
     <!-- 멤버 정보 삭제 -->

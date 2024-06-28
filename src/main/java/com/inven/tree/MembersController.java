@@ -177,4 +177,14 @@ public class MembersController {
             membersMapper.saveAuth(auth);
         }
     }
+    
+    @GetMapping("/members/byCorpIdx")
+    public List<Members> getMembersByCorp(HttpSession session) {
+        String corpIdx = (String) session.getAttribute("corpIdx");
+        if (corpIdx != null) {
+            List<Members> members = membersMapper.findMembersByCorpIdx(corpIdx);
+            return members;
+        }
+        return List.of(); // 회사코드가 없는 경우 빈 리스트 반환
+    }
 }

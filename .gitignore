@@ -1,1 +1,6 @@
+# Ignore target directory
 /target
+
+# Ignore specific files
+/src/main/webapp/WEB-INF/spring/root-context.xml
+/src/main/java/com/inven/tree/config/RecaptchaConfig.java
