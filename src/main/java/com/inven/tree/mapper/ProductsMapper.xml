@@ -168,4 +168,5 @@
 		WHERE prod_idx =
 		#{prodIdx}
 	</update>
+
 </mapper>

@@ -82,3 +82,5 @@
         SELECT DISTINCT ${column} FROM subsidiary WHERE corp_idx = #{corpIdx}
     </select>
 </mapper>
+
+

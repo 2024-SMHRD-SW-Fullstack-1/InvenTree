@@ -26,7 +26,6 @@ public class SessionController {
         sessionData.put("shipYn", session.getAttribute("shipYn"));
         sessionData.put("chartYn", session.getAttribute("chartYn"));
         sessionData.put("setYn", session.getAttribute("setYn"));
-        System.out.println(sessionData);
         return ResponseEntity.ok(sessionData);
     }
 }

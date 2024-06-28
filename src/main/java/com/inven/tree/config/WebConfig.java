@@ -12,7 +12,6 @@ import com.inven.tree.SessionInterceptor;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-	
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/api/**").allowedOrigins("http://localhost:3000") // 허용할 클라이언트 주소
@@ -30,6 +29,7 @@ public class WebConfig implements WebMvcConfigurer {
 		// 새로운 인터셉터인 SessionInterceptor를 인터셉터 레지스트리에 등록
 		// 이 인터셉터는 "/api/**" 경로에 매칭되는 모든 요청에 대해 동작
 		registry.addInterceptor(new SessionInterceptor()).addPathPatterns("/api/**");
+
 	}
 
 	@Bean
@@ -39,5 +39,4 @@ public class WebConfig implements WebMvcConfigurer {
 		resolver.setMaxUploadSize(1000000000); // 예: 최대 1MB
 		return resolver;
 	}
-	
 }
