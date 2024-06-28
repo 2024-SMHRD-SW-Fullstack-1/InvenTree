@@ -15,7 +15,7 @@ public class RecaptchaConfig implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        String recaptchaFilePath = "C:/workspace-sts-3.9.18.RELEASE/Project/reCAPTCHA.txt"; // 파일 경로를 직접 지정
+        String recaptchaFilePath = "C:\\Users\\admin\\Documents\\workspace-sts-3.9.18.RELEASE\\Project\\reCAPTCHA.txt"; // 파일 경로를 직접 지정
         try (BufferedReader reader = new BufferedReader(new FileReader(recaptchaFilePath))) {
             Properties properties = new Properties();
             properties.load(reader);

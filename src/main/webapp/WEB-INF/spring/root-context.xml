@@ -37,7 +37,7 @@
 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
-				<value>file:C:/workspace-sts-3.9.18.RELEASE/Project/reCAPTCHA.txt</value>
+				<value>file:C:\Users\admin\Documents\workspace-sts-3.9.18.RELEASE\Project\reCAPTCHA.txt</value>
 			</list>
 		</property>
 	</bean>
