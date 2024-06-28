@@ -16,12 +16,12 @@ import com.inven.tree.model.Stocks;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class StocksController {
-	 @Autowired
-	    private StocksMapper stocksMapper;
+	@Autowired
+	private StocksMapper stocksMapper;
 
-	    @GetMapping("/stocks")
-	    @ResponseBody
-	    public List<Stocks> getStocks() {
-	        return stocksMapper.selectAllStocks();
-	    }
+	@GetMapping("/stocks")
+	@ResponseBody
+	public List<Stocks> getStocks() {
+		return stocksMapper.selectAllStocks();
+	}
 }

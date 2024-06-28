@@ -74,6 +74,16 @@ public class MembersController {
         if (count > 0) {
             session.setAttribute("user", new Members(mbId, mbPw, corpIdx)); // 세션에 사용자 정보 저장
             session.setAttribute("corpIdx", corpIdx); // 세션에 회사코드 저장
+            
+            // 로그인 성공 후 권한 정보 조회
+            Auths permissions = membersMapper.getPermissions(mbId);
+            if (permissions != null) {
+                session.setAttribute("inventoryYn", permissions.getInventoryYn());
+                session.setAttribute("shipYn", permissions.getShipYn());
+                session.setAttribute("chartYn", permissions.getChartYn());
+                session.setAttribute("setYn", permissions.getSetYn());
+            }
+            
             return "success";
         }
         return "fail";
@@ -82,11 +92,7 @@ public class MembersController {
     @GetMapping("/checkSession")
     public String checkSession(HttpSession session) {
         Members user = (Members) session.getAttribute("user");
-        if (user != null) {
-            return "loggedIn";
-        } else {
-            return "loggedOut";
-        }
+        return user != null ? "loggedIn" : "loggedOut";
     }
 
     @PostMapping("/logout")
@@ -131,8 +137,6 @@ public class MembersController {
         String corpIdx = (String) session.getAttribute("corpIdx");
         if (corpIdx != null) {
             List<Members> members = membersMapper.findMembersByCorpIdx(corpIdx);
-            for (Members member : members) {
-            }
             return members;
         }
         return List.of(); // 회사코드가 없는 경우 빈 리스트 반환

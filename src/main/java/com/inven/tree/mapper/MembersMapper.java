@@ -29,5 +29,8 @@ public interface MembersMapper {
 
     // 사용자의 회사 코드로 멤버 정보 불러오기
     List<Members> findMembersByCorpIdx(String corpIdx);
+    
+    // 새로운 권한 조회 메서드 (권한 제한)
+    Auths getPermissions(String mbId);
 
 }

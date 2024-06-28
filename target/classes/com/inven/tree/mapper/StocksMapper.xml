@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.inven.tree.mapper.StocksMapper">
+
+  <!-- ResultMap 정의 -->
+  <resultMap id="stocksResultMap" type="com.inven.tree.model.Stocks">
+    <id property="stockIdx" column="stock_idx" />
+    <result property="corpIdx" column="corp_idx" />
+    <result property="prodIdx" column="prod_idx" />
+    <result property="stockCnt" column="stock_cnt" />
+    <result property="stockedAt" column="stocked_at" />
+  </resultMap>
+
+  <!-- stocks 테이블에 데이터 삽입 SQL -->
+  <insert id="insertStock">
+    INSERT INTO stocks (corp_idx, prod_idx, stock_cnt, stocked_at, sub_idx)
+    VALUES (#{corpIdx}, #{prodIdx}, #{prodCnt}, #{stockedAt}, #{subIdx})
+  </insert>
+
+  <!-- 모든 Stocks를 가져오는 SQL -->
+  <select id="selectAllStocks" resultMap="stocksResultMap">
+    SELECT * FROM stocks
+  </select>
+
+  <!-- 사용자의 회사 코드와 날짜로 Stocks를 가져오는 SQL -->
+  <select id="selectByCorpIdxAndDate" resultMap="stocksResultMap">
+    SELECT *
+    FROM stocks
+    WHERE corp_idx = #{corpIdx}
+    AND YEAR(stocked_at) = #{year}
+    AND MONTH(stocked_at) = #{month}
+    <if test="prodIdx != null">
+      AND prod_idx = #{prodIdx}
+    </if>
+  </select>
+
+  <!-- 필터링 및 페이징된 Stocks와 상세 정보를 가져오는 SQL -->
+  <select id="selectStocksWithDetailsFiltered" resultType="map">
+    SELECT
+      s.stock_idx AS stockIdx,
+      c.corp_name AS company,
+      p.prod_barcode AS productCode,
+      p.prod_name AS productName,
+      s.stock_cnt AS stockCnt,
+      DATE_FORMAT(s.stocked_at, '%Y-%m-%d %H:%i:%s') AS date,
+      '입고' AS type
+    FROM stocks s
+    JOIN corporates c ON s.corp_idx = c.corp_idx
+    JOIN products p ON s.prod_idx = p.prod_idx
+    <where>
+      <if test="filterColumn != null and filterColumn != '' and filterValue != null and filterValue != ''">
+        <choose>
+          <when test="filterColumn == 'company'">
+            c.corp_name LIKE CONCAT('%', #{filterValue}, '%')
+          </when>
+          <when test="filterColumn == 'productCode'">
+            p.prod_barcode LIKE CONCAT('%', #{filterValue}, '%')
+          </when>
+          <when test="filterColumn == 'productName'">
+            p.prod_name LIKE CONCAT('%', #{filterValue}, '%')
+          </when>
+          <when test="filterColumn == 'quantity'">
+            s.stock_cnt = #{filterValue}
+          </when>
+          <when test="filterColumn == 'date'">
+            DATE(s.stocked_at) = DATE(#{filterValue})
+          </when>
+          <when test="filterColumn == 'type'">
+            '입고' = #{filterValue}
+          </when>
+        </choose>
+      </if>
+    </where>
+    ORDER BY s.stocked_at DESC
+    LIMIT #{size} OFFSET #{offset}
+  </select>
+
+  <!-- 필터링된 항목의 총 개수를 세는 SQL -->
+  <select id="countFilteredEntries" resultType="int">
+    SELECT COUNT(*)
+    FROM stocks s
+    JOIN corporates c ON s.corp_idx = c.corp_idx
+    JOIN products p ON s.prod_idx = p.prod_idx
+    <where>
+      <if test="filterColumn != null and filterColumn != '' and filterValue != null and filterValue != ''">
+        <choose>
+          <when test="filterColumn == 'company'">
+            c.corp_name LIKE CONCAT('%', #{filterValue}, '%')
+          </when>
+          <when test="filterColumn == 'productCode'">
+            p.prod_barcode LIKE CONCAT('%', #{filterValue}, '%')
+          </when>
+          <when test="filterColumn == 'productName'">
+            p.prod_name LIKE CONCAT('%', #{filterValue}, '%')
+          </when>
+          <when test="filterColumn == 'quantity'">
+            s.stock_cnt = #{filterValue}
+          </when>
+          <when test="filterColumn == 'date'">
+            DATE(s.stocked_at) = DATE(#{filterValue})
+          </when>
+          <when test="filterColumn == 'type'">
+            '입고' = #{filterValue}
+          </when>
+        </choose>
+      </if>
+    </where>
+  </select>
+
+  <!-- 오늘 날짜의 입고 데이터를 가져오는 쿼리 -->
+  <select id="findTodayStocksByCorpIdx" resultMap="stocksResultMap">
+    SELECT *
+    FROM stocks
+    WHERE DATE(stocked_at) = CURRENT_DATE
+    AND corp_idx = #{corpIdx}
+  </select>
+
+  <!-- 회사 코드로 상위 변동 재고를 가져오는 쿼리 -->
+  <select id="findTopStockChanges" resultMap="stocksResultMap">
+    SELECT *
+    FROM stocks
+    WHERE corp_idx = #{corpIdx}
+    ORDER BY ABS(stock_cnt) DESC
+  </select>
+
+  <!-- 회사 코드로 모든 재고를 가져오는 쿼리 -->
+  <select id="findStocksByCorpIdx" resultMap="stocksResultMap">
+    SELECT * FROM stocks WHERE corp_idx = #{corpIdx}
+  </select>
+
+</mapper>
