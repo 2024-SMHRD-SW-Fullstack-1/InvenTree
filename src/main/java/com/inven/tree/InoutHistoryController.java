@@ -42,16 +42,10 @@ public class InoutHistoryController {
             @RequestParam(required = false) String filterValue,
             @RequestParam String corpIdx) {
 
-        logger.info("Received request with filterColumn: {}, filterValue: {}, page: {}, size: {}, corpIdx: {}",
-                    new Object[]{filterColumn, filterValue, page, size, corpIdx});
-
         try {
             List<Map<String, Object>> stockEntries = stocksMapper.selectStocksWithDetailsFiltered(0, Integer.MAX_VALUE, filterColumn, filterValue, corpIdx);
             List<Map<String, Object>> releaseEntries = releasesMapper.selectReleasesWithDetailsFiltered(0, Integer.MAX_VALUE, filterColumn, filterValue, corpIdx);
-
-            logger.info("Stock Entries: {}", stockEntries);
-            logger.info("Release Entries: {}", releaseEntries);
-
+ 
             List<Map<String, Object>> allEntries = new ArrayList<>();
             allEntries.addAll(stockEntries);
             allEntries.addAll(releaseEntries);
@@ -71,9 +65,7 @@ public class InoutHistoryController {
             result.put("entries", pagedEntries);
             result.put("totalEntries", totalEntries);
             result.put("totalPages", totalPages);
-
-            logger.info("Returning result with {} entries", pagedEntries.size());
-
+            
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             logger.error("Error occurred while fetching stock and release entries", e);

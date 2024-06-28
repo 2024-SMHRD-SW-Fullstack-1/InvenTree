@@ -83,7 +83,6 @@ public class ProductsController {
 				String corpIdx = (String) productData.get("corpIdx");
 				Integer prodCnt = (Integer) productData.get("prodCnt");
 
-				logger.info("Processing product with barcode: {}", prodBarcode);
 
 				Integer prodIdx = productsMapper.selectProdIdxByBarcode(prodBarcode);
 				if (prodIdx == null) {
@@ -95,11 +94,9 @@ public class ProductsController {
 				// 재고 정보를 stocks 테이블에 추가
 				productsMapper.insertStock(corpIdx, prodIdx, prodCnt, new Timestamp(System.currentTimeMillis()),
 						subIdx);
-				logger.info("Inserted stock for product with barcode: {}", prodBarcode);
 
 				// 제품 테이블의 제품 수량 업데이트
 				productsMapper.updateProductCount(prodIdx, prodCnt);
-				logger.info("Updated product count for product with barcode: {}", prodBarcode);
 			}
 			return ResponseEntity.ok("Success");
 		} catch (Exception e) {
@@ -117,8 +114,6 @@ public class ProductsController {
 				Integer prodCnt = (Integer) productData.get("prodCnt");
 				Integer subIdx = (Integer) productData.get("subIdx");
 
-				logger.info("Processing product with barcode: {}, corpIdx: {}, prodCnt: {}, subIdx: {}", prodBarcode,
-						corpIdx);
 
 				if (prodBarcode == null || corpIdx == null || prodCnt == null || subIdx == null) {
 					logger.error("Missing required fields in product data: {}", productData);

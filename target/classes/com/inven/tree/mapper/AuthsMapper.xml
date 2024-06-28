@@ -21,14 +21,16 @@
         <result property="chartYn" column="chart_yn"/>
         <result property="setYn" column="set_yn"/>
         <result property="mbName" column="mb_name"/>
+        <result property="isAdmin" column="is_admin"/>
     </resultMap>
     
     <!-- corpIdx에 해당하는 Auths를 가져오는 SQL -->
     <select id="selectAllAuthsByCorpIdx" resultMap="resultAuthsAndMembers">
-	    SELECT m.mb_id, m.mb_name, 
-	    	   a.mb_id, a.inventory_yn, a.ship_yn, a.chart_yn, a.set_yn 
+	    SELECT m.mb_id AS mbId, m.mb_name, m.is_admin,
+	    	   a.mb_id AS mbId, a.inventory_yn, a.ship_yn, a.chart_yn, a.set_yn 
 		FROM auths AS a
-		JOIN members AS m ON a.mb_id = m.mb_id;
+		JOIN members AS m ON a.mb_id = m.mb_id
+		WhERE m.is_admin='N'
 	    
     </select>
     
@@ -43,16 +45,11 @@
         WHERE mb_id = #{mbId}
     </update>
     
-    <delete id="deleteAuths">
-    delete from auths
-    WHERE auth_idx = #{authIdx}
-    </delete>
-    
-    <!-- 권한 추가 -->
-<!--<insert id="insertAuths" parameterType="Auths">
-	    INSERT INTO auths (auth_idx, inventory_yn, ship_yn, chart_yn, set_yn)
-	    VALUES
-	    (#{authName}, #{inventoryYn}, #{shipYn}, #{chartYn}, #{setYn})
-	</insert> -->
+    <!-- 로그인 계정 페이지 접근을 위한 권한 정보 확인 -->
+    <select id="getAuthsByMbId" resultType="Auths">
+    	SELECT auth_idx, mb_id, inventory_yn, ship_yn, chart_yn, set_yn
+        FROM Auths
+        WHERE mb_id = #{mbId}
+    </select>
     
 </mapper>

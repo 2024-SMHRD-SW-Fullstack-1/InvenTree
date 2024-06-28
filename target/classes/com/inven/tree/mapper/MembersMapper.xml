@@ -22,6 +22,7 @@
             corp_idx AS corpIdx,
             joined_at AS joinedAt
         FROM members
+        WHERE is_admin = 'N'
     </select>
 
     <!-- 멤버 정보 저장하기 -->
@@ -64,6 +65,21 @@
             joined_at AS joinedAt
         FROM members
         WHERE corp_idx = #{corpIdx}
+        AND is_admin = 'N'
+    </select>
+    
+    <!-- 로그인 계정 권한 조회 -->
+    <select id="getPermissions" parameterType="String" resultMap="AuthsResultMap">
+        SELECT inventory_yn, ship_yn, chart_yn, set_yn
+        FROM auths
+        WHERE mb_id = #{mbId}
     </select>
 
+    <!-- 결과 매핑 -->
+    <resultMap id="AuthsResultMap" type="com.inven.tree.model.Auths">
+        <result property="inventoryYn" column="inventory_yn"/>
+        <result property="shipYn" column="ship_yn"/>
+        <result property="chartYn" column="chart_yn"/>
+        <result property="setYn" column="set_yn"/>
+    </resultMap>
 </mapper>

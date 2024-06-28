@@ -29,6 +29,7 @@ public class AuthsController {
 	@GetMapping("/auths")
 	public List<Auths> getMembersWithAuthsByCorpIdx(HttpSession session) {
 	    String corpIdx = (String) session.getAttribute("corpIdx");
+//	    String mbId = (String) session.getAttribute("mbId");
 	    return authsMapper.selectAllAuthsByCorpIdx(corpIdx);
 	}
 	
@@ -48,7 +49,6 @@ public class AuthsController {
                     .body("권한 정보 변경 실패: " + e.getMessage());
         }
 	}
-
 	
 
 }

@@ -62,11 +62,11 @@ public class ReportController {
         
         Map<String, Object> response = new HashMap<>();
         try {
-            System.out.println("Received report request with year: " + year + ", month: " + month + ", filterType: " + filterType + ", filterValue: " + filterValue);
 
             String corpIdx = (String) session.getAttribute("corpIdx");
             if (corpIdx == null) {
                 response.put("error", "세션이 만료되었습니다. 다시 로그인해주세요.");
+                logger.error("Session expired. Please login again.");
                 return ResponseEntity.status(403).body(response);
             }
 
@@ -85,6 +85,7 @@ public class ReportController {
             }
         } catch (Exception e) {
             response.put("error", "예상치 못한 오류가 발생했습니다: " + e.getMessage());
+            logger.error("Unexpected error occurred: ", e);
             return ResponseEntity.status(500).body(response);
         }
     }
@@ -139,6 +140,7 @@ public class ReportController {
             monthlyReport.put("avgWeeklyReleaseCount", avgWeeklyReleaseCount);
         } catch (Exception e) {
             monthlyReport.put("error", "보고서 생성 중 오류가 발생했습니다: " + e.getMessage());
+            logger.error("Error generating monthly report: ", e);
         }
 
         return monthlyReport;
