@@ -28,53 +28,69 @@ public class MembersController {
 
     @Autowired
     private MembersMapper membersMapper;
-
+    
     private InputValidation inputValidation = new InputValidation();
 
     @PostMapping("/login")
     public String login(@RequestBody Members members, HttpSession session) {
-        logger.info("Login attempt with user: {}", members);
+//        logger.info("Login attempt with user: {}", members);
 
         if (members == null || members.getMbId() == null || members.getMbPw() == null || members.getCorpIdx() == null) {
-            logger.warn("Invalid input: one of the required fields is null");
+//            logger.warn("Invalid input: one of the required fields is null");
             return "invalid_input";
         }
 
         if (!inputValidation.validateMbId(members.getMbId())) {
-            logger.warn("Invalid ID format for user: {}", members.getMbId());
+//            logger.warn("Invalid ID format for user: {}", members.getMbId());
             return "invalid_id";
         }
 
         if (!inputValidation.validatePassword(members.getMbPw())) {
-            logger.warn("Invalid password format for user: {}", members.getMbId());
+//            logger.warn("Invalid password format for user: {}", members.getMbId());
             return "invalid_password";
         }
 
         if (!inputValidation.validateCorpCode(members.getCorpIdx())) {
-            logger.warn("Invalid corporate code format for user: {}", members.getMbId());
+//            logger.warn("Invalid corporate code format for user: {}", members.getMbId());
             return "invalid_corp_code";
         }
 
         int count = membersMapper.login(members);
         if (count > 0) {
+        	System.out.println("Login success: " + members);
             session.setAttribute("user", members); // 세션에 사용자 정보 저장
+            session.setAttribute("mdId", members.getMbId()); // 사용자 아이디 저장 @@@@@@@@@@ 추가
             session.setAttribute("corpIdx", members.getCorpIdx()); // 세션에 회사코드 저장
-            logger.info("Login success for user: {}", members.getMbId());
+//          logger.info("Login success for user: {}", members.getMbId());
+            
+//          로그인 성공 후 권한 정보 조회
+            Auths permissions = membersMapper.getPermissions(members.getMbId());
+//            System.out.println(permissions);
+            if (permissions != null) {
+                session.setAttribute("inventoryYn", permissions.getInventoryYn());
+                session.setAttribute("shipYn", permissions.getShipYn());
+                session.setAttribute("chartYn", permissions.getChartYn());
+                session.setAttribute("setYn", permissions.getSetYn());
+            }
+            
+            System.out.println("Session Data: mdId=" + session.getAttribute("mdId") + ", corpIdx=" + session.getAttribute("corpIdx") +
+                    ", inventoryYn=" + session.getAttribute("inventoryYn") + ", shipYn=" + session.getAttribute("shipYn") +
+                    ", chartYn=" + session.getAttribute("chartYn") + ", setYn=" + session.getAttribute("setYn"));
             return "success";
         }
-        logger.info("Login failed for user: {}", members.getMbId());
+//        logger.info("Login failed for user: {}", members.getMbId());
         return "fail";
     }
 
     @GetMapping("/members")
     public List<Members> getMembers(HttpSession session) {
         String corpIdx = (String) session.getAttribute("corpIdx");
-        logger.info("Fetching members for corpIdx: {}", corpIdx);
+//        logger.info("Fetching members for corpIdx: {}", corpIdx);
         if (corpIdx != null) {
             List<Members> members = membersMapper.findMembersByCorpIdx(corpIdx);
-            logger.info("Raw members data: {}", members);
+//            logger.info("Raw members data: {}", members);
             for (Members member : members) {
-                logger.info("Member: {}", member);
+//                logger.info("Member: {}", member);
             }
             return members;
         }
@@ -99,7 +115,7 @@ public class MembersController {
     @GetMapping("/members/auths")
     public List<Auths> getAllAuths() {
         List<Auths> auths = membersMapper.findAllAuths();
-        logger.info("Fetched auths: {}", auths);
+//        logger.info("Fetched auths: {}", auths);
         return auths;
     }
 

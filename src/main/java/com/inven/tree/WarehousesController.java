@@ -1,9 +1,6 @@
 package com.inven.tree;
 
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,12 +21,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.inven.tree.mapper.ShelvesMapper;
 import com.inven.tree.mapper.WarehousesMapper;
-import com.inven.tree.model.Auths;
 import com.inven.tree.model.Shelves;
 import com.inven.tree.model.Warehouses;
 
@@ -119,42 +114,6 @@ public class WarehousesController {
         }
     }
     
-    //재고현황 때문에 추가 개별창고 조회
-    @GetMapping("/warehouse/{whIdx}")
-    public ResponseEntity<Map<String, Object>> getWarehouseById(@PathVariable Integer whIdx) {
-        try {
-            Warehouses warehouse = warehousesMapper.selectWarehouseById(whIdx);
-            if (warehouse == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            List<Shelves> shelves = shelvesMapper.selectShelvesByWhIdx(whIdx);
-
-            Map<String, Object> result = new HashMap<>();
-            result.put("whIdx", warehouse.getWhIdx());
-            result.put("bidlName", warehouse.getBidlName());
-            result.put("mbId", warehouse.getMbId());
-            result.put("whAddr", warehouse.getWhAddr());
-            result.put("whStatus", warehouse.getWhStatus());
-
-            if (!shelves.isEmpty()) {
-                List<Map<String, Object>> shelvesInfo = shelves.stream().map(shelf -> {
-                    Map<String, Object> shelfInfo = new HashMap<>();
-                    shelfInfo.put("shelfIdx", shelf.getShelfIdx());
-                    shelfInfo.put("rackId", shelf.getRackId());
-                    shelfInfo.put("shelfId", shelf.getShelfId());
-                    return shelfInfo;
-                }).collect(Collectors.toList());
-                result.put("shelves", shelvesInfo);
-            }
-
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-    
     //창고 정보 변경
     @PutMapping("/warehouse/update")
     public ResponseEntity<String> updateWarehouse(@RequestBody List<Warehouses> warehouses) {
@@ -188,10 +147,9 @@ public class WarehousesController {
     }  
     
     // 창고 정보 추가
-    @PostMapping("/warehouses/insert")
+    @PostMapping("/warehouse/insert")
     public ResponseEntity<String> insertWarehouses(@RequestBody List<Warehouses> warehouses, HttpSession session) {
         String loginCorpIdx = (String)session.getAttribute("corpIdx");
-        System.out.println("Session corpIdx: " + loginCorpIdx);
         
         try {
             // 로그인한 계정의 corpIdx 가져오기
@@ -200,7 +158,6 @@ public class WarehousesController {
                 System.out.println("회사코드가 없음");
                 return ResponseEntity.badRequest().body("session에 corpIdx가 없습니다.");
             }
-            System.out.println("-----------"); //확인용
             
             // warehouses에 corpIdx 설정
             for (Warehouses warehouse : warehouses) {
@@ -228,7 +185,9 @@ public class WarehousesController {
                 if (shelf.getWhIdx() == null) {
                     return ResponseEntity.badRequest().body("선반에 wh_idx가 없습니다.");
                 }
-                
+                if(shelf.getRackId() == null) {
+                	return ResponseEntity.badRequest().body("랙아이디는 빈 값을 사용할 수 없습니다.");
+                }
                 
                 shelvesMapper.insertShelf(shelf); // 데이터베이스에 삽입하는 코드 (추가 작업 필요)
                 System.out.println("Insert result: " + shelf);

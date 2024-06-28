@@ -1,7 +1,6 @@
 package com.inven.tree.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.sql.Timestamp;
 
 public class Stocks {
 	@JsonProperty("stockIdx")

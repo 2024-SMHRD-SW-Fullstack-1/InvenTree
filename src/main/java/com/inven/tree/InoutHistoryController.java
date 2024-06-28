@@ -49,8 +49,8 @@ public class InoutHistoryController {
             List<Map<String, Object>> stockEntries = stocksMapper.selectStocksWithDetailsFiltered(0, Integer.MAX_VALUE, filterColumn, filterValue, corpIdx);
             List<Map<String, Object>> releaseEntries = releasesMapper.selectReleasesWithDetailsFiltered(0, Integer.MAX_VALUE, filterColumn, filterValue, corpIdx);
 
-            logger.info("Stock Entries: {}", stockEntries);
-            logger.info("Release Entries: {}", releaseEntries);
+//            logger.info("Stock Entries: {}", stockEntries);
+//            logger.info("Release Entries: {}", releaseEntries);
 
             List<Map<String, Object>> allEntries = new ArrayList<>();
             allEntries.addAll(stockEntries);
@@ -72,7 +72,7 @@ public class InoutHistoryController {
             result.put("totalEntries", totalEntries);
             result.put("totalPages", totalPages);
 
-            logger.info("Returning result with {} entries", pagedEntries.size());
+//            logger.info("Returning result with {} entries", pagedEntries.size());
 
             return ResponseEntity.ok(result);
         } catch (Exception e) {

@@ -3,8 +3,6 @@ package com.inven.tree.mapper;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
-
 import com.inven.tree.model.Auths;
 
 public interface AuthsMapper {
@@ -20,4 +18,8 @@ public interface AuthsMapper {
     
     // 권한 정보 추가
     void insertAuths(Auths auths);
+    
+    // 권한 정보 확인(특정 mbId) - 로그인 권한 설정
+    Auths getAuthsByMbId(String mbId);
+    
 }

@@ -53,7 +53,8 @@
 		UPDATE subsidiary
 		SET sub_name=#{subName},
 			sub_owner=#{subOwner},
-			sub_tel=#{subAddr},
+			sub_tel=#{subTel},
+			sub_Addr=#{subAddr},
 			is_release=#{isRelease}
 		WHERE sub_idx=#{subIdx}
 	</update>
