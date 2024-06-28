@@ -97,8 +97,8 @@ public class ReportController {
         try {
             Map<Integer, Integer> weeklyStockCount = new HashMap<>();
             Map<Integer, Integer> weeklyReleaseCount = new HashMap<>();
-            Map<Integer, Double> avgWeeklyStockCount = new HashMap<>();
-            Map<Integer, Double> avgWeeklyReleaseCount = new HashMap<>();
+            Map<Integer, String> avgWeeklyStockCount = new HashMap<>(); // Change to String to store formatted value
+            Map<Integer, String> avgWeeklyReleaseCount = new HashMap<>(); // Change to String to store formatted value
 
             IntStream.rangeClosed(1, 5).forEach(week -> {
                 List<Stocks> weeklyStocks = stocksMapper.selectAllStocks().stream()
@@ -130,8 +130,8 @@ public class ReportController {
 
                 weeklyStockCount.put(week, totalStockCount);
                 weeklyReleaseCount.put(week, totalReleaseCount);
-                avgWeeklyStockCount.put(week, avgStockCount);
-                avgWeeklyReleaseCount.put(week, avgReleaseCount);
+                avgWeeklyStockCount.put(week, String.format("%.2f", avgStockCount)); // Format to 2 decimal places
+                avgWeeklyReleaseCount.put(week, String.format("%.2f", avgReleaseCount)); // Format to 2 decimal places
             });
 
             monthlyReport.put("weeklyStockCount", weeklyStockCount);
