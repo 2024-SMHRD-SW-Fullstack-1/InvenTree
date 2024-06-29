@@ -3,6 +3,8 @@ package com.inven.tree.mapper;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 
 import com.inven.tree.model.Warehouses;
@@ -19,6 +21,8 @@ public interface WarehousesMapper {
 	void updateWarehouse(Warehouses warehouses);
 
 	// 창고 추가
+	@Insert("INSERT INTO warehouses (corp_idx, bidl_name, mb_id, wh_addr, wh_status) VALUES (#{corpIdx}, #{bidlName},#{mbId}, #{whAddr}, #{whStatus})")
+	@Options(useGeneratedKeys = true, keyProperty = "whIdx")
 	void insertWarehouse(Warehouses warehouses);
 
 	// 모든 창고 정보 불러오기
@@ -36,6 +40,7 @@ public interface WarehousesMapper {
 	// 창고인덱스로 창고정보 추출(재고 현황 때문에 추가한 메소드)
 	Warehouses selectWarehouseById(Integer whIdx);
 	
+	
 	List<Map<String, Object>> selectWarehousesAndShelvesMap(@Param("corpIdx") String corpIdx);
-
+	
 }

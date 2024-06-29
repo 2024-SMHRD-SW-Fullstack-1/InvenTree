@@ -46,6 +46,7 @@
         FROM warehouses w
         LEFT JOIN shelves s ON w.wh_idx = s.wh_idx
         WHERE w.corp_idx = #{corpIdx}
+        ORDER BY w.bidl_name ASC
     </select>
 
 	<!-- corpIdx로 창고 선반 테이블 출력 -->
@@ -68,11 +69,11 @@
 		</foreach>
 	</delete>
 
-	<!-- 창고 정보 추가 -->
-	<insert id="insertWarehouse" parameterType="Warehouses">
+ 	<!-- 창고 정보 추가 -->
+<!-- 	<insert id="insertWarehouse" parameterType="Warehouses">
 		INSERT INTO warehouses (corp_idx, bidl_name, mb_id, wh_addr, wh_status)
 		VALUES (#{corpIdx}, #{bidlName}, #{mbId}, #{whAddr}, #{whStatus})
-	</insert>
+	</insert>  -->
 
 	<!-- 창고 정보 변경 -->
 	<update id="updateWarehouse" parameterType="Warehouses">
@@ -106,6 +107,11 @@
 		resultType="com.inven.tree.model.Warehouses">
 		SELECT * FROM warehouses WHERE wh_idx = #{whIdx}
 	</select>
+	
+	<!-- 마지막으로 추가한 whIdx -->
+	<select id="getLastInsertedWhIdx" resultType="int">
+        SELECT LAST_INSERT_ID()
+    </select>
 
 
 </mapper>
