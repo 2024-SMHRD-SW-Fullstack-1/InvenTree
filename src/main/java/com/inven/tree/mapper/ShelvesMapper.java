@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-
 public interface ShelvesMapper {
     // 모든 선반 정보 불러오기
     List<Shelves> selectAllShelves();
@@ -38,5 +37,4 @@ public interface ShelvesMapper {
 	
     // Shelves count 메서드
     int countShelvesByWhIdx(List<Integer> whIdx);
-	
 }
