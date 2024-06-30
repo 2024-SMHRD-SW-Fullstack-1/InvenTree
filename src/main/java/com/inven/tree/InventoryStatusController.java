@@ -24,7 +24,7 @@ import com.inven.tree.model.Shelves;
 import com.inven.tree.model.Warehouses;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://inventree.shop"}, allowCredentials = "true")
 @RequestMapping("/api/inventoryStatus")
 public class InventoryStatusController {
 

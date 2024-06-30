@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:3000", "http://inventree.shop"}, allowCredentials = "true")
 public class ImportController {
 
     private static final Logger logger = LoggerFactory.getLogger(ImportController.class);

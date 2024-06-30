@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/session")
-@CrossOrigin(origins="http://localhost:3000", allowCredentials="true")
+@CrossOrigin(origins = {"http://localhost:3000", "http://inventree.shop"}, allowCredentials = "true")
 public class SessionController {
 
     @GetMapping("/data")

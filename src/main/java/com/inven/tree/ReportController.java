@@ -17,12 +17,14 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.inven.tree.mapper.ProductsMapper;
 import com.inven.tree.mapper.ReleasesMapper;
@@ -32,10 +34,13 @@ import com.inven.tree.model.Products;
 import com.inven.tree.model.Releases;
 import com.inven.tree.model.Stocks;
 
-@Controller
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@RestController
+@CrossOrigin(origins = {"http://localhost:3000", "http://inventree.shop"}, allowCredentials = "true")
 @RequestMapping("/api")
 public class ReportController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ReportController.class);
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     private StocksMapper stocksMapper;
@@ -49,44 +54,43 @@ public class ReportController {
     @Autowired
     private SubsidiariesMapper subsidiariesMapper;
 
-    private static final Logger logger = LoggerFactory.getLogger(ReportController.class);
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private String checkSession(HttpSession session) {
+        String corpIdx = (String) session.getAttribute("corpIdx");
+        if (corpIdx == null) {
+            logger.error("Session expired. Please login again.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "세션이 만료되었습니다. 다시 로그인해주세요.");
+        }
+        return corpIdx;
+    }
 
     @GetMapping("/report")
     public ResponseEntity<Map<String, Object>> getReport(
-        @RequestParam("year") int year, 
-        @RequestParam(value = "month", required = false) Integer month,
-        @RequestParam("filterType") String filterType,
-        @RequestParam("filterValue") String filterValue,
-        HttpSession session) {
+            @RequestParam("year") int year, 
+            @RequestParam(value = "month", required = false) Integer month,
+            @RequestParam("filterType") String filterType,
+            @RequestParam("filterValue") String filterValue,
+            HttpSession session) {
         
+        String corpIdx = checkSession(session);
         Map<String, Object> response = new HashMap<>();
+        response.put("corpIdx", corpIdx);
+
         try {
-
-            String corpIdx = (String) session.getAttribute("corpIdx");
-            if (corpIdx == null) {
-                response.put("error", "세션이 만료되었습니다. 다시 로그인해주세요.");
-                logger.error("Session expired. Please login again.");
-                return ResponseEntity.status(403).body(response);
-            }
-
-            response.put("corpIdx", corpIdx);
-
             if (month == null) {
-                Map<Integer, Map<String, Object>> monthlyData = new HashMap<>();
-                for (int i = 1; i <= 12; i++) {
-                    monthlyData.put(i, getMonthlyData(year, i, filterType, filterValue, corpIdx));
-                }
+                Map<Integer, Map<String, Object>> monthlyData = IntStream.rangeClosed(1, 12)
+                    .boxed()
+                    .collect(Collectors.toMap(
+                        i -> i,
+                        i -> getMonthlyData(year, i, filterType, filterValue, corpIdx)
+                    ));
                 response.put("monthlyData", monthlyData);
-                return ResponseEntity.ok(response);
             } else {
-                Map<String, Object> monthlyReport = getMonthlyData(year, month, filterType, filterValue, corpIdx);
-                return ResponseEntity.ok(monthlyReport);
+                response = getMonthlyData(year, month, filterType, filterValue, corpIdx);
             }
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            response.put("error", "예상치 못한 오류가 발생했습니다: " + e.getMessage());
-            logger.error("Unexpected error occurred: ", e);
-            return ResponseEntity.status(500).body(response);
+            logger.error("Error generating report", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "예상치 못한 오류가 발생했습니다", e);
         }
     }
 
@@ -97,8 +101,8 @@ public class ReportController {
         try {
             Map<Integer, Integer> weeklyStockCount = new HashMap<>();
             Map<Integer, Integer> weeklyReleaseCount = new HashMap<>();
-            Map<Integer, String> avgWeeklyStockCount = new HashMap<>(); // Change to String to store formatted value
-            Map<Integer, String> avgWeeklyReleaseCount = new HashMap<>(); // Change to String to store formatted value
+            Map<Integer, String> avgWeeklyStockCount = new HashMap<>();
+            Map<Integer, String> avgWeeklyReleaseCount = new HashMap<>();
 
             IntStream.rangeClosed(1, 5).forEach(week -> {
                 List<Stocks> weeklyStocks = stocksMapper.selectAllStocks().stream()
@@ -130,8 +134,8 @@ public class ReportController {
 
                 weeklyStockCount.put(week, totalStockCount);
                 weeklyReleaseCount.put(week, totalReleaseCount);
-                avgWeeklyStockCount.put(week, String.format("%.2f", avgStockCount)); // Format to 2 decimal places
-                avgWeeklyReleaseCount.put(week, String.format("%.2f", avgReleaseCount)); // Format to 2 decimal places
+                avgWeeklyStockCount.put(week, String.format("%.2f", avgStockCount));
+                avgWeeklyReleaseCount.put(week, String.format("%.2f", avgReleaseCount));
             });
 
             monthlyReport.put("weeklyStockCount", weeklyStockCount);
@@ -139,8 +143,8 @@ public class ReportController {
             monthlyReport.put("avgWeeklyStockCount", avgWeeklyStockCount);
             monthlyReport.put("avgWeeklyReleaseCount", avgWeeklyReleaseCount);
         } catch (Exception e) {
-            monthlyReport.put("error", "보고서 생성 중 오류가 발생했습니다: " + e.getMessage());
-            logger.error("Error generating monthly report: ", e);
+            logger.error("Error generating monthly report", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "보고서 생성 중 오류가 발생했습니다", e);
         }
 
         return monthlyReport;
@@ -148,29 +152,17 @@ public class ReportController {
     
     @GetMapping("/filterList")
     public ResponseEntity<Map<String, Object>> getFilterList(@RequestParam("filterColumn") String filterColumn, HttpSession session) {
-        Map<String, Object> response = new HashMap<>();
+        String corpIdx = checkSession(session);
+        
         try {
-            String corpIdx = (String) session.getAttribute("corpIdx");
-            if (corpIdx == null) {
-                response.put("error", "세션이 만료되었습니다. 다시 로그인해주세요.");
-                response.put("step", "Session Check");
-                return ResponseEntity.status(403).body(response);
-            }
+            List<String> filterList = filterColumn.equals("company") 
+                ? subsidiariesMapper.selectDistinctByColumnAndCorpIdx("sub_name", corpIdx)
+                : productsMapper.selectDistinctByColumnAndCorpIdx(filterColumn, corpIdx);
 
-            List<String> filterList;
-            if (filterColumn.equals("company")) {
-                filterList = subsidiariesMapper.selectDistinctByColumnAndCorpIdx("sub_name", corpIdx);
-            } else {
-                filterList = productsMapper.selectDistinctByColumnAndCorpIdx(filterColumn, corpIdx);
-            }
-
-            response.put("filterList", filterList);
-            response.put("message", "Filter list fetched successfully");
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(Map.of("filterList", filterList, "message", "Filter list fetched successfully"));
         } catch (Exception e) {
-            response.put("error", "필터 목록을 가져오는 중 오류가 발생했습니다: " + e.getMessage());
-            response.put("step", "Filter List Fetching");
-            return ResponseEntity.status(500).body(response);
+            logger.error("Error fetching filter list", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "필터 목록을 가져오는 중 오류가 발생했습니다", e);
         }
     }
 
@@ -179,17 +171,14 @@ public class ReportController {
                                                               @RequestParam("month") int month,
                                                               @RequestParam(value = "productName", required = false) String productName,
                                                               HttpSession session) {
-        try {
-            String corpIdx = (String) session.getAttribute("corpIdx");
-            if (corpIdx == null) {
-                return ResponseEntity.status(403).body(null);
-            }
+        String corpIdx = checkSession(session);
 
+        try {
             AtomicReference<Integer> prodIdx = new AtomicReference<>(null);
             if (productName != null && !productName.trim().isEmpty()) {
                 Products product = productsMapper.selectProductByName(productName);
                 if (product == null) {
-                    return ResponseEntity.status(404).body(null);
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
                 }
                 prodIdx.set(product.getProdIdx());
             }
