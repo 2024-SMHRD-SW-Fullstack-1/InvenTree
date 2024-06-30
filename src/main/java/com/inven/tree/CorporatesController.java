@@ -19,7 +19,7 @@ import com.inven.tree.model.Corporates;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:3000", "http://inventree.shop"}, allowCredentials = "true")
 public class CorporatesController {
     @Autowired
     private CorporatesMapper corpMapper;

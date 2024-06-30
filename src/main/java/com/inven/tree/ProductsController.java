@@ -24,7 +24,7 @@ import com.inven.tree.model.Products;
 import com.inven.tree.model.Subsidiaries;
 
 @Controller
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://inventree.shop"}, allowCredentials = "true")
 @RequestMapping("/api")
 public class ProductsController {
 

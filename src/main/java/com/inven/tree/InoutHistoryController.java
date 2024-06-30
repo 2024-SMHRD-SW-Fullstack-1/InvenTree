@@ -22,7 +22,7 @@ import com.inven.tree.mapper.StocksMapper;
 
 @Controller
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:3000", "http://inventree.shop"}, allowCredentials = "true")
 public class InoutHistoryController {
 
     private static final Logger logger = LoggerFactory.getLogger(InoutHistoryController.class);
