@@ -44,7 +44,6 @@
 		WHERE shelf_idx = #{shelfIdx}
 	</update>
 
-	<!-- insertShelf -->
 	<!-- 선반 정보 추가 -->
 	<insert id="insertShelf" parameterType="Shelves">
 		INSERT INTO shelves
@@ -87,7 +86,7 @@
 
 	<select id="selectShelfByShelfId"
 		resultType="com.inven.tree.model.Shelves">
-		SELECT * FROM shelves WHERE shelf_id = #{shelfId} LIMIT 1
+		SELECT * FROM shelves WHERE shelf_id = #{shelfId}
 	</select>
 
 	<select id="selectShelvesByWhIdx"
@@ -95,5 +94,14 @@
 		SELECT * FROM shelves WHERE wh_idx = #{whIdx}
 	</select>
 
-
+	<!-- Shelves count 쿼리 -->
+    <select id="countShelvesByWhIdx" resultType="int" parameterType="java.util.List">
+        SELECT COUNT(*) 
+        FROM shelves 
+        WHERE wh_idx IN 
+        <foreach item="whIdx" index="index" collection="list" open="(" separator="," close=")">
+            #{whIdx}
+        </foreach>
+    </select>
+	
 </mapper>

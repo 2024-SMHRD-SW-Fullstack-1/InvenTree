@@ -10,28 +10,30 @@ import java.util.Properties;
 @Configuration
 public class RecaptchaConfig implements InitializingBean {
 
-    private String siteKey;
-    private String secretKey;
+	private String siteKey;
+	private String secretKey;
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        String recaptchaFilePath = "C:\\Users\\sr139\\OneDrive\\Desktop\\Project\\reCAPTCHA.txt"; // 파일 경로를 직접 지정
-        try (BufferedReader reader = new BufferedReader(new FileReader(recaptchaFilePath))) {
-            Properties properties = new Properties();
-            properties.load(reader);
-            siteKey = properties.getProperty("siteKey");
-            secretKey = properties.getProperty("secretKey");
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to load reCAPTCHA keys from file");
-        }
-    }
+	@Override
+	public void afterPropertiesSet() throws Exception {
 
-    public String getSiteKey() {
-        return siteKey;
-    }
+		String recaptchaFilePath = "C:\\Users\\sr139\\OneDrive\\Desktop\\Project\\reCAPTCHA.txt"; // 파일 경로를 직접 지정
 
-    public String getSecretKey() {
-        return secretKey;
-    }
+		try (BufferedReader reader = new BufferedReader(new FileReader(recaptchaFilePath))) {
+			Properties properties = new Properties();
+			properties.load(reader);
+			siteKey = properties.getProperty("siteKey");
+			secretKey = properties.getProperty("secretKey");
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Failed to load reCAPTCHA keys from file");
+		}
+	}
+
+	public String getSiteKey() {
+		return siteKey;
+	}
+
+	public String getSecretKey() {
+		return secretKey;
+	}
 }

@@ -31,8 +31,19 @@ public class Members {
     // 기본 생성자
     public Members() {
     }
+    
+ // 권한 등급 (임시 필드)
+    private String role;
+    
+    public String getRole() {
+		return role;
+	}
 
-    // 캡차 생성자
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	// 캡차 생성자
     public Members(String mbId, String mbPw, String corpIdx) {
         this.mbId = mbId;
         this.mbPw = mbPw;

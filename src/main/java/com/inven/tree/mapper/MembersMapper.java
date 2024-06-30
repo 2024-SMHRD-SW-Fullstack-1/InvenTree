@@ -1,6 +1,9 @@
 package com.inven.tree.mapper;
 
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.inven.tree.model.Auths;
 import com.inven.tree.model.Members;
 
@@ -29,8 +32,21 @@ public interface MembersMapper {
 
     // 사용자의 회사 코드로 멤버 정보 불러오기
     List<Members> findMembersByCorpIdx(String corpIdx);
-    
+
     // 새로운 권한 조회 메서드 (권한 제한)
     Auths getPermissions(String mbId);
+
+    // 특정 회원 정보 가져오기
+    Members findByIdAndCorpIdx(@Param("mbId") String mbId, @Param("corpIdx") String corpIdx);
+
+    // 특정 회원의 권한 정보 가져오기
+    Auths findAuthsByMbIdAndCorpIdx(@Param("mbId") String mbId, @Param("corpIdx") String corpIdx);
+
+    
+    //다크모드로 인하여 추가
+	String getMbTheme(String mbId);
+	
+	 void updateMbTheme(@Param("mbId") String mbId, @Param("theme") String theme);
+    
 
 }

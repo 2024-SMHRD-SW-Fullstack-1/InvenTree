@@ -11,6 +11,14 @@
 		</layout>
 	</appender>
 	
+	<logger name="org.mybatis">
+	    <level value="ERROR" />
+	</logger>
+	
+	<logger name="org.springframework">
+	    <level value="ERROR" />
+	</logger>
+	
 	<!-- Application Loggers -->
 	<logger name="com.inven.tree">
 		<level value="info" />

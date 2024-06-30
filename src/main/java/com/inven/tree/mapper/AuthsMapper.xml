@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.inven.tree.mapper.AuthsMapper">
     <!-- result map 설정 -->
@@ -22,15 +21,17 @@
         <result property="setYn" column="set_yn"/>
         <result property="mbName" column="mb_name"/>
         <result property="isAdmin" column="is_admin"/>
+        <result property="corpIdx" column="corp_idx"/>
     </resultMap>
     
     <!-- corpIdx에 해당하는 Auths를 가져오는 SQL -->
     <select id="selectAllAuthsByCorpIdx" resultMap="resultAuthsAndMembers">
-	    SELECT m.mb_id AS mbId, m.mb_name, m.is_admin,
+	    SELECT m.mb_id AS mbId, m.mb_name, m.is_admin,m.corp_idx,
 	    	   a.mb_id AS mbId, a.inventory_yn, a.ship_yn, a.chart_yn, a.set_yn 
 		FROM auths AS a
 		JOIN members AS m ON a.mb_id = m.mb_id
 		WhERE m.is_admin='N'
+		and m.corp_idx =#{corpIdx}
 	    
     </select>
     

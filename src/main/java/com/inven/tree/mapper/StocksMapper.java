@@ -7,7 +7,6 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.inven.tree.model.Releases;
 import com.inven.tree.model.Stocks;
 
 @Mapper

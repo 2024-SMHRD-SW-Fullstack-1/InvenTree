@@ -16,7 +16,6 @@ public interface ShelvesMapper {
     List<Shelves> selectAllShelvesBywhIdx(@Param("loginWhIdx") List<Integer> whIds);
     
     // 창고 식별자로 선반 데이터 삭제(shelfIdx)
-    @Transactional
     void deleteShelvesByShelfIdxAndWhIdx(@Param("loginShelfIdx") List<Integer> shelfIds,@Param("loginWhIdx") List<Integer> whIds);
     
     // 선반 정보 변경
@@ -29,7 +28,6 @@ public interface ShelvesMapper {
     List<Shelves> findByCorpIdx(String corpIdx);
 
     // 선반 정보 삭제
-	@Transactional
 	void deleteShelves(List<Integer> ids);
 
 	// 재고현황 때문에 추가
@@ -37,5 +35,8 @@ public interface ShelvesMapper {
 	
 	// 재고 현황 때문에 추가
 	List<Shelves> selectShelvesByWhIdx(Integer whIdx);
+	
+    // Shelves count 메서드
+    int countShelvesByWhIdx(List<Integer> whIdx);
 	
 }

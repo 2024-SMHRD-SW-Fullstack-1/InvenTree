@@ -26,6 +26,7 @@ public class SessionController {
         sessionData.put("shipYn", session.getAttribute("shipYn"));
         sessionData.put("chartYn", session.getAttribute("chartYn"));
         sessionData.put("setYn", session.getAttribute("setYn"));
+        sessionData.put("theme", session.getAttribute("theme"));  // 테마 정보 추가
         return ResponseEntity.ok(sessionData);
     }
 }
