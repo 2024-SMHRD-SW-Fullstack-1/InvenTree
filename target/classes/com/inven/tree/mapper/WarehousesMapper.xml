@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inven.tree.mapper.WarehousesMapper">
+
+
+	<!-- 창고 맵 -->
+	<resultMap type="com.inven.tree.model.Warehouses"
+		id="warehouses">
+		<id property="whIdx" column="wh_idx" /> <!-- primary key -->
+		<result property="corpIdx" column="corp_idx" />
+		<result property="bidlName" column="bidl_name" />
+		<result property="mbId" column="mb_id" />
+		<result property="whAddr" column="wh_addr" />
+		<result property="whStatus" column="wh_status" />
+	</resultMap>
+
+	<!-- 창고 선반 맵 -->
+	<resultMap type="map" id="warehousesWithShelvesMap">
+		<id property="whIdx" column="wh_idx" />
+		<result property="corpIdx" column="corp_idx" />
+		<result property="bidlName" column="bidl_name" />
+		<result property="mbId" column="mb_id" />
+		<result property="whAddr" column="wh_addr" />
+		<result property="whStatus" column="wh_status" />
+		<result property="shelfIdx" column="shelf_idx" />
+		<result property="shelfId" column="shelf_id" />
+		<result property="rackId" column="rack_id" />
+		<result property="mbName" column="mb_id" />
+	</resultMap>
+	
+	<!-- 재고 현황때문에 새로만든 맵 -->
+	<resultMap type="com.inven.tree.model.Warehouses" id="warehousesMap">
+        <id property="whIdx" column="wh_idx" />
+        <result property="corpIdx" column="corp_idx" />
+        <result property="bidlName" column="bidl_name" />
+        <result property="mbId" column="mb_id" />
+        <result property="whAddr" column="wh_addr" />
+        <result property="whStatus" column="wh_status" />
+    </resultMap>
+    
+     <select id="selectAllWarehouses" resultMap="warehousesMap">
+        SELECT * FROM warehouses WHERE corp_idx = #{corpIdx}
+    </select>
+    
+    <select id="selectWarehousesAndShelvesMap" resultType="map">
+        SELECT w.wh_idx, w.corp_idx, w.bidl_name, w.mb_id, w.wh_addr, w.wh_status,
+               s.shelf_idx, s.shelf_id, s.rack_id, s.wh_idx AS shelf_wh_idx
+        FROM warehouses w
+        LEFT JOIN shelves s ON w.wh_idx = s.wh_idx
+        WHERE w.corp_idx = #{corpIdx}
+        ORDER BY w.bidl_name ASC
+    </select>
+
+	<!-- corpIdx로 창고 선반 테이블 출력 -->
+	<select id="getWarehousesAndShelvesByCorpIdx"
+		resultMap="warehousesWithShelvesMap">
+		SELECT w.wh_idx, w.corp_idx, w.bidl_name, w.mb_id, w.wh_addr, w.wh_status,
+		s.shelf_idx, s.shelf_id, s.rack_id
+		FROM warehouses w
+		LEFT JOIN shelves s ON w.wh_idx = s.wh_idx
+		WHERE w.corp_idx = #{corpIdx}
+	</select>
+
+	<!-- whIdx가 같은 창고들 삭제하는 SQL -->
+	<delete id="deleteWarehouses">
+		DELETE FROM warehouses
+		WHERE wh_idx IN
+		<foreach collection="loginWhIdx" item="whIds" open="("
+			separator="," close=")">
+			#{whIds}
+		</foreach>
+	</delete>
+
+	<!-- 창고 정보 변경 -->
+	<update id="updateWarehouse" parameterType="Warehouses">
+		UPDATE warehouses SET bidl_name = #{bidlName}, mb_id = #{mbId}, wh_addr =
+		#{whAddr},
+		wh_status = #{whStatus} WHERE wh_idx = #{whIdx}
+	</update>
+
+	<!-- 회사코드로 창고 추출 -->
+	<select id="findByCorpIdx" resultMap="warehouses">
+		SELECT wh_idx, corp_idx,
+		bidl_name, mb_id, wh_addr, wh_status
+		FROM warehouses
+		WHERE corp_idx =
+		#{corpIdx}
+	</select>
+
+	<!-- 모든 Warehouses를 가져오는 SQL -->
+	<select id="allWarehouses" resultMap="warehouses">
+		SELECT * FROM warehouses
+	</select>
+
+    <!-- 창고 이름으로 창고를 조회하는 SQL 쿼리 -->
+	<select id="selectWarehouseByBidlName"
+		resultType="com.inven.tree.model.Warehouses">
+		SELECT * FROM warehouses WHERE bidl_name = #{bidlName}
+		LIMIT 1
+	</select>
+
+	<!-- 창고 ID로 창고를 조회하는 SQL 쿼리 -->
+	<select id="selectWarehouseById"
+		resultType="com.inven.tree.model.Warehouses">
+		SELECT * FROM warehouses WHERE wh_idx = #{whIdx}
+	</select>
+	
+	<!-- 마지막으로 추가한 whIdx -->
+	<select id="getLastInsertedWhIdx" resultType="int">
+        SELECT LAST_INSERT_ID()
+    </select>
+
+
+</mapper>

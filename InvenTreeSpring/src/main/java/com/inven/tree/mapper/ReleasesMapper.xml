@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.inven.tree.mapper.ReleasesMapper">
+
+  <!-- ResultMap 정의 -->
+  <resultMap id="releasesResultMap" type="com.inven.tree.model.Releases">
+    <id property="releaseIdx" column="release_idx" />
+    <result property="corpIdx" column="corp_idx" />
+    <result property="prodIdx" column="prod_idx" />
+    <result property="releaseCnt" column="release_cnt" />
+    <result property="releasedAt" column="released_at" />
+    <result property="subIdx" column="sub_idx" />
+  </resultMap>
+
+  <!-- 새로운 ResultMap 정의 (상세 정보 포함) -->
+  <resultMap id="releasesDetailResultMap" type="map">
+    <result property="releaseIdx" column="release_idx" />
+    <result property="corpIdx" column="corp_idx" />
+    <result property="company" column="sub_name" />
+    <result property="productCode" column="prod_barcode" />
+    <result property="productName" column="prod_name" />
+    <result property="releaseCnt" column="release_cnt" />
+    <result property="releasedAt" column="released_at" />
+    <result property="isRelease" column="is_release" />
+    <result property="subIdx" column="sub_idx" />
+  </resultMap>
+
+  <!-- 모든 Releases를 가져오는 SQL -->
+  <select id="selectAllReleases" resultMap="releasesResultMap">
+    SELECT * FROM releases
+  </select>
+
+  <!-- releases 테이블에 데이터 삽입 SQL -->
+  <insert id="insertRelease">
+    INSERT INTO releases (corp_idx, prod_idx, release_cnt, released_at, sub_idx)
+    VALUES (#{corpIdx}, #{prodIdx}, #{releaseCnt}, #{releasedAt}, #{subIdx})
+  </insert>
+
+  <!-- ID 목록에 해당하는 Releases를 가져오는 SQL -->
+  <select id="selectReleasesByIds" parameterType="list" resultMap="releasesResultMap">
+    SELECT * FROM releases
+    WHERE release_idx IN
+    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <!-- 사용자의 회사 코드와 날짜로 Releases를 가져오는 SQL -->
+  <select id="selectByCorpIdxAndDate" resultMap="releasesResultMap">
+    SELECT *
+    FROM releases
+    WHERE corp_idx = #{corpIdx}
+    AND YEAR(released_at) = #{year}
+    AND MONTH(released_at) = #{month}
+    <if test="prodIdx != null">
+      AND prod_idx = #{prodIdx}
+    </if>
+  </select>
+
+  <!-- 필터링 및 페이징된 Releases와 상세 정보를 가져오는 SQL -->
+  <select id="selectReleasesWithDetailsFiltered" resultMap="releasesDetailResultMap">
+    SELECT
+      r.release_idx AS releaseIdx,
+      r.corp_idx AS corpIdx,
+      sub.sub_name AS company,
+      p.prod_barcode AS productCode,
+      p.prod_name AS productName,
+      r.release_cnt AS releaseCnt,
+      DATE_FORMAT(r.released_at, '%Y-%m-%d %H:%i:%s') AS date,
+      'Y' AS isRelease,
+      r.sub_idx AS subIdx
+    FROM releases r
+    JOIN subsidiary sub ON r.sub_idx = sub.sub_idx
+    JOIN products p ON r.prod_idx = p.prod_idx
+    WHERE r.corp_idx = #{corpIdx}
+    <if test="filterColumn != null and filterColumn != '' and filterValue != null and filterValue != ''">
+      AND
+      <choose>
+        <when test="filterColumn == 'company'">
+          sub.sub_name LIKE CONCAT('%', #{filterValue}, '%')
+        </when>
+        <when test="filterColumn == 'productCode'">
+          p.prod_barcode LIKE CONCAT('%', #{filterValue}, '%')
+        </when>
+        <when test="filterColumn == 'productName'">
+          p.prod_name LIKE CONCAT('%', #{filterValue}, '%')
+        </when>
+        <when test="filterColumn == 'quantity'">
+          r.release_cnt = #{filterValue}
+        </when>
+        <when test="filterColumn == 'date'">
+          DATE(r.released_at) = DATE(#{filterValue})
+        </when>
+        <when test="filterColumn == 'type'">
+          '출고' = #{filterValue}
+        </when>
+      </choose>
+    </if>
+    ORDER BY r.released_at DESC
+    LIMIT #{size} OFFSET #{offset}
+  </select>
+
+  <!-- 필터링된 항목의 총 개수를 세는 SQL -->
+  <select id="countFilteredEntries" resultType="int">
+    SELECT COUNT(*)
+    FROM releases r
+    JOIN subsidiary sub ON r.sub_idx = sub.sub_idx
+    JOIN products p ON r.prod_idx = p.prod_idx
+    WHERE r.corp_idx = #{corpIdx}
+    <if test="filterColumn != null and filterColumn != '' and filterValue != null and filterValue != ''">
+      AND
+      <choose>
+        <when test="filterColumn == 'company'">
+          sub.sub_name LIKE CONCAT('%', #{filterValue}, '%')
+        </when>
+        <when test="filterColumn == 'productCode'">
+          p.prod_barcode LIKE CONCAT('%', #{filterValue}, '%')
+        </when>
+        <when test="filterColumn == 'productName'">
+          p.prod_name LIKE CONCAT('%', #{filterValue}, '%')
+        </when>
+        <when test="filterColumn == 'quantity'">
+          r.release_cnt = #{filterValue}
+        </when>
+        <when test="filterColumn == 'date'">
+          DATE(r.released_at) = DATE(#{filterValue})
+        </when>
+        <when test="filterColumn == 'type'">
+          '출고' = #{filterValue}
+        </when>
+      </choose>
+    </if>
+  </select>
+
+  <!-- 오늘 날짜의 출고 데이터를 가져오는 쿼리 -->
+  <select id="findTodayReleasesByCorpIdx" resultMap="releasesResultMap">
+    SELECT *
+    FROM releases
+    WHERE DATE(released_at) = CURRENT_DATE
+    AND corp_idx = #{corpIdx}
+  </select>
+
+  <!-- 회사 코드로 전체 출고 데이터를 가져오는 쿼리 -->
+  <select id="findReleasesByCorpIdx" resultMap="releasesResultMap">
+    SELECT * FROM releases WHERE corp_idx = #{corpIdx}
+  </select>
+  
+  <!-- 회사 코드로 상위 변동 재고를 가져오는 쿼리 -->
+  <select id="findTopReleasesChanges" resultMap="releasesResultMap">
+    SELECT *
+    FROM releases
+    WHERE corp_idx = #{corpIdx}
+    ORDER BY ABS(release_cnt) DESC
+  </select>
+</mapper>

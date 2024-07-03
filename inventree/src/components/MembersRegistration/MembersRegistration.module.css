@@ -1,0 +1,231 @@
+.tableContainer {
+  margin: 0 10%; /* 양쪽에 10% 마진을 추가하여 중앙 정렬 */
+}
+
+.headerContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  color: #9eb696; /* 텍스트 색상 설정 */
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 5px; /* 버튼 간격 설정 */
+}
+
+.defaultButton {
+  background-color: transparent; /* 배경색 투명 설정 */
+  color: black; /* 텍스트 색상 설정 */
+  border: none; /* 테두리 제거 */
+  padding: 10px 20px; /* 패딩 설정 */
+  cursor: pointer; /* 커서 포인터 설정 */
+  display: flex;
+  align-items: center;
+  gap: 5px; /* 아이콘과 텍스트 간격 설정 */
+  transition: background-color 0.3s; /* 배경색 전환 효과 설정 */
+}
+
+.defaultButton:hover {
+  background-color: #f0f0f0; /* 호버 시 배경색 설정 */
+}
+
+.defaultButton img {
+  width: 20px;
+  height: 20px; /* 이미지 크기 설정 */
+}
+
+.addRowButton {
+  padding: 10px 20px;
+  margin: 5px; /* 마진 설정 */
+  border: none; /* 테두리 제거 */
+  color: white; /* 텍스트 색상 설정 */
+  cursor: pointer; /* 커서 포인터 설정 */
+  border-radius: 4px; /* 경계 반경 설정 */
+  background-color: #9eb696; /* 배경색 설정 */
+  transition: background-color 0.3s; /* 배경색 전환 효과 설정 */
+}
+
+.addRowButton:hover {
+  background-color: #6fa16f; /* 호버 시 배경색 설정 */
+}
+
+.table {
+  width: 100%; /* 테이블 너비 100% 설정 */
+  border-collapse: collapse; /* 테이블 셀 경계선 결합 */
+  table-layout: fixed; /* 고정된 너비를 설정 */
+}
+
+.thead {
+  background-color: #e0e8d8; /* 테이블 헤더 배경색 설정 */
+}
+
+.table th,
+.table td {
+  padding: 10px;
+  text-align: center; /* 텍스트 가운데 정렬 */
+  border-bottom: 1px solid #ddd; /* 셀 아래쪽 경계선 설정 */
+  vertical-align: middle; /* 수직 중앙 정렬 */
+}
+
+.table th:nth-child(1),
+.table td:nth-child(1) {
+  width: 40px; /* 체크박스 열의 너비 */
+}
+
+.table th {
+  height: 30px; /* 헤더 높이 설정 */
+  background-color: #e0e8d8; /* 헤더 배경색 설정 */
+}
+
+.table tbody tr:hover {
+  background-color: #f5f5f5; /* 행 호버 시 배경색 설정 */
+}
+
+.table tbody tr {
+  height: 20px; /* 고정된 행 높이 설정 */
+}
+
+.checkbox {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none; /* 기본 체크박스 스타일 제거 */
+  width: 18px;
+  height: 18px; /* 체크박스 크기 설정 */
+  border: 2px solid #7eb47e; /* 테두리 색상 설정 */
+  border-radius: 3px; /* 경계 반경 설정 */
+  outline: none; /* 윤곽선 제거 */
+  cursor: pointer; /* 커서 포인터 설정 */
+  position: relative; /* 상대 위치 설정 */
+}
+
+.checkbox:checked {
+  background-color: #7eb47e; /* 체크된 상태의 배경색 설정 */
+  border: none; /* 테두리 제거 */
+}
+
+.checkbox:checked::after {
+  content: '✔'; /* 체크 표시 설정 */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* 체크 표시 가운데 정렬 */
+  color: white; /* 체크 표시 색상 설정 */
+  font-size: 14px; /* 체크 표시 폰트 크기 설정 */
+}
+
+.inputText,
+.inputDate,
+.react-select__control {
+  width: 100%; /* 너비 100% 설정 */
+  box-sizing: border-box; /* 박스 모델 설정 */
+  border: none; /* 테두리 제거 */
+  border-radius: 4px; /* 경계 반경 설정 */
+  padding: 8px; /* 패딩 설정 */
+  margin: 0; /* 마진 제거 */
+  height: calc(55px); /* 셀 높이에 맞추기, 패딩을 고려 */
+  text-align: center; /* 텍스트 가운데 정렬 */
+  font-size: 16px; /* 폰트 크기 설정 */
+}
+
+.inputText:focus,
+.inputDate:focus,
+.react-select__control--is-focused {
+  border-color: #7eb47e; /* 포커스 시 테두리 색상 설정 */
+  outline: none; /* 윤곽선 제거 */
+}
+
+.react-select__control {
+  display: flex;
+  align-items: center; /* 아이템을 가운데 정렬 */
+  padding: 0; /* 패딩 제거 */
+  min-height: 40px; /* 최소 높이 설정 */
+  height: calc(100% - 20px); /* 셀 높이에 맞추기, 패딩을 고려 */
+}
+
+@media only screen and (max-width: 768px) {
+  .title {
+    margin-left: 3%; /* 작은 화면에서 왼쪽 마진 설정 */
+  }
+
+  .tableContainer {
+    width: 100%; /* 작은 화면에서 전체 너비 사용 */
+    padding: 0 3%; /* 패딩 설정 */
+  }
+
+  .headerContainer {
+    flex-direction: column; /* 컬럼 방향으로 변경 */
+    justify-content: center; /* 중앙 정렬 */
+    align-items: flex-start; /* 시작점에 맞추기 */
+  }
+
+  .buttonContainer {
+    width: 100%; /* 전체 너비 사용 */
+    justify-content: flex-start; /* 시작점에 맞추기 */
+  }
+
+  .defaultButton {
+    flex-direction: column; /* 컬럼 방향으로 변경 */
+    align-items: center; /* 가운데 정렬 */
+    gap: 3px; /* 간격 설정 */
+  }
+}
+
+/* MembersRegistration.module.css 다크 모드 스타일 */
+:global(.dark-mode) .headerContainer {
+  background-color: #333; /* 다크 모드 배경색 설정 */
+  color: #9eb696; /* 다크 모드 텍스트 색상 설정 */
+}
+
+:global(.dark-mode) .buttonContainer {
+  background-color: #333; /* 다크 모드 배경색 설정 */
+}
+
+:global(.dark-mode) .defaultButton {
+  color: white; /* 다크 모드 텍스트 색상 설정 */
+}
+
+:global(.dark-mode) .defaultButton:hover {
+  background-color: #444; /* 다크 모드 호버 시 배경색 설정 */
+}
+
+:global(.dark-mode) .defaultButton img {
+  filter: invert(100%); /* 다크 모드 이미지 색상 반전 */
+}
+
+:global(.dark-mode) .addRowButton:hover {
+  background-color: #6fa16f; /* 다크 모드 행 추가 버튼 호버 시 배경색 설정 */
+}
+
+:global(.dark-mode) .table th {
+  background-color: #555; /* 다크 모드 테이블 헤더 배경색 설정 */
+  color: #ccc; /* 다크 모드 테이블 헤더 텍스트 색상 설정 */
+}
+
+:global(.dark-mode) .table th,
+:global(.dark-mode) .table td {
+  border-color: #666; /* 다크 모드 테이블 경계선 색상 설정 */
+}
+
+:global(.dark-mode) .table tbody tr:hover {
+  background-color: #505050; /* 다크 모드 테이블 행 호버 시 배경색 설정 */
+}
+
+:global(.dark-mode) .checkbox {
+  border-color: #95cf9f; /* 다크 모드 체크박스 테두리 색상 설정 */
+}
+
+:global(.dark-mode) .checkbox:checked {
+  background-color: #95cf9f; /* 다크 모드 체크박스 체크된 상태 배경색 설정 */
+}
+
+:global(.dark-mode) .checkbox:checked::after {
+  color: white; /* 다크 모드 체크박스 체크 표시 색상 설정 */
+}
+
+:global(.dark-mode) .inputText {
+  background-color: #333; /* 다크 모드 입력 텍스트 배경색 설정 */
+  color: #ffffff; /* 다크 모드 입력 텍스트 색상 설정 */
+}

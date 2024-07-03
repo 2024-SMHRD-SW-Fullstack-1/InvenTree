@@ -1,0 +1,333 @@
+.tableContainer {
+    margin: 0 10%;
+}
+
+.headerContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    color:#9eb696;
+}
+
+.buttonContainer {
+    display: flex;
+    gap: 5px;
+}
+
+.defaultButton {
+    background-color: transparent;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.3s;
+}
+
+.defaultButton:hover {
+    background-color: #f0f0f0;
+}
+
+.defaultButton img {
+    width: 20px;
+    height: 20px;
+}
+
+.addRowButton {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    background-color: #9eb696;
+    transition: background-color 0.3s;
+}
+
+.addRowButton:hover {
+    background-color: #6fa16f;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.thead {
+    background-color: #e0e8d8;
+}
+
+.table th,
+.table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle;
+}
+
+.table th:nth-child(1),
+.table td:nth-child(1) {
+    width: 40px;
+}
+
+.table th {
+    height: 30px;
+    background-color: #e0e8d8;
+}
+
+.table tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+.table tbody tr {
+    height: 50px;
+}
+
+.tableInput {
+    width: 100%;
+    border: none;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    text-align: center;
+    height: 50px;
+    font-size: 16px;
+}
+
+.tableInput:focus {
+    border: none;
+    outline: none; /* 포커스 시 검정 테두리 제거 */
+}
+
+.selectInput {
+    width: 100%;
+    height: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    text-align: center;
+    border: none;
+    background-color: white;
+    font-size: 16px;
+}
+
+.checkbox {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #7eb47e;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+}
+
+.checkbox:checked {
+    background-color: #7eb47e;
+    border: none;
+}
+
+.checkbox:checked::after {
+    content: "✔";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 14px;
+}
+
+.searchFilterContainer {
+    display: flex;
+    justify-content: flex-end; /* 우측 정렬 */
+    align-items: center; /* 아이템을 수직으로 가운데 정렬 */
+    margin-top: 10px;
+    margin-left: 170px; /* 헤더 아이콘에 맞추기 위해 조정 */
+}
+
+.searchInputContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-right: 10px; /* 필터 버튼과의 간격 조정 */
+}
+
+.searchInputContainer .icon {
+    position: absolute;
+    left: 10px;
+    width: 20px;
+    height: 20px;
+}
+
+.searchInput {
+    padding: 10px 10px 10px 40px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    width: 300px;
+}
+
+.searchInput::placeholder {
+    color: #bbb;
+}
+
+.filterButton {
+    background-color: white;
+    border: 1px solid #7eb47e;
+    padding: 10px 20px; /* 패딩 조정 */
+    cursor: pointer;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px; /* 아이콘과 텍스트 간의 간격 */
+}
+
+.filterButton .icon {
+    width: 20px;
+    height: 20px;
+}
+
+.filterButton:hover {
+    background-color: #f0f0f0;
+}
+
+@media only screen and (max-width: 768px) {
+    h2 {
+        margin-left: 3%;
+    }
+
+    .tableContainer {
+        margin-left: 3%;
+    }
+
+    .headerContainer {
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .buttonContainer {
+        order: 3;
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .searchFilterContainer {
+        justify-content: center;
+        margin-left: 0;
+    }
+
+    .searchInput {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .searchInputContainer {
+        flex: 1;
+    }
+
+    .defaultButton {
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+    }
+}
+
+
+
+
+
+
+
+
+/* AuthsRegistration.module.css다크 모드 스타일 */
+:global(.dark-mode) .tableContainer {
+    background-color: #333;
+    color: #fff;
+}
+
+:global(.dark-mode) .headerContainer {
+    color:#9eb696;
+}
+
+:global(.dark-mode) .defaultButton {
+    color: #fff;
+}
+
+:global(.dark-mode) .defaultButton:hover {
+    background-color: #666;
+}
+
+:global(.dark-mode) .defaultButton img {
+    filter: invert(1);
+}
+
+:global(.dark-mode) .addRowButton {
+    background-color: #6fa16f;
+}
+
+:global(.dark-mode) .addRowButton:hover {
+    background-color: #4c804c;
+}
+
+:global(.dark-mode) .table {
+    border-color: #555;
+    color: #ccc;
+}
+
+:global(.dark-mode) .table th {
+    background-color: #555;
+}
+
+:global(.dark-mode) .table th,
+:global(.dark-mode) .table td {
+    border-color: #444;
+}
+
+:global(.dark-mode) .table tbody tr:hover {
+    background-color: #4d4d4d;
+}
+
+:global(.dark-mode) .searchFilterContainer {
+    color: #fff;
+}
+
+:global(.dark-mode) .searchInputContainer .icon {
+    filter: invert(1);
+}
+
+:global(.dark-mode) .searchInput {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #555;
+}
+
+:global(.dark-mode) .searchInput::placeholder {
+    color: #bbb;
+}
+
+:global(.dark-mode) .filterButton {
+    background-color: #333;
+    border: 1px solid #7eb47e;
+    color: #fff;
+}
+
+:global(.dark-mode) .filterButton:hover {
+    background-color: #585858;
+}
+
+:global(.dark-mode) .filterButton .icon {
+    filter: invert(1);
+}
+
+:global(.dark-mode) .tableInput {
+    background-color: #333;
+    color: #ccc;
+}
