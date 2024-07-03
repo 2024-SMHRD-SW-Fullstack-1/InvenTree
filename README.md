@@ -6,7 +6,7 @@
 3. 개발을 한 후 commit >push 할 때 꼭 팀원들에게 알려주기<br/>
 4. 작업시 서로 프로젝트명 동일해야 함
 5. React 프로젝트 명 inventree로 푸쉬 할 예정
-<h1>6.실행 시, 주의사항</h1>
+<h1>※ 실행 시, 주의사항</h1>
 <p>InvenTreeSpring\src\main\java\com\inven\tree\config의 recaptchaFilePath 경로 확인</p>
 <p>\InvenTreeSpring\src\main\webapp\WEB-INF\spring의 Google reCAPTCHA 설정 경로 확인</p>
 <h2>서비스 소개</h2>
