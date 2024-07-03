@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,8 @@ public class ProductsController {
     private ReleasesMapper releaseMapper;
     @Autowired
     private SubsidiariesMapper subsidiaryMapper;
+    
+    private static final Logger logger = LoggerFactory.getLogger(ProductsController.class);
 
     // 특정 회사의 모든 제품을 가져오는 엔드포인트
     @GetMapping("/{corpIdx}")
@@ -34,6 +38,7 @@ public class ProductsController {
             List<Products> products = productsMapper.selectProductsByCorpIdx(corpIdx);
             return ResponseEntity.ok(products);
         } catch (Exception e) {
+            logger.error("Error retrieving products", e);
             return ResponseEntity.status(500).body(null);
         }
     }
@@ -79,6 +84,7 @@ public class ProductsController {
                 // 바코드를 이용해 제품 인덱스 조회
                 Integer prodIdx = productsMapper.selectProdIdxByBarcode(prodBarcode);
                 if (prodIdx == null) {
+                    logger.error("Product not found for barcode: {}", prodBarcode);
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                             .body("Product not found for barcode: " + prodBarcode);
                 }
@@ -89,6 +95,7 @@ public class ProductsController {
             }
             return ResponseEntity.ok("Success");
         } catch (Exception e) {
+            logger.error("Error stocking products", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error stocking products");
         }
     }
@@ -104,6 +111,7 @@ public class ProductsController {
                 Integer subIdx = (Integer) productData.get("subIdx");
 
                 if (prodBarcode == null || corpIdx == null || prodCnt == null || subIdx == null) {
+                    logger.error("Missing required fields in product data: {}", productData);
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                             .body("Missing required fields in product data");
                 }
@@ -111,6 +119,7 @@ public class ProductsController {
                 // 바코드를 이용해 제품 인덱스 조회
                 Integer prodIdx = productsMapper.selectProdIdxByBarcode(prodBarcode);
                 if (prodIdx == null) {
+                    logger.error("Product not found for barcode: {}", prodBarcode);
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                             .body("Product not found for barcode: " + prodBarcode);
                 }
@@ -132,6 +141,7 @@ public class ProductsController {
             List<Products> products = productsMapper.selectProductsByCorpIdx(corpIdx);
             return ResponseEntity.ok(products);
         } catch (Exception e) {
+            logger.error("Error retrieving products by company", e);
             return ResponseEntity.status(500).body(null);
         }
     }
@@ -144,6 +154,7 @@ public class ProductsController {
             productsMapper.updateProductSelective(product);
             return ResponseEntity.ok("Product updated successfully");
         } catch (Exception e) {
+            logger.error("Error updating product", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating product");
         }
     }
@@ -155,6 +166,7 @@ public class ProductsController {
             productsMapper.deleteProduct(prodIdx);
             return ResponseEntity.ok("Product deleted successfully");
         } catch (Exception e) {
+            logger.error("Error deleting product", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting product");
         }
     }
@@ -166,6 +178,7 @@ public class ProductsController {
             productsMapper.insertProduct(product);
             return ResponseEntity.ok("Product added successfully");
         } catch (Exception e) {
+            logger.error("Error adding product", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding product");
         }
     }

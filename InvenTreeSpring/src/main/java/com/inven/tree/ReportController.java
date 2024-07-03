@@ -14,6 +14,8 @@ import java.util.stream.IntStream;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +39,7 @@ import com.inven.tree.model.Stocks;
 @RequestMapping("/api")
 public class ReportController {
 
- 
+    private static final Logger logger = LoggerFactory.getLogger(ReportController.class);
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
@@ -56,6 +58,7 @@ public class ReportController {
     private String checkSession(HttpSession session) {
         String corpIdx = (String) session.getAttribute("corpIdx");
         if (corpIdx == null) {
+            logger.error("Session expired. Please login again.");
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "세션이 만료되었습니다. 다시 로그인해주세요.");
         }
         return corpIdx;
@@ -90,6 +93,7 @@ public class ReportController {
             }
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            logger.error("Error generating report", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "예상치 못한 오류가 발생했습니다", e);
         }
     }
@@ -154,6 +158,7 @@ public class ReportController {
             monthlyReport.put("minWeeklyStockCount", minWeeklyStockCount);
             monthlyReport.put("maxWeeklyStockCount", maxWeeklyStockCount);
         } catch (Exception e) {
+            logger.error("Error generating monthly report", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "보고서 생성 중 오류가 발생했습니다", e);
         }
 
@@ -172,6 +177,7 @@ public class ReportController {
 
             return ResponseEntity.ok(Map.of("filterList", filterList, "message", "Filter list fetched successfully"));
         } catch (Exception e) {
+            logger.error("Error fetching filter list", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "필터 목록을 가져오는 중 오류가 발생했습니다", e);
         }
     }
@@ -234,6 +240,7 @@ public class ReportController {
 
             return ResponseEntity.ok(dailyReport);
         } catch (Exception e) {
+            logger.error("Error generating daily report", e);
             return ResponseEntity.status(500).body(null);
         }
     }
@@ -250,6 +257,7 @@ public class ReportController {
             List<String> productNames = products.stream().map(Products::getProdName).collect(Collectors.toList());
             return ResponseEntity.ok(productNames);
         } catch (Exception e) {
+            logger.error("Error fetching products by corp", e);
             return ResponseEntity.status(500).body(null);
         }
     }

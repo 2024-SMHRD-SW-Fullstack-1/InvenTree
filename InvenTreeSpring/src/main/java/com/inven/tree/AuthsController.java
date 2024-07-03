@@ -35,6 +35,7 @@ public class AuthsController {
 	// 권한 정보를 변경하는 메서드
 	@PutMapping("/auths/update")
 	public ResponseEntity<String> updateAuths(@RequestBody List<Auths> auths) {
+		System.out.println(auths); // 변경할 권한 정보를 출력
 		try {
         	if(auths != null) {
         		for (Auths auth : auths) {

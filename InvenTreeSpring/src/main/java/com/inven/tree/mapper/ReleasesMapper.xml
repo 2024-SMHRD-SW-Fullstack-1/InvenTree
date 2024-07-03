@@ -147,12 +147,5 @@
   <select id="findReleasesByCorpIdx" resultMap="releasesResultMap">
     SELECT * FROM releases WHERE corp_idx = #{corpIdx}
   </select>
-  
-  <!-- 회사 코드로 상위 변동 재고를 가져오는 쿼리 -->
-  <select id="findTopReleasesChanges" resultMap="releasesResultMap">
-    SELECT *
-    FROM releases
-    WHERE corp_idx = #{corpIdx}
-    ORDER BY ABS(release_cnt) DESC
-  </select>
+
 </mapper>

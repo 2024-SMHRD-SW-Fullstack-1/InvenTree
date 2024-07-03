@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,8 @@ import com.inven.tree.mapper.StocksMapper;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class InoutHistoryController {
+
+    private static final Logger logger = LoggerFactory.getLogger(InoutHistoryController.class);
 
     @Autowired
     private StocksMapper stocksMapper;
@@ -69,6 +73,7 @@ public class InoutHistoryController {
             
             return ResponseEntity.ok(result); // 결과 반환
         } catch (Exception e) {
+            logger.error("Error occurred while fetching stock and release entries", e);
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", "An error occurred while processing your request");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);

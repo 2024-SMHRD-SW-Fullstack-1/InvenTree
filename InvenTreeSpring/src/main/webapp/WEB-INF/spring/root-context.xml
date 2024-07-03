@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+		<property name="driverClassName"
+			value="com.mysql.cj.jdbc.Driver" />
+		<property name="jdbcUrl"
+			value="jdbc:mysql://project-db-cgi.smhrd.com:3307/campus_24SW_FULL_p2_1?serverTimezone=UTC&amp;characterEncoding=UTF-8" />
+		<property name="username" value="campus_24SW_FULL_p2_1" />
+		<property name="password" value="smhrd1" />
+
+		<!-- HikariCP 설정 추가 -->
+		<property name="maximumPoolSize" value="10" />
+		<property name="maxLifetime" value="1800000" />  <!-- 30 minutes -->
+		<property name="idleTimeout" value="600000" />   <!-- 10 minutes -->
+		<property name="connectionTimeout" value="30000" />  <!-- 30 seconds -->
+	</bean>
+
+	<!-- DataSource : Spring 통해서 mysql사용을 위한 접근 -->
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource"
+		destroy-method="close">
+		<constructor-arg ref="hikariConfig" />
+	</bean>
+
+	<!-- MyBatis SqlSessionFactory 설정 -->
+	<bean class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation"
+			value="classpath:/com/inven/tree/config/mybatis-config.xml" />
+	</bean>
+
+	<!-- MyBatis Mapper 스캔 설정 -->
+	<mybatis-spring:scan
+		base-package="com.inven.tree.mapper" />
+
+	<!-- 트랜잭션 관리자 설정 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- 트랜잭션 애노테이션 활성화 -->
+	<tx:annotation-driven
+		transaction-manager="transactionManager" />
+
+	<!-- Google reCAPTCHA 설정 -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:C:\Users\sr139\OneDrive\Desktop\Project\reCAPTCHA.txt
+
+				</value>
+
+			</list>
+		</property>
+	</bean>
+
+	<!-- RecaptchaConfig 빈 추가 -->
+	<bean id="recaptchaConfig"
+		class="com.inven.tree.config.RecaptchaConfig" />
+</beans>

@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.inven.tree.model.Releases;
-import com.inven.tree.model.Stocks;
 
 @Mapper
 public interface ReleasesMapper {
@@ -32,9 +31,6 @@ public interface ReleasesMapper {
 			@Param("filterColumn") String filterColumn, @Param("filterValue") String filterValue,
 			@Param("corpIdx") String corpIdx);
 
-	// 회사 코드로 상위 변동 재고를 가져오는 메소드
-	List<Releases> findTopReleasesChanges(@Param("corpIdx") String corpIdx);
-	
 	// 입출고내역 페이징 페이지 수 계산 메소드
 	int countFilteredEntries(@Param("filterColumn") String filterColumn, @Param("filterValue") String filterValue,
 			@Param("corpIdx") String corpIdx);

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,8 @@ import com.inven.tree.model.Warehouses;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class WarehousesController {
+
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(WarehousesController.class);
 	
     @Autowired
     private WarehousesMapper warehousesMapper;
@@ -90,15 +93,18 @@ public class WarehousesController {
                                    .collect(Collectors.toList());
                 if (!shelfIds.isEmpty()) {
                     // 선반과 창고를 함께 삭제하는 로직
+                    logger.debug("Deleting shelves with ShelfIdx: {} and WhIdx: {}", shelfIds, warehouseIds);
                     shelvesMapper.deleteShelvesByShelfIdxAndWhIdx(shelfIds, warehouseIds);
                 }
             } else {
                 // 선반 ID가 없을 경우
+                logger.debug("ShelfIds가 없으므로 선반 삭제 없이 창고 삭제를 시도합니다.");
             }
 
             // 각 창고에 남아 있는 선반이 있는지 확인
             for (Integer warehouseId : warehouseIds) {
                 int remainingShelfCount = shelvesMapper.countShelvesByWhIdx(Collections.singletonList(warehouseId));
+                logger.debug("Shelf count for WhIdx {}: {}", warehouseId, remainingShelfCount);
                 if (remainingShelfCount > 0) {
                     response.put("message", "선반 데이터가 존재하여 창고를 삭제할 수 없습니다.");
                     return ResponseEntity.badRequest().body(response);
@@ -106,6 +112,7 @@ public class WarehousesController {
             }
 
             // 창고를 삭제하는 로직
+            logger.debug("Deleting warehouses with WhIdx: {}", warehouseIds);
             warehousesMapper.deleteWarehouses(warehouseIds);
             response.put("message", "창고 및 선반 삭제 성공");
             return ResponseEntity.ok(response);
@@ -113,6 +120,7 @@ public class WarehousesController {
         } catch (DataIntegrityViolationException e) {
             // 데이터 무결성 위반 예외 처리
             Throwable rootCause = getRootCause(e);
+            logger.error("Data integrity violation: {}", rootCause.getMessage());
             if (rootCause instanceof SQLIntegrityConstraintViolationException) {
                 response.put("message", "선반에 상품이 있어 삭제 불가능합니다.");
                 return ResponseEntity.badRequest().body(response);
@@ -122,10 +130,12 @@ public class WarehousesController {
             }
         } catch (NumberFormatException e) {
             // 숫자 형식 예외 처리
+            logger.error("Number format exception: {}", e.getMessage());
             response.put("message", "잘못된 형식의 ID가 전달되었습니다: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         } catch (Exception e) {
             // 일반 예외 처리
+            logger.error("Exception during warehouse and shelves deletion: {}", e.getMessage());
             response.put("message", "창고 및 선반 삭제 중 오류 발생: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
@@ -238,9 +248,13 @@ public class WarehousesController {
     public ResponseEntity<List<Warehouses>> getWarehouseList(HttpSession session) {
         String corpIdx = (String) session.getAttribute("corpIdx");
         if (corpIdx == null || corpIdx.isEmpty()) {
+            logger.error("Session에 corpIdx가 없습니다.");
             return ResponseEntity.badRequest().body(null);
         }
+        
+        logger.info("Fetching warehouses for corpIdx: {}", corpIdx);
         List<Warehouses> warehouses = warehousesMapper.selectAllWarehouses(corpIdx);
+        logger.info("Found {} warehouses", warehouses.size());
         
         return ResponseEntity.ok(warehouses);
     }

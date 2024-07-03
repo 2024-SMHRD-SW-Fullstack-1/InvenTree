@@ -180,7 +180,7 @@
 		<set>
 			<if test="prodBarcode != null">prod_barcode = #{prodBarcode},</if>
 			<if test="prodName != null">prod_name = #{prodName},</if>
-			<if test="prodCnt != 0">prod_cnt = #{prodCnt},</if>
+			<if test="prodCnt != null">prod_cnt = #{prodCnt},</if>
 			<if test="prodInfo != null">prod_info = #{prodInfo},</if>
 			<if test="whIdx != 0">wh_idx = #{whIdx},</if>
 			<if test="shelfIdx != 0">shelf_idx = #{shelfIdx},</if>

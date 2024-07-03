@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -26,6 +28,7 @@ import com.inven.tree.model.Members;
 @CrossOrigin(origins = {"http://localhost:3000", "http://inventree.shop"}, allowCredentials = "true")
 public class MembersController {
 
+    private static final Logger logger = LoggerFactory.getLogger(MembersController.class);
 
     @Autowired
     private MembersMapper membersMapper;
@@ -89,11 +92,14 @@ public class MembersController {
                 response.put("theme", userTheme);
                 response.put("permissions", permissions);
 
+                logger.info("User {} logged in successfully. Theme: {}", mbId, userTheme);
                 return ResponseEntity.ok(response);
             } else {
+                logger.warn("Login failed for user: {}", mbId);
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
             }
         } catch (Exception e) {
+            logger.error("Error during login process for user: {}", mbId, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Login process failed");
         }
     }
@@ -125,6 +131,7 @@ public class MembersController {
             session.setAttribute("theme", newTheme);
             return ResponseEntity.ok().body(Map.of("theme", newTheme));
         } catch (Exception e) {
+            logger.error("Failed to update theme", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update theme");
         }
     }
@@ -185,6 +192,7 @@ public class MembersController {
             }
             return ResponseEntity.ok("Members and auths saved successfully");
         } catch (Exception e) {
+            logger.error("Error saving members and auths", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving members and auths");
         }
     }
@@ -244,6 +252,7 @@ public class MembersController {
 
             return ResponseEntity.ok(memberInfo);
         } catch (Exception e) {
+            logger.error("Failed to get user info", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to get user info");
         }
     }

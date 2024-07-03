@@ -124,28 +124,28 @@ public class NotificationService {
 
     // 재고 변동 상위 품목을 확인하는 메서드
     public String checkForSignificantStockChanges(String corpIdx) {
-        List<Releases> releaseChanges = releasesMapper.findTopReleasesChanges(corpIdx);
+        List<Stocks> stockChanges = stocksMapper.findTopStockChanges(corpIdx);
 
         // stockChanges가 null인 경우 빈 리스트로 초기화
-        if (releaseChanges == null) {
-        	releaseChanges = Collections.emptyList();
+        if (stockChanges == null) {
+            stockChanges = Collections.emptyList();
         }
 
-        if (releaseChanges.isEmpty()) {
+        if (stockChanges.isEmpty()) {
             return "재고 변동 상위 품목 알림: 오늘 재고 변동이 없습니다.";
         }
 
         // 상위 3개의 재고 변동 품목을 추출
-        List<Releases> topChanges = releaseChanges.stream().filter(s -> s != null).limit(3).collect(Collectors.toList());
+        List<Stocks> topChanges = stockChanges.stream().filter(s -> s != null).limit(3).collect(Collectors.toList());
 
         // 알림 메시지 작성
         StringBuilder notifications = new StringBuilder();
         notifications.append("재고 변동 상위 품목 알림: ");
 
-        for (Releases release : topChanges) {
-            notifications.append(release.getProdIdx())
+        for (Stocks stock : topChanges) {
+            notifications.append(stock.getProdIdx())
                 .append(" (변동: ")
-                .append(release.getReleaseCnt())
+                .append(stock.getStockCnt())
                 .append("개), ");
         }
 

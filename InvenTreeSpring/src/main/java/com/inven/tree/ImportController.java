@@ -20,10 +20,15 @@ import com.inven.tree.model.ProductImportData;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class ImportController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ImportController.class);
 
     // 엑셀 파일을 업로드하고 데이터를 가져오는 메서드
     @PostMapping("/excel/import")
@@ -54,8 +59,10 @@ public class ImportController {
             }
             return ResponseEntity.ok(productList); // 파싱된 데이터를 반환
         } catch (IOException e) {
+            logger.error("Error processing Excel file", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error processing Excel file", e);
         } catch (Exception e) {
+            logger.error("An unexpected error occurred", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred", e);
         }
     }
@@ -67,11 +74,13 @@ public class ImportController {
         try {
             try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
                 Sheet sheet = workbook.getSheetAt(0);
+
                 // 시트의 각 행을 순회하며 데이터를 파싱
                 for (Row row : sheet) {
                     if (row.getRowNum() == 0) {
                         continue; // 헤더 행은 건너뜀
                     }
+
                     ProductImportData data = new ProductImportData();
 
                     // 엑셀에서 데이터를 파싱하여 객체에 설정
@@ -81,8 +90,8 @@ public class ImportController {
                     Cell cell = row.getCell(2);
                     data.setStockCnt(parseStockCount(cell));
                     data.setCorpName(getCellValueAsString(row.getCell(3)));
-                    data.setShelfId(getCellValueAsString(row.getCell(4))); // 추가
-                    data.setRackId(getCellValueAsString(row.getCell(5))); // 추가
+                    data.setRackId(getCellValueAsString(row.getCell(4))); // 추가
+                    data.setShelfId(getCellValueAsString(row.getCell(5))); // 추가
                     data.setProdInfo(getCellValueAsString(row.getCell(6))); // 추가
 
                     productList.add(data); // 리스트에 객체 추가
@@ -90,8 +99,10 @@ public class ImportController {
             }
             return ResponseEntity.ok(productList);
         } catch (IOException e) {
+            logger.error("Error processing Excel file", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error processing Excel file", e);
         } catch (Exception e) {
+            logger.error("An unexpected error occurred", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred", e);
         }
     }
