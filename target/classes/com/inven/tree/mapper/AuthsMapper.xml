@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inven.tree.mapper.AuthsMapper">
+    <!-- result map 설정 -->
+    <resultMap id="resultAuths" type="Auths">
+        <id property="authIdx" column="auth_idx"/> <!-- primary key -->
+        <result property="mbId" column="mb_id"/><!-- foreign key -->
+        <result property="inventoryYn" column="inventory_yn"/>
+        <result property="shipYn" column="ship_yn"/>
+        <result property="chartYn" column="chart_yn"/>
+        <result property="setYn" column="set_yn"/>
+    </resultMap>
+
+    <!-- result map 설정 -->
+    <resultMap id="resultAuthsAndMembers" type="map">
+        <id property="authIdx" column="auth_idx"/> 
+        <result property="mbId" column="mb_id"/>
+        <result property="inventoryYn" column="inventory_yn"/>
+        <result property="shipYn" column="ship_yn"/>
+        <result property="chartYn" column="chart_yn"/>
+        <result property="setYn" column="set_yn"/>
+        <result property="mbName" column="mb_name"/>
+        <result property="isAdmin" column="is_admin"/>
+        <result property="corpIdx" column="corp_idx"/>
+    </resultMap>
+    
+    <!-- corpIdx에 해당하는 Auths를 가져오는 SQL -->
+    <select id="selectAllAuthsByCorpIdx" resultMap="resultAuthsAndMembers">
+	    SELECT m.mb_id AS mbId, m.mb_name, m.is_admin,m.corp_idx,
+	    	   a.mb_id AS mbId, a.inventory_yn, a.ship_yn, a.chart_yn, a.set_yn 
+		FROM auths AS a
+		JOIN members AS m ON a.mb_id = m.mb_id
+		WhERE m.is_admin='N'
+		and m.corp_idx =#{corpIdx}
+	    
+    </select>
+    
+   	<!--  권한 업데이트 -->
+    <update id="updateAuth" parameterType="Auths">
+        UPDATE auths
+        SET
+            inventory_yn = #{inventoryYn},
+            ship_yn = #{shipYn},
+            chart_yn = #{chartYn},
+            set_yn = #{setYn}
+        WHERE mb_id = #{mbId}
+    </update>
+    
+    <!-- 로그인 계정 페이지 접근을 위한 권한 정보 확인 -->
+    <select id="getAuthsByMbId" resultType="Auths">
+    	SELECT auth_idx, mb_id, inventory_yn, ship_yn, chart_yn, set_yn
+        FROM Auths
+        WHERE mb_id = #{mbId}
+    </select>
+    
+</mapper>

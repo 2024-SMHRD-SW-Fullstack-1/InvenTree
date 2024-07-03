@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inven.tree.mapper.ProductsMapper">
+
+	<!-- Products 객체에 매핑할 결과 맵 정의 -->
+	<resultMap id="productsResultMap"
+		type="com.inven.tree.model.Products">
+		<id property="prodIdx" column="prod_idx" />
+		<result property="prodName" column="prod_name" />
+		<result property="prodInfo" column="prod_info" />
+		<result property="prodBarcode" column="prod_barcode" />
+		<result property="prodCnt" column="prod_cnt" />
+		<result property="prodMake" column="prod_make" />
+		<result property="createdAt" column="created_at" />
+		<result property="corpIdx" column="corp_idx" />
+		<result property="shelfIdx" column="shelf_idx" />
+		<result property="rackId" column="rack_id" />
+		<result property="whIdx" column="wh_idx" />
+	</resultMap>
+
+	<!-- 회사 ID로 제품을 조회 -->
+	<select id="selectProductsByCorpIdx"
+		resultMap="productsResultMap">
+		SELECT * FROM products WHERE corp_idx = #{corpIdx}
+	</select>
+
+	<!-- 바코드로 제품 ID를 조회 -->
+	<select id="selectProdIdxByBarcode"
+		resultType="java.lang.Integer">
+		SELECT prod_idx FROM products WHERE prod_barcode = #{prodBarcode}
+	</select>
+
+	<!-- 회사 이름으로 회사코드를 조회 -->
+	<select id="selectCorpIdxByName" resultType="String">
+		SELECT corp_idx FROM corporates WHERE corp_idx = #{corpIdx}
+	</select>
+
+	<!-- 모든 제품을 조회 -->
+	<select id="selectAllProducts" resultMap="productsResultMap">
+		SELECT * FROM products
+	</select>
+
+	<!-- 월별 재고 및 출고 데이터를 조회 -->
+	<select id="selectMonthlyStockAndReleaseData" resultType="map">
+		SELECT
+		MONTH(stocked_at) as month,
+		SUM(stock_cnt) as totalStockCount,
+		SUM(release_cnt) as totalReleaseCount,
+		AVG(stock_cnt) as avgStockCount,
+		AVG(release_cnt) as avgReleaseCount
+		FROM (
+		SELECT stocked_at, stock_cnt, 0 as release_cnt FROM stocks WHERE corp_idx =
+		#{corpIdx}
+		UNION ALL
+		SELECT released_at as stocked_at, 0 as stock_cnt, release_cnt FROM releases
+		WHERE corp_idx = #{corpIdx}
+		) as combined
+		WHERE YEAR(stocked_at) = #{year}
+		<if test="filterType != null and filterValue != null">
+			AND
+			<choose>
+				<when test="filterType == 'productCode'">prod_idx = #{filterValue}</when>
+				<when test="filterType == 'productName'">prod_name = #{filterValue}</when>
+				<when test="filterType == 'company'">corp_idx = #{filterValue}</when>
+			</choose>
+		</if>
+		GROUP BY month
+	</select>
+
+	<!-- 제품 이름으로 제품을 조회 -->
+	<select id="selectProductByName" resultMap="productsResultMap">
+		SELECT * FROM products WHERE prod_name = #{productName}
+	</select>
+
+	<!-- 제품 이름(대소문자 구분 없음)으로 제품을 조회 -->
+	<select id="selectProductByNameIgnoreCase"
+		resultMap="productsResultMap">
+		SELECT * FROM products WHERE LOWER(prod_name) = LOWER(#{prodName}) OR
+		prod_idx = #{prodName}
+	</select>
+
+	<!-- 제품 ID로 제품을 조회 -->
+	<select id="selectProductById" resultMap="productsResultMap">
+		SELECT * FROM products WHERE prod_idx = #{prodIdx}
+	</select>
+
+	<!-- 회사 ID로 제품 코드를 조회 -->
+	<select id="selectProductCodesByCorpIdx" resultType="String">
+		SELECT prod_idx FROM products WHERE corp_idx = #{corpIdx}
+	</select>
+
+	<!-- 회사 ID로 제품 이름을 조회 -->
+	<select id="selectProductNamesByCorpIdx" resultType="String">
+		SELECT prod_name FROM products WHERE corp_idx = #{corpIdx}
+	</select>
+
+	<!-- 회사 ID로 회사 목록을 조회 -->
+	<select id="selectCompaniesByCorpIdx" resultType="String">
+		SELECT corp_idx FROM products WHERE corp_idx = #{corpIdx}
+	</select>
+
+	<!-- 특정 컬럼과 회사 ID로 중복되지 않는 값을 조회 -->
+	<select id="selectDistinctByColumnAndCorpIdx"
+		resultType="String">
+		SELECT DISTINCT
+		<choose>
+			<when test="column == 'productCode'">prod_idx</when>
+			<when test="column == 'productName'">prod_name</when>
+			<when test="column == 'company'">corp_idx</when>
+			<otherwise>${column}</otherwise>
+		</choose>
+		FROM products
+		WHERE corp_idx = #{corpIdx}
+	</select>
+
+	<!-- 회사 ID와 날짜 범위로 제품을 조회 -->
+	<select id="selectByCorpIdxAndDate"
+		resultMap="productsResultMap">
+		SELECT * FROM products WHERE corp_idx = #{corpIdx} AND created_at BETWEEN
+		#{startDate} AND #{endDate}
+	</select>
+
+	<!-- 특정 필터로 제품을 조회 -->
+	<select id="selectProductsByFilter"
+		resultMap="productsResultMap">
+		SELECT * FROM products
+		WHERE
+		<choose>
+			<when test="filterType == 'productCode'">prod_idx = #{filterValue}</when>
+			<when test="filterType == 'productName'">prod_name = #{filterValue}</when>
+			<when test="filterType == 'company'">
+				corp_idx IN (SELECT corp_idx FROM subsidiary WHERE sub_name =
+				#{filterValue})
+			</when>
+		</choose>
+	</select>
+
+	<!-- 바코드로 제품을 조회 -->
+	<select id="selectProductByBarcode"
+		resultMap="productsResultMap">
+		SELECT * FROM products WHERE prod_barcode = #{prodBarcode}
+	</select>
+
+	<!-- 제품 ID로 제품을 조회 -->
+	<select id="selectProductByIdx"
+		resultType="com.inven.tree.model.Products">
+		SELECT * FROM products WHERE prod_idx = #{prodIdx}
+	</select>
+
+	<!-- 입고를 삽입 -->
+	<insert id="insertStock">
+		INSERT INTO stocks (corp_idx, prod_idx, stock_cnt, stocked_at, sub_idx)
+		VALUES (#{corpIdx}, #{prodIdx}, #{prodCnt}, #{stockedAt}, #{subIdx})
+	</insert>
+
+	<!-- 출고를 삽입 -->
+	<insert id="insertRelease">
+		INSERT INTO releases (corp_idx, prod_idx, release_cnt, released_at)
+		VALUES (#{corpIdx}, #{prodIdx}, #{releaseCnt}, #{releasedAt})
+	</insert>
+
+	<!-- 제품을 삽입 -->
+	<insert id="insertProduct">
+		INSERT INTO products (prod_barcode, prod_name, prod_cnt, prod_info, wh_idx,
+		shelf_idx, rack_id, corp_idx)
+		VALUES (#{product.prodBarcode}, #{product.prodName}, #{product.prodCnt},
+		#{product.prodInfo}, #{product.whIdx}, #{product.shelfIdx},
+		#{product.rackId}, #{product.corpIdx})
+	</insert>
+
+	<!-- 제품 수량을 업데이트 -->
+	<update id="updateProductCount">
+		UPDATE products SET prod_cnt = prod_cnt + #{prodCnt} WHERE prod_idx =
+		#{prodIdx}
+	</update>
+
+	<!-- 선택적으로 제품 정보를 업데이트 -->
+	<update id="updateProductSelective">
+		UPDATE products
+		<set>
+			<if test="prodBarcode != null">prod_barcode = #{prodBarcode},</if>
+			<if test="prodName != null">prod_name = #{prodName},</if>
+			<if test="prodCnt != 0">prod_cnt = #{prodCnt},</if>
+			<if test="prodInfo != null">prod_info = #{prodInfo},</if>
+			<if test="whIdx != 0">wh_idx = #{whIdx},</if>
+			<if test="shelfIdx != 0">shelf_idx = #{shelfIdx},</if>
+			<if test="rackId != null">rack_id = #{rackId},</if>
+			<if test="corpIdx != null">corp_idx = #{corpIdx}</if>
+		</set>
+		WHERE prod_idx = #{prodIdx}
+	</update>
+
+	<!-- 제품을 삭제 -->
+	<delete id="deleteProduct" parameterType="int">
+		DELETE FROM products WHERE prod_idx = #{prodIdx}
+	</delete>
+
+	<!-- 제품 정보를 업데이트 -->
+	<update id="updateProduct"
+		parameterType="com.inven.tree.model.Products">
+		UPDATE products
+		SET
+		prod_name = #{prodName},
+		prod_info = #{prodInfo},
+		prod_barcode = #{prodBarcode},
+		prod_cnt = #{prodCnt},
+		prod_make = #{prodMake},
+		created_at = #{createdAt},
+		corp_idx = #{corpIdx},
+		shelf_idx = #{shelfIdx},
+		rack_id = #{rackId},
+		wh_idx = #{whIdx}
+		WHERE prod_idx = #{prodIdx}
+	</update>
+	
+	<!-- 선반 ID로 제품 목록을 조회 -->
+	<select id="selectProductsByShelfIdx" parameterType="int"
+		resultMap="productsResultMap">
+		SELECT * FROM products WHERE shelf_idx = #{shelfIdx}
+	</select>
+</mapper>
