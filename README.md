@@ -1,5 +1,7 @@
 # InvenTree 
 <h3>팀 질수없조</h3>
+<p>inventree << React 폴더</p>
+<p>InvenTreeSpring << Spring 폴더</p><hr>
 프로젝트 작업 시 주의 사항!<br/>
 1. 같은 파일 동시에 수정 금지<br/>
 2. pull, push 작업을 할 때 꼭 commit을 통해서 Local repository 최신화 시켜주기<br/>
@@ -8,7 +10,7 @@
 5. React 프로젝트 명 inventree로 푸쉬 할 예정
 <h1>※ 실행 시, 주의사항</h1>
 <p>InvenTreeSpring\src\main\java\com\inven\tree\config의 recaptchaFilePath 경로 확인</p>
-<p>\InvenTreeSpring\src\main\webapp\WEB-INF\spring의 Google reCAPTCHA 설정 경로 확인</p>
+<p>InvenTreeSpring\src\main\webapp\WEB-INF\spring의 Google reCAPTCHA 설정 경로 확인</p>
 <h2>서비스 소개</h2>
 <p>쉽고 간편한 재고 관리 시스템</p>
 
