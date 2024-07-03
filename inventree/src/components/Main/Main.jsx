@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import style from './Main.module.css';
 import WarehouseLayout from '../WarehouseLayout/WarehouseLayout';
 import InoutHistoryTable from './InoutHistoryTable';
@@ -7,22 +7,22 @@ import MixChart from '../Statistics/MixChart';
 import axios from 'axios';
 
 const Main = () => {
-  const today = new Date().toISOString().slice(0, 7); // YYYY-MM 형식의 오늘 날짜
-  const [entries, setEntries] = useState([]);
-  const [report, setReport] = useState(null);
-  const [monthlyReport, setMonthlyReport] = useState({});
-  const corpIdx = localStorage.getItem('corpIdx');
+  const today = new Date().toISOString().slice(0, 7); // 현재 날짜를 YYYY-MM 형식으로 저장
+  const [entries, setEntries] = useState([]); // 입출고 내역 상태
+  const [report, setReport] = useState(null); // 월별 보고서 상태
+  const [weeklyStockCounts, setWeeklyStockCounts] = useState({}); // 주간 재고 수량 상태
+  const corpIdx = localStorage.getItem('corpIdx'); // 회사 인덱스를 로컬 스토리지에서 가져옴
+  const scrollContainerRef = useRef(null); // 스크롤 컨테이너 레퍼런스
+  const scrollSpeed = 1; // 스크롤 속도 설정
+  const [scrollDirection, setScrollDirection] = useState(null); // 스크롤 방향 상태
 
+  // 입출고 내역을 가져오는 함수
   const fetchEntries = useCallback(async () => {
-    console.log(`Fetching entries`);
     try {
       const response = await axios.get('http://localhost:8090/tree/api/stockEntries', {
-        params: {
-          corpIdx,
-        },
+        params: { corpIdx },
         withCredentials: true,
       });
-      console.log('Server response:', response.data);
       const { entries } = response.data;
       const mappedEntries = (entries || []).map((data) => ({
         ...data,
@@ -36,22 +36,19 @@ const Main = () => {
     }
   }, [corpIdx]);
 
+  // 월별 보고서를 가져오는 함수
   const fetchReport = useCallback(
     async (yearMonth) => {
-      const dateToFetch = yearMonth || today; // yearMonth가 없으면 오늘 날짜 사용
+      const dateToFetch = yearMonth || today;
       const [year, month] = dateToFetch.split('-');
-      console.log(`Fetching report with params: year=${year}, month=${month}, corpIdx=${corpIdx}`);
       try {
         const response = await axios.get(`http://localhost:8090/tree/api/report`, {
           params: { year, month, corpIdx, filterType: '', filterValue: '' },
           withCredentials: true,
         });
-        console.log('Report data received from server:', response.data);
         if (response.data) {
           setReport(response.data);
-          setMonthlyReport(response.data.monthlyReport || {});
-        } else {
-          console.error('Report data is null or undefined');
+          setWeeklyStockCounts(response.data.weeklyStockCount || {});
         }
       } catch (error) {
         console.error('Error fetching report:', error);
@@ -64,6 +61,7 @@ const Main = () => {
     [corpIdx, today],
   );
 
+  // 연간 보고서를 가져오는 함수
   const fetchYearlyReport = useCallback(
     async (year) => {
       try {
@@ -72,7 +70,7 @@ const Main = () => {
           withCredentials: true,
         });
         const monthlyData = response.data.monthlyData || {};
-        setMonthlyReport(monthlyData);
+        setWeeklyStockCounts(monthlyData);
       } catch (error) {
         console.error('Error fetching yearly report:', error);
       }
@@ -80,38 +78,76 @@ const Main = () => {
     [corpIdx],
   );
 
+  // 총 재고 수량 계산
   const totalStockCount = report ? Object.values(report.weeklyStockCount || {}).reduce((a, b) => a + b, 0) : 0;
+  // 총 출고 수량 계산
   const totalReleaseCount = report ? Object.values(report.weeklyReleaseCount || {}).reduce((a, b) => a + b, 0) : 0;
 
+  // 컴포넌트가 마운트될 때 데이터 가져오기
   useEffect(() => {
     fetchEntries();
-    fetchReport(today); // 컴포넌트가 마운트될 때 오늘 날짜로 보고서 데이터를 가져옵니다.
+    fetchReport(today);
     const [year] = today.split('-');
     fetchYearlyReport(year);
   }, [fetchEntries, fetchReport, fetchYearlyReport, today]);
 
+  // 스크롤 함수
+  const scroll = () => {
+    if (scrollContainerRef.current && scrollDirection) {
+      const container = scrollContainerRef.current;
+      if (scrollDirection === 'up') {
+        container.scrollTop -= scrollSpeed;
+      } else if (scrollDirection === 'down') {
+        container.scrollTop += scrollSpeed;
+      }
+      requestAnimationFrame(scroll);
+    }
+  };
+
+  // 스크롤 시작 함수
+  const startScroll = (direction) => {
+    setScrollDirection(direction);
+    requestAnimationFrame(scroll);
+  };
+
+  // 스크롤 중지 함수
+  const stopScroll = () => {
+    setScrollDirection(null);
+  };
+
   return (
-    <div className={style.mainContainer}>
-      <div className={style.content}>
-        <div className={style.warehouseSection}>
-          <h2>창고 배치도</h2>
-          <WarehouseLayout />
+    <div className={style.content}>
+      {/* 창고 배치도 섹션 */}
+      <div className={style.section}>
+        <h2>창고 배치도</h2>
+        <div className={style.warehouseContainer} ref={scrollContainerRef}>
+          <div className={`${style.scrollZone} ${style.top}`} onMouseEnter={() => startScroll('up')} onMouseLeave={stopScroll} />
+          <WarehouseLayout isReadOnly={true} shelvesPerPage={3} className={style.previewWarehouseLayout} />
+          <div className={`${style.scrollZone} ${style.bottom}`} onMouseEnter={() => startScroll('down')} onMouseLeave={stopScroll} />
         </div>
-        <div className={style.inoutSection}>
-          <h2>입출고 내역</h2>
-          <InoutHistoryTable entries={entries} />
+      </div>
+      {/* 입출고 내역 섹션 */}
+      <div className={style.section}>
+        <h2>입출고 내역</h2>
+        <InoutHistoryTable entries={entries} />
+      </div>
+      {/* 통계 데이터 섹션 */}
+      <div className={style.section}>
+        <h2>통계 데이터</h2>
+        <div className={style.chartContainer}>
+          <PieChart
+            className={style.pieChartContainer}
+            totalStockCount={totalStockCount}
+            totalReleaseCount={totalReleaseCount}
+            showText={false}
+          />
         </div>
-        <div className={style.statisticsSection}>
-          <h2>통계 데이터</h2>
-          <div className={style.chartContainer}>
-            <PieChart
-              className={style.pieChartContainer}
-              totalStockCount={totalStockCount}
-              totalReleaseCount={totalReleaseCount}
-              showText={false} // 텍스트 레이어를 숨기기 위해 showText를 false로 설정
-            />
-            <MixChart data={monthlyReport} />
-          </div>
+      </div>
+      {/* 월별 입출고 섹션 */}
+      <div className={style.section}>
+        <h2>월별 입출고</h2>
+        <div className={style.mixChartContainer}>
+          <MixChart data={weeklyStockCounts} />
         </div>
       </div>
     </div>

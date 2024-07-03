@@ -1,4 +1,6 @@
 /* Login.module.css */
+
+/* 공통 유틸리티 클래스 */
 .flexCenter {
   display: flex;
   align-items: center;
@@ -27,6 +29,7 @@
   border: 1px solid #e9e9e9;
 }
 
+/* 폰트 스타일 */
 .fontInter {
   font-family: 'Inter', sans-serif;
 }
@@ -35,6 +38,7 @@
   font-family: Roboto;
 }
 
+/* 로그인 페이지 레이아웃 */
 .loginPage {
   display: flex;
   flex-direction: column;
@@ -44,6 +48,7 @@
   height: 100vh;
 }
 
+/* 로그인 헤더 스타일 */
 .loginHeader {
   display: flex;
   align-items: center;
@@ -60,6 +65,7 @@
   margin: 0;
 }
 
+/* 로그인 컨테이너 스타일 */
 .loginContainer {
   width: 400px;
   height: 467px;
@@ -74,6 +80,7 @@
   position: relative;
 }
 
+/* 로그인 테이블 스타일 */
 .loginTable {
   width: 100%;
   border-spacing: 0;
@@ -96,6 +103,7 @@
   color: inherit !important;
 }
 
+/* 체크박스 컨테이너 스타일 */
 .checkboxContainer {
   position: absolute;
   top: 319px;
@@ -104,6 +112,7 @@
   align-items: center;
 }
 
+/* 커스텀 체크박스 스타일 */
 .checkboxContainer input[type='checkbox'] {
   width: 18px;
   height: 18px;
@@ -154,6 +163,7 @@
   margin-left: 5px;
 }
 
+/* 커스텀 인풋 스타일 */
 .customInput {
   width: 100%;
   height: 44.38px;
@@ -173,6 +183,7 @@
   line-height: normal;
 }
 
+/* 로그인 버튼 스타일 */
 .loginButton {
   width: 80px;
   height: 40px;
@@ -189,6 +200,7 @@
   background-color: #7b946d;
 }
 
+/* 로그인 실패 알림 스타일 */
 .loginFailedAlert {
   position: absolute;
   top: 172px;
@@ -228,7 +240,7 @@
   font-size: 16px;
   font-style: normal;
   font-weight: 400;
-  line-height: 24px; /* 150% */
+  line-height: 24px;
 }
 
 .loginFailedContent button {
@@ -242,11 +254,16 @@
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
-  line-height: 16px; /* 114.286% */
+  line-height: 16px;
   letter-spacing: 0.75px;
   text-transform: uppercase;
 }
 
 .loginFailedContent button:hover {
   background-color: #7b946d;
+}
+
+/* 다크 모드 테마 스타일 */
+:global(.dark-mode) .loginTable {
+  color: #000;
 }

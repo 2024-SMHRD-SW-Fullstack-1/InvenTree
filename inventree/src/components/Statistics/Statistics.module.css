@@ -1,212 +1,389 @@
+/* 검색 필터 컨테이너 */
 .statisticsSearchFilterContainer {
-    margin-left: 240px;
-    display: flex;
-    gap: 10px;
-    justify-content: flex-start;
-    margin-top: 10px;
+  margin-left: 240px; /* 왼쪽 마진을 240px로 설정하여 위치 조정 */
+  display: flex;
+  gap: 10px; /* 자식 요소 사이의 간격을 10px로 설정 */
+  justify-content: flex-start; /* 자식 요소를 왼쪽 정렬 */
+  margin-top: 10px; /* 상단 마진을 10px로 설정 */
 }
 
+/* 검색 입력 필드 컨테이너 */
 .statisticsSearchInputContainer {
-    position: relative;
-    display: flex;
-    align-items: center;
-    width: 572px; /* 필터창의 전체 너비를 고정 */
-    gap: 15px;
+  position: relative; /* 위치를 상대적으로 설정 */
+  display: flex; /* 플렉스 박스를 사용하여 자식 요소 배치 */
+  align-items: center; /* 자식 요소를 수직 중앙 정렬 */
+  width: 572px; /* 필터창의 전체 너비를 고정 */
+  gap: 15px; /* 자식 요소 사이의 간격을 15px로 설정 */
 }
 
+/* 검색 아이콘 */
 .statisticsSearchInputContainer .statisticsIcon {
-    position: absolute;
-    left: 10px;
-    width: 20px;
-    height: 20px;
+  position: absolute; /* 위치를 절대적으로 설정 */
+  left: 10px; /* 왼쪽에서 10px 떨어지도록 설정 */
+  width: 20px; /* 너비를 20px로 설정 */
+  height: 20px; /* 높이를 20px로 설정 */
 }
 
+/* 검색 입력 필드 */
 .statisticsSearchInput {
-    padding: 10px 8px 10px 40px;
-    border: 1px solid #d0d5dd;
-    border-radius: 8px;
-    width: 372px; /* input 필드의 고정 너비 */
-    height: 24px;
-    background: #fff;
+  padding: 10px 8px 10px 40px; /* 입력 필드의 안쪽 여백 설정 */
+  border: 1px solid #d0d5dd; /* 테두리 설정 */
+  border-radius: 8px; /* 테두리 반경 설정 */
+  width: 372px; /* 입력 필드의 고정 너비 */
+  height: 24px; /* 높이를 24px로 설정 */
+  background: #fff; /* 배경색 설정 */
+  font-size: 16px;
 }
 
+/* 입력 필드 플레이스홀더 */
 .statisticsSearchInput::placeholder {
-    color: #667085;
-    font-family: "Inter";
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 24px; /* 150% */
+  color: #667085; /* 텍스트 색상 설정 */
+  font-family: 'Inter'; /* 폰트 패밀리 설정 */
+  font-size: 16px; /* 폰트 크기 설정 */
+  font-style: normal; /* 폰트 스타일 설정 */
+  font-weight: 400; /* 폰트 굵기 설정 */
+  line-height: 24px; /* 줄 높이 설정 */
+  /* 150% */
 }
 
+/* 필터 컬럼 선택 */
 .filterColumnSelect {
-    width: 120px; /* select 필드의 고정 너비 */
-    margin-right: 10px; /* select 필드와 input 필드 사이의 간격 조정 */
+  width: 120px; /* select 필드의 고정 너비 */
+ 
 }
 
+/* 필터 버튼 */
 .statisticsFilterButton {
-    background-color: white;
-    border: 1px solid #7eb47e;
-    padding: 5px 15px;
-    cursor: pointer;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+  background-color: white; /* 배경색 설정 */
+  border: 1px solid #7eb47e; /* 테두리 설정 */
+  padding: 5px 15px; /* 안쪽 여백 설정 */
+  cursor: pointer; /* 커서 모양 설정 */
+  border-radius: 12px; /* 테두리 반경 설정 */
+  display: flex; /* 플렉스 박스를 사용하여 자식 요소 배치 */
+  align-items: center; /* 자식 요소를 수직 중앙 정렬 */
+  gap: 5px; /* 자식 요소 사이의 간격을 5px로 설정 */
 }
 
+/* 필터 버튼 호버 상태 */
 .statisticsFilterButton:hover {
-    background-color: #f0f0f0;
+  background-color: #f0f0f0; /* 배경색 변경 */
 }
 
+/* 통계 테이블 헤더 */
 .statisticsTableThead1 {
-    padding: 12px 24px 12px 24px;
-    width: 68px;
-    height: 20px;
-    color: #101828;
+  padding: 12px 24px 12px 24px; /* 안쪽 여백 설정 */
+  width: 68px; /* 너비 설정 */
+  height: 20px; /* 높이 설정 */
+  color: #101828; /* 텍스트 색상 설정 */
 
-    /* Text sm/Medium */
-    font-family: Inter;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 20px; /* 142.857% */
-    text-align: center;
+  /* 텍스트 스타일 설정 */
+  font-family: Inter;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px; /* 줄 높이 설정 */
+  text-align: center; /* 텍스트 중앙 정렬 */
 
-    border-bottom: 1px solid #eaecf0;
-    display: inline-block;
-    padding: 12px 24px;
-    align-items: center;
-    gap: 12px;
-    align-self: stretch;
-    background: rgba(158, 182, 150, 0.25);
+  border-bottom: 1px solid #eaecf0; /* 하단 테두리 설정 */
+  display: inline-block; /* 인라인 블록 요소로 설정 */
+  padding: 12px 24px; /* 안쪽 여백 설정 */
+  align-items: center; /* 자식 요소를 수직 중앙 정렬 */
+  gap: 12px; /* 자식 요소 사이의 간격을 12px로 설정 */
+  align-self: stretch; /* 자신을 스트레치 설정 */
+  background: rgba(158, 182, 150, 0.25); /* 배경색 설정 */
 }
 
+/* 통계 테이블 바디 */
 .statisticsTableTbody1 {
-    display: inline-block;
-    padding: 12px 24px;
-    align-items: center;
-    align-self: stretch;
-    height: 20px;
-    width: 525px;
+  display: inline-block; /* 인라인 블록 요소로 설정 */
+  padding: 12px 24px; /* 안쪽 여백 설정 */
+  align-items: center; /* 자식 요소를 수직 중앙 정렬 */
+  align-self: stretch; /* 자신을 스트레치 설정 */
+  height: 20px; /* 높이 설정 */
+  width: 525px; /* 너비 설정 */
 
-    color: #000;
-    border-bottom: 1px solid #eaecf0; /* Text sm/Normal */
-    font-family: Inter;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 20px; /* 142.857% */
-    text-align: left;
+  color: #000; /* 텍스트 색상 설정 */
+  border-bottom: 1px solid #eaecf0; /* 하단 테두리 설정 */
+  /* 텍스트 스타일 설정 */
+  font-family: Inter;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px; /* 줄 높이 설정 */
+  text-align: left; /* 텍스트 왼쪽 정렬 */
 }
 
+/* 테이블 첫 번째 헤더 및 바디 */
 .statisticsSearchThead:first-child,
 .statisticsSearchTbody:first-child {
-    border-bottom: #9eb696 1px solid;
+  border-bottom: #9eb696 1px solid; /* 하단 테두리 설정 */
 }
 
+/* 통계 테이블 */
 .statisticsTable {
-    margin-left: 240px;
-    margin-top: 32.15px;
+  margin-left: 240px; /* 왼쪽 마진 설정 */
+  margin-top: 32.15px; /* 상단 마진 설정 */
 }
 
+/* 통계 테이블 두 번째 헤더 */
 .statisticsTableHead2 {
-    width: 593px;
-    border: 1px;
-    border-color: black;
+  width: 593px; /* 너비 설정 */
+  border: 1px; /* 테두리 설정 */
+  border-color: black; /* 테두리 색상 설정 */
 }
 
+/* 통계 테이블 두 번째 헤더 */
 .statisticsTableHead2 {
-    display: inline-block;
-    padding: 12px 24px;
-    align-items: center;
-    gap: 12px;
-    align-self: stretch;
+  display: inline-block; /* 인라인 블록 요소로 설정 */
+  padding: 12px 24px; /* 안쪽 여백 설정 */
+  align-items: center; /* 자식 요소를 수직 중앙 정렬 */
+  gap: 12px; /* 자식 요소 사이의 간격을 12px로 설정 */
+  align-self: stretch; /* 자신을 스트레치 설정 */
 
-    border-bottom: 1px solid var(--Color-6, #9eb696);
-    background: rgba(158, 182, 150, 0.28);
+  border-bottom: 1px solid var(--Color-6, #9eb696); /* 하단 테두리 설정 */
+  background: rgba(158, 182, 150, 0.28); /* 배경색 설정 */
 
-    height: 20px;
-    width: 67px;
+  height: 20px; /* 높이 설정 */
+  width: 67px; /* 너비 설정 */
 
-    color: #000;
+  color: #000; /* 텍스트 색상 설정 */
 
-    /* Text xs/Medium */
-    font-family: Inter;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 18px; /* 150% */
+  /* 텍스트 스타일 설정 */
+  font-family: Inter;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 18px; /* 줄 높이 설정 */
+  /* 150% */
 }
 
+/* 통계 테이블 바디 */
 .statisticsTableTBody2 {
-    display: inline-block;
-    padding: 12px 24px;
-    align-items: center;
-    gap: 12px;
-    align-self: stretch;
-    height: 20px;
-    width: 67px;
-    border-bottom: 1px solid #eaecf0;
+  display: inline-block; /* 인라인 블록 요소로 설정 */
+  padding: 12px 24px; /* 안쪽 여백 설정 */
+  align-items: center; /* 자식 요소를 수직 중앙 정렬 */
+  gap: 12px; /* 자식 요소 사이의 간격을 12px로 설정 */
+  align-self: stretch; /* 자신을 스트레치 설정 */
+  height: 20px; /* 높이 설정 */
+  width: 67px; /* 너비 설정 */
+  border-bottom: 1px solid #eaecf0; /* 하단 테두리 설정 */
 }
 
+/* 통계 테이블 총 합 */
 .statisticsTabletotal {
-    display: inline-block;
-    padding: 12px 24px;
-    align-items: center;
-    gap: 12px;
-    align-self: stretch;
-    height: 20px;
-    width: 67px;
-    border-bottom: 1px solid #eaecf0;
-    border-top: 1px solid #9eb696 !important;
+  display: inline-block; /* 인라인 블록 요소로 설정 */
+  padding: 12px 24px; /* 안쪽 여백 설정 */
+  align-items: center; /* 자식 요소를 수직 중앙 정렬 */
+  gap: 12px; /* 자식 요소 사이의 간격을 12px로 설정 */
+  align-self: stretch; /* 자신을 스트레치 설정 */
+  height: 20px; /* 높이 설정 */
+  width: 67px; /* 너비 설정 */
+  border-bottom: 1px solid #eaecf0; /* 하단 테두리 설정 */
+  border-top: 1px solid #9eb696 !important; /* 상단 테두리 설정 */
+  font-size: 16px;
 }
 
+/* 차트 테이블 컨테이너 */
 .chartTableContainer {
-    display: flex;
-    justify-content: space-between;
-    margin: 32px 240px;
+  display: flex; /* 플렉스 박스를 사용하여 자식 요소 배치 */
+  justify-content: space-between; /* 자식 요소를 양쪽 정렬 */
+  margin: 32px 240px; /* 마진 설정 */
 }
 
+/* 파이 차트 컨테이너 */
 .pieChartContainer {
-    width: 596px;
-    height: 383px;
-    background-color: #375426;
-    border-radius: 15px;
+  width: 530px; /* 너비 설정 */
+  height: 300px; /* 높이 설정 */
+  background-color: #375426; /* 배경색 설정 */
+  border-radius: 15px; /* 테두리 반경 설정 */
+  margin-bottom: 10px; /* 하단 마진 설정 */
+  margin-right: 170px; /* 오른쪽 마진 설정 */
 }
 
+/* 차트 컨테이너 */
 .chartContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: -591px 1440px;
+  display: flex; /* 플렉스 박스를 사용하여 자식 요소 배치 */
+  flex-direction: column; /* 컬럼 방향으로 정렬 */
+  align-items: center; /* 자식 요소를 수직 중앙 정렬 */
+  margin: -591px 1440px; /* 마진 설정 */
 }
 
+/* 막대 차트 */
 .barChart {
-    width: 739px;
-    height: 439px;
+  width: 739px; /* 너비 설정 */
+  height: 439px; /* 높이 설정 */
 }
 
+/* 제품 리스트 */
 .productList {
-    position: absolute;
-    top: 100%; /* 입력 필드 바로 아래에 위치하도록 변경 */
-    left: 140px; /* filterColumnSelect의 너비(120px) + 간격(10px) + 약간의 여유 */
-    background-color: white;
-    border: 1px solid #ddd;
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    width: 415px; /* .statisticsSearchInput의 너비와 동일하게 설정 */
-    max-height: 200px;
-    overflow-y: auto;
-    z-index: 1000;
+  position: absolute; /* 위치를 절대적으로 설정 */
+  top: 100%; /* 입력 필드 바로 아래에 위치하도록 변경 */
+  left: 140px; /* filterColumnSelect의 너비(120px) + 간격(10px) + 약간의 여유 */
+  background-color: white; /* 배경색 설정 */
+  border: 1px solid #ddd; /* 테두리 설정 */
+  list-style-type: none; /* 리스트 스타일 제거 */
+  padding: 0; /* 안쪽 여백 제거 */
+  margin: 0; /* 바깥 여백 제거 */
+  width: 415px; /* .statisticsSearchInput의 너비와 동일하게 설정 */
+  max-height: 200px; /* 최대 높이 설정 */
+  overflow-y: auto; /* 넘칠 경우 수직 스크롤바 표시 */
+  z-index: 1000; /* z-index 설정 */
 }
 
+/* 제품 리스트 항목 */
 .productList li {
-    padding: 8px 12px;
-    cursor: pointer;
+  padding: 8px 12px; /* 안쪽 여백 설정 */
+  cursor: pointer; /* 커서 모양 설정 */
 }
 
+/* 제품 리스트 항목 호버 상태 */
 .productList li:hover {
-    background-color: #f0f0f0;
+  background-color: #f0f0f0; /* 배경색 변경 */
+}
+
+/* Statistics.module.css 다크 모드 스타일 */
+
+/* 검색 필터 컨테이너 다크 모드 */
+:global(.dark-mode) .statisticsSearchFilterContainer {
+  color: #fff;
+}
+
+/* 검색 입력 필드 다크 모드 */
+:global(.dark-mode) .statisticsSearchInput {
+  background-color: #3b3b3b;
+  border-color: #777;
+  color: #ccc;
+}
+
+/* 검색 입력 필드 플레이스홀더 다크 모드 */
+:global(.dark-mode) .statisticsSearchInput::placeholder {
+  color: #999;
+}
+
+/* 검색 아이콘 다크 모드 */
+:global(.dark-mode) .statisticsIcon {
+  filter: invert(100%);
+}
+
+/* 제품 리스트 다크 모드 */
+:global(.dark-mode) .productList {
+  background-color: #3b3b3b;
+  color: #fff;
+}
+
+/* 통계 테이블 헤더 다크 모드 */
+:global(.dark-mode) .statisticsTableThead1 {
+  background-color: #505050;
+  color: #fff;
+  border-bottom: 1px solid #fff;
+}
+
+/* 통계 테이블 두 번째 헤더 다크 모드 */
+:global(.dark-mode) .statisticsTableHead2 {
+  background-color: #505050;
+  color: #fff;
+  border-bottom: 1px solid #fff;
+}
+
+/* 통계 테이블 바디 다크 모드 */
+:global(.dark-mode) .statisticsTableTbody1 {
+  background-color: #3b3b3b;
+  color: #fff;
+  border-bottom: 1px solid #fff;
+}
+
+/* 통계 테이블 두 번째 바디 다크 모드 */
+:global(.dark-mode) .statisticsTableTBody2 {
+  background-color: #3b3b3b;
+  color: #fff;
+  border-bottom: 1px solid #fff;
+}
+
+/* 통계 테이블 총 합 다크 모드 */
+:global(.dark-mode) .statisticsTabletotal {
+  background-color: #3b3b3b;
+  color: #fff;
+  border-bottom: 1px solid #fff;
+  border-top: 1px solid #fff !important;
+}
+
+/* 파이 차트 컨테이너 다크 모드 */
+:global(.dark-mode) .pieChartContainer {
+  background-color: #222;
+}
+
+/* 다크 모드용 MUI Select */
+:global(.dark-mode) .statisticsSearchFilterContainer {
+  color: #fff;
+}
+
+:global(.dark-mode) .statisticsSearchInput {
+  background-color: #3b3b3b;
+  border-color: #777;
+  color: #ccc;
+}
+
+:global(.dark-mode) .statisticsSearchInput::placeholder {
+  color: #999;
+}
+
+:global(.dark-mode) .statisticsIcon {
+  filter: invert(100%);
+}
+
+:global(.dark-mode) .productList {
+  background-color: #3b3b3b;
+  color: #fff;
+}
+
+:global(.dark-mode) .statisticsTableThead1 {
+  background-color: #505050;
+  color: #fff;
+  border-bottom: 1px solid #fff;
+}
+
+:global(.dark-mode) .statisticsTableHead2 {
+  background-color: #505050;
+  color: #fff;
+  border-bottom: 1px solid #fff;
+}
+
+:global(.dark-mode) .statisticsTableTbody1 {
+  background-color: #3b3b3b;
+  color: #fff;
+  border-bottom: 1px solid #fff;
+}
+
+:global(.dark-mode) .statisticsTableTBody2 {
+  background-color: #3b3b3b;
+  color: #fff;
+  border-bottom: 1px solid #fff;
+}
+
+:global(.dark-mode) .statisticsTabletotal {
+  background-color: #3b3b3b;
+  color: #fff;
+  border-bottom: 1px solid #fff;
+  border-top: 1px solid #fff !important;
+}
+
+:global(.dark-mode) .pieChartContainer {
+  background-color: #222;
+}
+
+:global(.dark-mode) .MuiSelect-select {
+  color: #fff; /* 텍스트 색상 */
+}
+
+:global(.dark-mode) .MuiOutlinedInput-root {
+  &.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #fff; /* 포커스 시 테두리 색상 */
+  }
+  .MuiOutlinedInput-notchedOutline {
+    border-color: #fff; /* 기본 테두리 색상 */
+  }
+}
+
+:global(.dark-mode) .MuiSelect-icon {
+  color: #fff; /* 아이콘 색상 */
 }

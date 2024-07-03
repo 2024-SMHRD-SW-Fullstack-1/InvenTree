@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import style from './SubsidiariesRegistration.module.css';
 import deleteIcon from '../../assets/images/삭제L.png';
@@ -6,44 +6,168 @@ import saveIcon from '../../assets/images/저장L.png';
 import importIcon from '../../assets/images/가져오기L.png';
 import exportIcon from '../../assets/images/업로드L.png';
 import * as XLSX from 'xlsx';
-import { Select, MenuItem, TextField } from '@mui/material';
+import { Select, MenuItem, TextField, FormControl, Pagination } from '@mui/material';
+import { styled } from '@mui/system';
+import { useDarkMode } from '../DarkMode/DarkModeContext';
+
+// 다크 모드용 커스텀 텍스트 필드
+const DarkModeTextField = styled(TextField)(({ darkMode }) => ({
+  '& .MuiInputBase-root': {
+    color: darkMode ? 'white' : 'black',
+  },
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: darkMode ? 'white' : '#6fa16f',
+    },
+    '&:hover fieldset': {
+      borderColor: darkMode ? 'white' : '#6fa16f',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: darkMode ? 'white' : '#6fa16f',
+    },
+  },
+  '& .MuiInputLabel-root': {
+    color: darkMode ? 'white' : 'black',
+  },
+}));
+
+// 다크 모드용 커스텀 셀렉트 필드
+const DarkModeSelect = styled(Select)(({ darkMode }) => ({
+  '& .MuiInputBase-root': {
+    color: darkMode ? 'white' : 'black',
+  },
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: darkMode ? 'white' : '#6fa16f',
+    },
+    '&:hover fieldset': {
+      borderColor: darkMode ? 'white' : '#6fa16f',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: darkMode ? 'white' : '#6fa16f',
+    },
+  },
+  '& .MuiInputLabel-root': {
+    color: darkMode ? 'white' : 'black',
+  },
+  '& .MuiSelect-icon': {
+    color: darkMode ? 'white' : 'black',
+  },
+}));
+
+// 다크 모드용 커스텀 폼 컨트롤
+const DarkModeFormControl = styled(FormControl)(({ darkMode }) => ({
+  '& .MuiInputBase-root': {
+    color: darkMode ? 'white' : 'black',
+  },
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: darkMode ? 'white' : '#6fa16f',
+    },
+    '&:hover fieldset': {
+      borderColor: darkMode ? 'white' : '#6fa16f',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: darkMode ? 'white' : '#6fa16f',
+    },
+  },
+  '& .MuiInputLabel-root': {
+    color: darkMode ? 'white' : 'black',
+  },
+}));
+
+// 커스텀 페이징 - 현재 페이지의 스타일을 정의합니다.
+const CustomPagination = styled(Pagination)(({ theme }) => ({
+  '& .MuiPaginationItem-root': {
+    color: theme.palette.mode === 'dark' ? 'white' : 'black',
+  },
+  '& .Mui-selected': {
+    backgroundColor: '#6fa16f !important',
+    color: 'white !important',
+  },
+  '& .MuiPaginationItem-page:hover': {
+    backgroundColor: theme.palette.mode === 'dark' ? '#444' : '#f0f0f0',
+  },
+}));
 
 const SubsidiaryRegistration = () => {
-  const [selectAll, setSelectAll] = useState(false);
-  const [subsidiaries, setSubsidiaries] = useState([]);
+  // 상태 변수들
+  const [selectAll, setSelectAll] = useState(false); // 전체 선택 여부 상태
+  const [subsidiaries, setSubsidiaries] = useState([]); // 업체 데이터 상태
+  const [filterColumn, setFilterColumn] = useState(''); // 필터링할 열 상태 변수
+  const [filterValue, setFilterValue] = useState(''); // 필터링 값 상태 변수
+  const [page, setPage] = useState(1); // 현재 페이지 상태
+  const [totalPages, setTotalPages] = useState(0); // 총 페이지 수 상태
+  const entriesPerPage = 10; // 페이지 당 항목 수
+  const { darkMode } = useDarkMode(); // 다크 모드 상태 가져오기
 
-  useEffect(() => {
-    let isMounted = true; // 클린업을 위한 플래그
-
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8090/tree/api/subsidiaries', {
-          withCredentials: true,
-          headers: { 'Content-Type': 'application/json' },
-        });
-        if (isMounted) {
-          setSubsidiaries(response.data);
-        }
-      } catch (error) {
-        if (isMounted) {
-          console.error('권한 데이터를 불러오는 중 오류 발생:', error);
-        }
-      }
-    };
-
-    fetchData();
-
-    return () => {
-      isMounted = false; // 컴포넌트 언마운트 시 플래그 설정
-    };
+  // 데이터 가져오는 함수
+  const fetchData = useCallback(async () => {
+    try {
+      const response = await axios.get('http://localhost:8090/tree/api/subsidiaries', {
+        withCredentials: true,
+        headers: { 'Content-Type': 'application/json' },
+      });
+      setSubsidiaries(response.data); // 업체 데이터를 상태로 설정
+    } catch (error) {
+      console.error('업체 데이터를 불러오는 중 오류 발생:', error);
+    }
   }, []);
+
+  // 컴포넌트 마운트 시 데이터 가져오기
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // 필터링된 업체 데이터를 반환하는 함수
+  const getFilteredSubsidiaries = useCallback(() => {
+    return subsidiaries.filter((subsidiary) => {
+      if (!filterColumn) return true; // 필터링 열이 없을 경우 모든 데이터 반환
+      if (filterColumn === 'isRelease') {
+        // 업체분류 필터링 처리
+        const filterText = filterValue.toLowerCase();
+        const isReleaseText = subsidiary.isRelease === 'Y' ? '출고업체' : '입고업체';
+        return isReleaseText.toLowerCase().includes(filterText);
+      }
+      return subsidiary[filterColumn].toString().toLowerCase().includes(filterValue.toLowerCase());
+    });
+  }, [subsidiaries, filterColumn, filterValue]);
+
+  // 필터링된 데이터가 변경될 때마다 페이지 수와 현재 페이지를 재설정하는 useEffect
+  useEffect(() => {
+    const filteredSubsidiaries = getFilteredSubsidiaries();
+    setTotalPages(Math.ceil(filteredSubsidiaries.length / entriesPerPage));
+  }, [filterColumn, filterValue, subsidiaries, getFilteredSubsidiaries]);
+
+  // 페이지에 따라 데이터를 분할하는 함수
+  const paginatedSubsidiaries = useMemo(
+    () => getFilteredSubsidiaries().slice((page - 1) * entriesPerPage, page * entriesPerPage),
+    [getFilteredSubsidiaries, page, entriesPerPage]
+  );
+
+  // 페이지 변경 핸들러
+  const handleChangePage = (event, value) => {
+    setPage(value);
+    setSelectAll(false); // 페이지 변경 시 전체 선택 상태 초기화
+  };
+
+  // 필터 컬럼 변경 핸들러
+  const handleFilterColumnChange = (event) => {
+    setFilterColumn(event.target.value);
+    setPage(1); // 필터 컬럼 변경 시 페이지를 1로 설정
+  };
+
+  // 필터 값 변경 핸들러
+  const handleFilterValueChange = (event) => {
+    setFilterValue(event.target.value);
+    setPage(1); // 필터 값 변경 시 페이지를 1로 설정
+  };
 
   // 업체 정보 업데이트 함수
   const updateSubsidiaries = async () => {
     const checkedSubsidiaries = subsidiaries.filter((subsidiary) => subsidiary.checked);
 
     if (checkedSubsidiaries.length === 0) {
-      // alert('추가할 권한을 선택해주세요.');
       return;
     }
 
@@ -72,12 +196,12 @@ const SubsidiaryRegistration = () => {
             'Content-Type': 'application/json',
           },
           withCredentials: true,
-        },
+        }
       );
 
       console.log('Subsidiary data update response:', updateResponse.data);
       alert('저장되었습니다');
-      window.location.replace('/SubsidiariesRegistration');
+      await fetchData(); // 데이터 새로고침
     } catch (error) {
       console.error('Error updating Subsidiary data:', error);
       alert('저장 중 오류가 발생했습니다.');
@@ -89,7 +213,6 @@ const SubsidiaryRegistration = () => {
     const newSubsidiaries = subsidiaries.filter((subsidiary) => subsidiary.checked && !subsidiary.subIdx);
 
     if (newSubsidiaries.length === 0) {
-      // alert('추가할 새 업체 데이터를 선택해주세요.');
       return;
     }
 
@@ -103,15 +226,15 @@ const SubsidiaryRegistration = () => {
 
       console.log('Insert response:', response.data);
 
-      // 성공적으로 삽입된 후 필요한 후속 작업을 여기에 추가
       alert('새 업체 데이터가 성공적으로 추가되었습니다.');
+      await fetchData(); // 데이터 새로고침
     } catch (error) {
       console.error('Error inserting data:', error);
       alert('데이터 삽입 중 오류가 발생했습니다.');
     }
   };
 
-  // 저장 버튼 함수
+  // 선택된 업체 정보 저장 함수
   const SelectedSave = async () => {
     await updateSubsidiaries();
     await insertSubsidiaries();
@@ -119,13 +242,13 @@ const SubsidiaryRegistration = () => {
 
   // 업체 정보 삭제 함수
   const deleteSubsidiaries = async () => {
-    const checkedSubsidiaries = subsidiaries.filter((subsidiary) => subsidiary.checked);
+    const checkedSubsidiaries = getFilteredSubsidiaries().filter((subsidiary) => subsidiary.checked);
 
     if (checkedSubsidiaries.length === 0) {
-      // alert('삭제할 업체 데이터를 선택해주세요.');
+      alert('삭제할 업체를 선택해주세요.');
       return;
     }
-    console.log(checkedSubsidiaries);
+
     try {
       const response = await axios.put('http://localhost:8090/tree/api/subsidiaries/delete', checkedSubsidiaries, {
         withCredentials: true,
@@ -134,52 +257,41 @@ const SubsidiaryRegistration = () => {
         },
       });
 
-      console.log('Delete response:', response.data);
+      console.log('Delete response:', JSON.stringify(response.data, null, 2));
+      
+      alert('삭제 요청이 처리되었습니다. 잠시 후 결과를 확인합니다.');
 
-      // alert('선택된 업체 데이터가 성공적으로 삭제되었습니다.');
+      setTimeout(async () => {
+        await fetchData();
+        alert('데이터가 갱신되었습니다. 삭제 결과를 확인해주세요.');
+      }, 2000);
 
-      // setSubsidiaries(checkedSubsidiaries);
     } catch (error) {
-      if (error.response) {
-        // 서버가 오류 응답을 보낸 경우
-        console.error('Error deleting data:', error.response.data);
-        alert(`상품이 있는 업체들은 삭제되지 않습니다.`);
-      } else if (error.request) {
-        // 요청이 완료되지 않은 경우
-        console.error('Request not completed:', error.request);
-        // alert('서버로의 요청이 완료되지 않았습니다.');
-      } else {
-        // 그 외의 오류 처리
-        console.error('Error deleting data2:', error.message);
-        alert('데이터 삭제 중 오류가 발생했습니다.');
-      }
+      console.error('Error deleting data:', error);
+      alert('데이터 삭제 요청 중 오류가 발생했습니다.');
     }
-    window.location.replace('/SubsidiariesRegistration');
   };
 
-  // 업체 등록 행 추가
+  // 새로운 업체 등록 행 추가
   const addSubsidiary = () => {
-    setSubsidiaries([
-      ...subsidiaries,
-      {
-        checked: false,
-        subName: '',
-        subOwner: '',
-        subTel: '',
-        subAddr: '',
-        isRelease: '',
-      },
-    ]);
+    const newSubsidiary = {
+      checked: false,
+      subName: '',
+      subOwner: '',
+      subTel: '',
+      subAddr: '',
+      isRelease: '',
+      subIdx: '',
+    };
+
+    setSubsidiaries((prevSubsidiaries) => [...prevSubsidiaries, newSubsidiary]);
   };
 
-  // 개별 checkbox toggle
-  const handleCheckboxToggle = (index) => {
-    if (subsidiaries[index]) {
-      // index 범위 검사 추가
-      const newSubsidiaries = [...subsidiaries];
-      newSubsidiaries[index].checked = !newSubsidiaries[index].checked;
-      setSubsidiaries(newSubsidiaries);
-    }
+  // 개별 체크박스 토글
+  const handleCheckboxToggle = (index, checked) => {
+    const newSubsidiaries = [...subsidiaries];
+    newSubsidiaries[index].checked = checked;
+    setSubsidiaries(newSubsidiaries);
   };
 
   // 입력 값 변경 함수
@@ -189,15 +301,21 @@ const SubsidiaryRegistration = () => {
     setSubsidiaries(newSubsidiaries);
   };
 
-  // 전체 선택 함수
+  // 현재 페이지의 데이터 선택/해제 함수
   const handleSelectAll = () => {
     const newSelectAll = !selectAll;
-    const newSubsidiaries = subsidiaries.map((subsidiary) => ({ ...subsidiary, checked: newSelectAll }));
+    const filteredSubsidiaries = getFilteredSubsidiaries();
+    const updatedSubsidiaries = subsidiaries.map(subsidiary => {
+      if (filteredSubsidiaries.some(filtered => filtered.subIdx === subsidiary.subIdx)) {
+        return { ...subsidiary, checked: newSelectAll };
+      }
+      return subsidiary;
+    });
     setSelectAll(newSelectAll);
-    setSubsidiaries(newSubsidiaries);
+    setSubsidiaries(updatedSubsidiaries);
   };
 
-  // 파일 가져오기 (import)
+  // 파일 가져오기 (import) 함수
   const importSelected = () => {
     const input = document.createElement('input');
 
@@ -208,15 +326,13 @@ const SubsidiaryRegistration = () => {
       } else if (value === '입고업체') {
         return 'N';
       }
-      // 기타 경우에 대한 처리를 원하면 필요에 따라 추가
-      return ''; // 예외 처리: 매핑할 값이 없는 경우 빈 문자열 반환
+      return '';
     };
 
     input.type = 'file';
     input.accept = '.xlsx, .xls, .pdf';
-    input.style.display = 'none'; // 화면에 보이지 않도록 설정
+    input.style.display = 'none';
 
-    // 파일 선택 시 동작
     input.onchange = async (event) => {
       const file = event.target.files[0];
       if (!file) return;
@@ -239,7 +355,7 @@ const SubsidiaryRegistration = () => {
               subAddr: item['업체주소'] || '',
               isRelease: mapIsRelease(item['업체분류']) || '',
             }))
-            .filter((subsidiary) => subsidiary.subName !== ''); // 필터링 추가
+            .filter((subsidiary) => subsidiary.subName !== '');
 
           setSubsidiaries((prevSubsidiaries) => [...prevSubsidiaries, ...newSubsidiaries]);
           alert('파일이 성공적으로 가져와졌습니다.');
@@ -252,13 +368,13 @@ const SubsidiaryRegistration = () => {
       reader.readAsArrayBuffer(file);
     };
 
-    // 파일 선택 창을 열지 않고 바로 파일 선택 기능 실행
     input.click();
   };
 
-  // 선택된 데이터 내보내기 (export)
+  // 선택된 데이터 내보내기 (export) 함수
   const exportSelected = async () => {
-    const checkedSubsidiaries = subsidiaries.filter((subsidiary) => subsidiary.checked);
+    const filteredSubsidiaries = getFilteredSubsidiaries();
+    const checkedSubsidiaries = filteredSubsidiaries.filter((subsidiary) => subsidiary.checked);
     if (checkedSubsidiaries.length === 0) {
       alert('내보낼 행을 선택해주세요.');
       return;
@@ -281,101 +397,160 @@ const SubsidiaryRegistration = () => {
   };
 
   return (
-    <div className={style.tableContainer}>
-      <div className={style.headerContainer}>
-        <h2 className={style.title}>업체 등록</h2>
-        <div className={style.buttonContainer}>
-          <button className={`${style.defaultButton} ${style.deleteButton}`} onClick={deleteSubsidiaries}>
-            <img src={deleteIcon} alt="삭제 아이콘" />
-            삭제
-          </button>
-          <button className={`${style.defaultButton} ${style.saveButton}`} onClick={SelectedSave}>
-            {/* onClick={handleSave} */}
-            <img src={saveIcon} alt="저장하기 아이콘" />
-            저장하기
-          </button>
-          <button className={`${style.defaultButton} ${style.importButton}`} onClick={importSelected}>
-            <img src={importIcon} alt="가져오기 아이콘" />
-            가져오기
-          </button>
-          <button className={`${style.defaultButton} ${style.exportButton}`} onClick={exportSelected}>
-            <img src={exportIcon} alt="내보내기 아이콘" />
-            내보내기
-          </button>
-          <button className={style.addRowButton} onClick={addSubsidiary}>
-            +행추가
-          </button>
-        </div>
-      </div>
-
-      <table className={style.table}>
-        <thead className={style.thead}>
-          <tr>
-            <th>
-              <input type="checkbox" className={style.checkbox} checked={selectAll} onChange={handleSelectAll} />
-            </th>
-            <th>No</th>
-            <th>업체명</th>
-            <th>업체대표자</th>
-            <th>업체전화번호</th>
-            <th>업체주소</th>
-            <th>업체분류</th>
-          </tr>
-        </thead>
-        <tbody>
-          {subsidiaries.map((subsidiary, index) => (
-            <tr key={index} className={style.tbody}>
-              <td>
-                <input
-                  type="checkbox"
-                  className={style.checkbox}
-                  defaultChecked={subsidiary.checked || false}
-                  onClick={(e) => handleCheckboxToggle(index)}
-                />
-              </td>
-              <td>{index + 1}</td>
-              <td>
-                <TextField
-                  type="text"
-                  value={subsidiary.subName}
-                  onChange={(e) => handleInputChange(index, 'subName', e.target.value)}
-                />
-              </td>
-              <td>
-                <TextField
-                  type="text"
-                  value={subsidiary.subOwner}
-                  onChange={(e) => handleInputChange(index, 'subOwner', e.target.value)}
-                />
-              </td>
-              <td>
-                <TextField
-                  type="text"
-                  value={subsidiary.subTel}
-                  onChange={(e) => handleInputChange(index, 'subTel', e.target.value)}
-                />
-              </td>
-              <td>
-                <TextField
-                  type="text"
-                  value={subsidiary.subAddr}
-                  onChange={(e) => handleInputChange(index, 'subAddr', e.target.value)}
-                />
-              </td>
-              <td>
-                <Select
-                  value={subsidiary.isRelease || ''}
-                  onChange={(e) => handleInputChange(index, 'isRelease', e.target.value)}
+    <div className={`${style.tableContainer} ${darkMode ? 'dark-mode' : ''}`}>
+      <div className="tableContainer">
+        <div className={style.headerContainer}>
+          <h2>업체 등록</h2>
+          <div className={style.searchFilterContainer}>
+            <div className={style.searchInputContainer}>
+              <DarkModeFormControl
+                variant="outlined"
+                size="small"
+                className={style.filterColumnSelect}
+                darkMode={darkMode}
+                style={{ marginRight: '10px' }} // 필터 컬럼과 필터 입력 칸 사이에 간격 추가
+              >
+                <DarkModeSelect
+                  id="filter-column"
+                  value={filterColumn}
+                  onChange={handleFilterColumnChange}
+                  displayEmpty
+                  darkMode={darkMode}
                 >
-                  <MenuItem value=""> --선택-- </MenuItem>
-                  <MenuItem value="Y">출고업체</MenuItem>
-                  <MenuItem value="N">입고업체</MenuItem>
-                </Select>
-              </td>
+                  <MenuItem value="">선택</MenuItem>
+                  <MenuItem value="subName">업체명</MenuItem>
+                  <MenuItem value="subOwner">업체대표자</MenuItem>
+                  <MenuItem value="subTel">업체전화번호</MenuItem>
+                  <MenuItem value="subAddr">업체주소</MenuItem>
+                  <MenuItem value="isRelease">업체분류</MenuItem>
+                </DarkModeSelect>
+              </DarkModeFormControl>
+
+              <DarkModeTextField
+                type="text"
+                size="small"
+                variant="outlined"
+                value={filterValue}
+                onChange={handleFilterValueChange}
+                placeholder="검색어 입력"
+                darkMode={darkMode}
+              />
+            </div>
+          </div>
+          <div className={style.buttonContainer}>
+            <button className={style.defaultButton} onClick={deleteSubsidiaries}>
+              <img src={deleteIcon} alt="삭제 아이콘" />
+              삭제
+            </button>
+            <button className={style.defaultButton} onClick={SelectedSave}>
+              <img src={saveIcon} alt="저장하기 아이콘" />
+              저장
+            </button>
+            <button className={style.defaultButton} onClick={importSelected}>
+              <img src={importIcon} alt="가져오기 아이콘" />
+              가져오기
+            </button>
+            <button className={style.defaultButton} onClick={exportSelected}>
+              <img src={exportIcon} alt="내보내기 아이콘" />
+              내보내기
+            </button>
+            <button className={style.addRowButton} onClick={addSubsidiary}>
+              +업체추가
+            </button>
+          </div>
+        </div>
+
+        <table className={style.table}>
+          <thead>
+            <tr>
+              <th>
+                <input type="checkbox" className={style.checkbox} checked={selectAll} onChange={handleSelectAll} />
+              </th>
+              <th>No</th>
+              <th>업체명</th>
+              <th>업체대표자</th>
+              <th>업체전화번호</th>
+              <th>업체주소</th>
+              <th>업체분류</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {paginatedSubsidiaries.map((subsidiary, index) => (
+              <tr
+                key={index}
+                className={style.tbodyRow}
+                onClick={() => handleCheckboxToggle((page - 1) * entriesPerPage + index, !subsidiary.checked)}
+              >
+                <td>
+                  <input
+                    type="checkbox"
+                    className={style.checkbox}
+                    checked={subsidiary.checked || false}
+                    onClick={(e) => e.stopPropagation()}
+                    onChange={() => handleCheckboxToggle((page - 1) * entriesPerPage + index, !subsidiary.checked)}
+                  />
+                </td>
+                <td>{index + 1 + (page - 1) * entriesPerPage}</td>
+                <td>
+                  <input
+                    className={style.tableInput}
+                    type="text"
+                    value={subsidiary.subName}
+                    onClick={(e) => e.stopPropagation()}
+                    onChange={(e) => handleInputChange((page - 1) * entriesPerPage + index, 'subName', e.target.value)}
+                    placeholder="업체명"
+                  />
+                </td>
+                <td>
+                  <input
+                    className={style.tableInput}
+                    type="text"
+                    value={subsidiary.subOwner}
+                    onClick={(e) => e.stopPropagation()}
+                    onChange={(e) => handleInputChange((page - 1) * entriesPerPage + index, 'subOwner', e.target.value)}
+                    placeholder="업체대표자"
+                  />
+                </td>
+                <td>
+                  <input
+                    className={style.tableInput}
+                    type="text"
+                    value={subsidiary.subTel}
+                    onClick={(e) => e.stopPropagation()}
+                    onChange={(e) => handleInputChange((page - 1) * entriesPerPage + index, 'subTel', e.target.value)}
+                    placeholder="연락처"
+                  />
+                </td>
+                <td>
+                  <input
+                    className={style.tableInput}
+                    type="text"
+                    value={subsidiary.subAddr}
+                    onClick={(e) => e.stopPropagation()}
+                    onChange={(e) => handleInputChange((page - 1) * entriesPerPage + index, 'subAddr', e.target.value)}
+                    placeholder="주소"
+                  />
+                </td>
+                <td>
+                  <select
+                    value={subsidiary.isRelease || ''}
+                    className={style.tableInput}
+                    onClick={(e) => e.stopPropagation()}
+                    onChange={(e) =>
+                      handleInputChange((page - 1) * entriesPerPage + index, 'isRelease', e.target.value)
+                    }
+                  >
+                    <option value=""> 선택 </option>
+                    <option value="Y">출고</option>
+                    <option value="N">입고</option>
+                  </select>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <CustomPagination count={totalPages} page={page} onChange={handleChangePage} className={style.pagination} />
+      </div>
     </div>
   );
 };

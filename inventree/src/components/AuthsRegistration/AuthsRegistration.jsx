@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import style from './AuthsRegistration.module.css';
-import searchIcon from '../../assets/images/검색L.png';
-import filterIcon from '../../assets/images/필터L.png';
 import saveIcon from '../../assets/images/저장L.png';
 import importIcon from '../../assets/images/가져오기L.png';
 import exportIcon from '../../assets/images/업로드L.png';
 import * as XLSX from 'xlsx';
+import { Button } from '@mui/material';
 
 const AuthsRegistration = () => {
   const [auths, setAuths] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(''); //오류메시지 상태 변수
+  const [saveMessage, setSaveMessage] = useState(''); //저장메시지 상태 변수
 
   useEffect(() => {
     let isMounted = true; // 클린업을 위한 플래그
@@ -38,7 +39,23 @@ const AuthsRegistration = () => {
     };
   }, []);
 
-  // console.log(auths);
+  // 오류 메시지 출력 함수
+  const handleError = (message) => {
+    setErrorMessage(message);
+    // 일정 시간 후 오류 메시지를 지우고 싶다면 타이머를 설정할 수 있습니다.
+    setTimeout(() => {
+      setErrorMessage('');
+    }, 5000); // 5초 후에 오류 메시지 지움
+  };
+
+  // 오류 메시지 출력 함수
+  const handleSaveMessage = (message) => {
+    setSaveMessage(message);
+    // 일정 시간 후 저장 메시지를 지우고 싶다면 타이머를 설정할 수 있습니다.
+    setTimeout(() => {
+      setSaveMessage('');
+    }, 5000); // 5초 후에 오류 메시지 지움
+  };
 
   // 권한 정보 저장 함수
   const updateSelected = async () => {
@@ -66,12 +83,31 @@ const AuthsRegistration = () => {
       });
 
       console.log('Auth data update response:', updateResponse.data);
-      alert('저장되었습니다');
-      window.location.replace('/AuthsRegistration');
+      handleSaveMessage('저장되었습니다');
     } catch (error) {
       console.error('Error updating auth data:', error);
-      alert('저장 중 오류가 발생했습니다.');
+      handleError('저장 중 오류가 발생했습니다.');
     }
+  };
+
+  // 행의 모든 권한 값을 토글하는 함수
+  const handleTogglePermissions = (index, event) => {
+    event.stopPropagation(); // 이벤트 전파 막기
+    setAuths((prevAuths) =>
+      prevAuths.map((auth, i) => {
+        if (i === index) {
+          const newValue = auth.inventoryYn === 'Y' ? 'N' : 'Y';
+          return {
+            ...auth,
+            inventoryYn: newValue,
+            shipYn: newValue,
+            chartYn: newValue,
+            setYn: newValue,
+          };
+        }
+        return auth;
+      }),
+    );
   };
 
   // 입력 필드 변경 처리
@@ -167,22 +203,21 @@ const AuthsRegistration = () => {
     console.log('Exporting data to Excel or PDF');
   };
 
+  const handleRowClick = (event, index) => {
+    if (event.target.tagName.toLowerCase() !== 'input' && event.target.tagName.toLowerCase() !== 'select') {
+      handleCheckboxToggle(index);
+    }
+  };
+
   return (
     <div className={style.tableContainer}>
       <div className="tableContainer">
         <div className={style.headerContainer}>
           <h2>권한등록</h2>
-          <div className={style.searchFilterContainer}>
-            <div className={style.searchInputContainer}>
-              <img src={searchIcon} alt="조회 아이콘" className={style.icon} />
-              <input type="text" className={style.searchInput} placeholder="조회" />
-            </div>
-            <button className={style.filterButton}>
-              <img src={filterIcon} alt="필터 아이콘" className={style.icon} />
-              필터
-            </button>
-          </div>
+
           <div className={style.buttonContainer}>
+            {errorMessage && <div className={`${style.messageContainer} ${style.errorMessage}`}>{errorMessage}</div>}
+            {saveMessage && <div className={`${style.messageContainer} ${style.saveMessage}`}>{saveMessage}</div>}
             <button onClick={updateSelected} className={style.defaultButton}>
               <img src={saveIcon} align="top" alt="저장 아이콘" />
               저장하기
@@ -205,24 +240,30 @@ const AuthsRegistration = () => {
           <thead>
             <tr>
               <th>
-                <input type="checkbox" checked={selectAll} onChange={handleSelectAll} />
+                <input type="checkbox" className={style.checkbox} checked={selectAll} onChange={handleSelectAll} />
               </th>
-              <th>No</th>
+              {/* <th>No</th> */}
               <th>아이디</th>
               <th>이름</th>
               <th>재고권한</th>
               <th>입출고권한</th>
               <th>통계권한</th>
               <th>설정권한</th>
+              <th>변경</th>
             </tr>
           </thead>
           <tbody>
             {auths.map((auth, index) => (
-              <tr key={index}>
+              <tr key={index} onClick={(event) => handleRowClick(event, index)}>
                 <td>
-                  <input type="checkbox" checked={auth.checked || false} onChange={() => handleCheckboxToggle(index)} />
+                  <input
+                    type="checkbox"
+                    className={style.checkbox}
+                    checked={auth.checked || false}
+                    onChange={() => handleCheckboxToggle(index)}
+                  />
                 </td>
-                <td>{index + 1}</td>
+                {/* <td>{index + 1}</td> */}
                 <td>{auth.mbId}</td>
                 <td>{auth.mbName}</td>
                 <td>
@@ -271,6 +312,13 @@ const AuthsRegistration = () => {
                     <option value="Y">Y</option>
                     <option value="N">N</option>
                   </select>
+                </td>
+                <td>
+                  <div>
+                    <Button className={style.defaultButton} onClick={(e) => handleTogglePermissions(index, e)}>
+                      {auth.inventoryYn === 'Y' ? 'All N' : 'All Y'}
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ))}

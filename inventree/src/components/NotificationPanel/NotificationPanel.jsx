@@ -5,7 +5,12 @@ import style from './NotificationPanel.module.css';
 import notificationIcon2 from '../../assets/images/알림2.png';
 import notificationIcon3 from '../../assets/images/알림3.png';
 
+/**
+ * NotificationPanel 컴포넌트
+ * 사용자에게 알림을 표시하는 패널입니다.
+ */
 const NotificationPanel = () => {
+  // 상태 변수 선언
   const [notifications, setNotifications] = useState(() => {
     const savedNotifications = localStorage.getItem('notifications');
     return savedNotifications ? JSON.parse(savedNotifications) : [];
@@ -20,6 +25,9 @@ const NotificationPanel = () => {
   const panelRef = useRef(null);
   const scrollPosition = useRef(0);
 
+  /**
+   * 알림 데이터를 주기적으로 가져오는 함수
+   */
   useEffect(() => {
     const fetchNotifications = async () => {
       setIsLoading(true);
@@ -57,11 +65,15 @@ const NotificationPanel = () => {
 
     const intervalId = setInterval(fetchNotifications, 30000);
 
-    // Cleanup interval on unmount
+    // 컴포넌트 언마운트 시 인터벌 정리
     return () => clearInterval(intervalId);
     // handleNewNotifications에 의존도를 넣으면 오히려 렌더링 느려지므로 절대 넣지 말것!!
   }, [etag]);
 
+  /**
+   * 새로운 알림을 처리하는 함수
+   * @param {Array} data - 새로운 알림 데이터
+   */
   const handleNewNotifications = (data) => {
     const newNotifications = data.flatMap((item) => {
       const { type, message } = item;
@@ -85,7 +97,7 @@ const NotificationPanel = () => {
       prevNotifications.current = newNotifications;
       isInitialRender.current = false;
 
-      // Save notifications to localStorage
+      // 알림을 localStorage에 저장
       localStorage.setItem('notifications', JSON.stringify(newNotifications));
 
       if (panelRef.current) {
@@ -94,6 +106,11 @@ const NotificationPanel = () => {
     }
   };
 
+  /**
+   * 알림 유형에 따라 링크를 반환하는 함수
+   * @param {string} type - 알림 유형
+   * @returns {string} 링크 URL
+   */
   const getLinkFromType = (type) => {
     if (type === '대량 입출고') return '/InoutHistory';
     if (type === '재고 변동 상위 품목') return '/InventoryStatus';

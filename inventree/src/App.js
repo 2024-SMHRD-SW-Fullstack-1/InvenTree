@@ -7,13 +7,16 @@ import Statistics from './components/Statistics/Statistics';
 import WarehouseRegistration from './components/WarehouseRegistration/WarehouseRegistration';
 import Login from './components/Login/Login';
 import Main from './components/Main/Main';
-import AlertPage from './components/AlertPage/AlertPage'; // 경고 페이지 컴포넌트 추가
+import AlertPage from './components/AlertPage/AlertPage';
 import ReleasesRegistration from './components/ReleasesRegistration/ReleasesRegistration';
 import InoutHistory from './components/InoutHistory/InoutHistory';
 import MembersRegistration from './components/MembersRegistration/MembersRegistration';
 import InventoryStatus from './components/InventoryStatus/InventoryStatus';
 import AuthsRegistration from './components/AuthsRegistration/AuthsRegistration';
 import SubsidiariesRegistration from './components/SubsidiariesRegistration/SubsidiariesRegistration';
+import PrivateRoute from './PrivateRoute';
+import useSessionData from './useSessionData';
+import { DarkModeProvider } from './components/DarkMode/DarkModeContext';
 
 // 인증 컨텍스트 생성
 const AuthContext = createContext();
@@ -22,20 +25,18 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 const App = () => {
-  const location = useLocation(); // 현재 경로를 가져옴
-  const navigate = useNavigate(); // 프로그래밍적으로 네비게이션하기 위해 사용
+  const sessionData = useSessionData();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    // 로컬 스토리지에서 로그인 상태를 불러옴
     return localStorage.getItem('isLoggedIn') === 'true';
   });
-  const [sessionExpired, setSessionExpired] = useState(false); // 세션 만료 상태를 추적
+  const [sessionExpired, setSessionExpired] = useState(false);
   const [timeLeft, setTimeLeft] = useState(() => {
-    // 로컬 스토리지에서 남은 시간을 불러옴
     const savedTimeLeft = localStorage.getItem('timeLeft');
     return savedTimeLeft ? parseInt(savedTimeLeft, 10) : null;
   });
 
-  // 사용자 로그아웃 처리
   const handleLogout = useCallback(async () => {
     await fetch('http://localhost:8090/tree/api/logout', {
       method: 'POST',
@@ -50,7 +51,23 @@ const App = () => {
     navigate('/login');
   }, [navigate]);
 
-  // 세션 타이머를 관리하기 위한 useEffect
+  useEffect(() => {
+    const savedSessionData = localStorage.getItem('sessionData');
+    if (savedSessionData) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      localStorage.setItem('sessionData', JSON.stringify(sessionData));
+      localStorage.setItem('isLoggedIn', 'true');
+    } else {
+      localStorage.removeItem('sessionData');
+      localStorage.removeItem('isLoggedIn');
+    }
+  }, [isLoggedIn, sessionData]);
+
   useEffect(() => {
     let interval;
     if (timeLeft !== null) {
@@ -70,7 +87,6 @@ const App = () => {
     return () => clearInterval(interval);
   }, [timeLeft]);
 
-  // 세션 갱신을 위한 useEffect
   useEffect(() => {
     const renewSession = async () => {
       await fetch('http://localhost:8090/tree/api/checkSession', {
@@ -84,74 +100,141 @@ const App = () => {
     }
   }, [location]);
 
-  // 세션 만료 시 로그아웃 처리
   useEffect(() => {
     if (sessionExpired) {
-      window.alert('세션이 만료되었습니다. 다시 로그인해주세요.');
+      window.alert('30분이 지나 자동으로 로그아웃 됩니다. 다시 로그인해주세요.');
       handleLogout();
     }
   }, [sessionExpired, handleLogout]);
 
-  // 로그인 성공 시 호출되는 함수
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = async () => {
     setIsLoggedIn(true);
-    setTimeLeft(1800); // 로그인 성공 후 타이머를 30분으로 설정
+    setTimeLeft(1800);
     localStorage.setItem('isLoggedIn', 'true');
-    localStorage.setItem('timeLeft', 1800); // 남은 시간을 로컬 스토리지에 저장
+    localStorage.setItem('timeLeft', 1800);
+
+    // 사용자의 테마 설정 가져오기
+    try {
+      const themeResponse = await fetch('http://localhost:8090/tree/api/user/theme', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      const themeData = await themeResponse.json();
+
+      // 테마 적용
+      if (themeData.theme === 'dark') {
+        localStorage.setItem('darkMode', 'true');
+      } else {
+        localStorage.setItem('darkMode', 'false');
+      }
+    } catch (error) {
+      console.error('Error fetching user theme:', error);
+    }
   };
 
-  const isLoginPage = location.pathname === '/login'; // 현재 경로가 로그인 페이지인지 확인
-  const isAlertPage = location.pathname === '/alert'; // 현재 경로가 경고 페이지인지 확인
+  const isLoginPage = location.pathname === '/login';
+  const isAlertPage = location.pathname === '/alert';
 
   return (
-    <div>
-      {!isLoginPage && !isAlertPage && <Header timeLeft={timeLeft} onLogout={handleLogout} />}{' '}
-      {/* 로그인 페이지와 경고 페이지가 아닐 때 헤더를 표시 */}
-      <Routes>
-        <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} /> {/* 로그인 경로 */}
-        <Route path="/alert" element={<AlertPage />} /> {/* 경고 페이지 경로 */}
-        <Route path="/main" element={isLoggedIn ? <Main /> : <Navigate to="/alert" />} /> {/* 메인 페이지 경로 */}
-        <Route path="/statistics" element={isLoggedIn ? <Statistics /> : <Navigate to="/alert" />} />{' '}
-        {/* 통계 페이지 경로 */}
-        <Route
-          path="/warehouse-layout"
-          element={isLoggedIn ? <WarehouseLayout /> : <Navigate to="/alert" />} // 창고 배치도 페이지 경로
-        />
-        <Route
-          path="/InventoryRegistration"
-          element={isLoggedIn ? <InventoryRegistration /> : <Navigate to="/alert" />} // 재고 등록 페이지 경로 (중복)
-        />
-        <Route
-          path="/InoutHistory"
-          element={isLoggedIn ? <InoutHistory /> : <Navigate to="/alert" />} // 입출고 내역 페이지 경로
-        />
-        <Route
-          path="/WarehouseRegistration"
-          element={isLoggedIn ? <WarehouseRegistration /> : <Navigate to="/alert" />} // 창고 등록 페이지 경로
-        />
-        <Route
-          path="/SubsidiariesRegistration"
-          element={isLoggedIn ? <SubsidiariesRegistration /> : <Navigate to="/alert" />} // 업체 등록 페이지
-        ></Route>
-        <Route
-          path="/AuthsRegistration"
-          element={isLoggedIn ? <AuthsRegistration /> : <Navigate to="/alert" />} // 업체 등록 페이지
-        ></Route>
-        <Route
-          path="/MembersRegistration"
-          element={isLoggedIn ? <MembersRegistration /> : <Navigate to="/alert" />} // 사용자 등록 페이지
-        ></Route>
-        <Route
-          path="/InventoryStatus"
-          element={isLoggedIn ? <InventoryStatus /> : <Navigate to="/alert" />} // 재고 현황 페이지 경로
-        />
-        <Route
-          path="/ReleasesRegistration"
-          element={isLoggedIn ? <ReleasesRegistration /> : <Navigate to="/alert" />} // 출고 등록 페이지 경로 (중복)
-        />
-        <Route path="/" element={<Navigate to="/login" />} /> {/* 기본 경로 */}
-      </Routes>
-    </div>
+    <DarkModeProvider>
+      <AuthContext.Provider value={{ isLoggedIn, handleLogout }}>
+        {!isLoginPage && !isAlertPage && isLoggedIn && <Header timeLeft={timeLeft} onLogout={handleLogout} />}
+        <Routes>
+          <Route path="/login" element={<Login onLoginSuccess={handleLoginSuccess} />} />
+          <Route path="/alert" element={<AlertPage />} />
+          <Route path="/main" element={isLoggedIn ? <Main /> : <Navigate to="/alert" />} />
+          <Route
+            path="/statistics"
+            element={
+              <PrivateRoute permission="chartYn">
+                <Statistics />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/main"
+            element={
+              <PrivateRoute permission="inventoryYn">
+                <WarehouseLayout />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/InventoryRegistration"
+            element={
+              <PrivateRoute permission="shipYn">
+                <InventoryRegistration />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/WarehouseLayout"
+            element={
+              <PrivateRoute permission="shipYn">
+                <WarehouseLayout />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/InoutHistory"
+            element={
+              <PrivateRoute permission="shipYn">
+                <InoutHistory />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/WarehouseRegistration"
+            element={
+              <PrivateRoute permission="setYn">
+                <WarehouseRegistration />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/SubsidiariesRegistration"
+            element={
+              <PrivateRoute permission="setYn">
+                <SubsidiariesRegistration />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/AuthsRegistration"
+            element={
+              <PrivateRoute permission="setYn">
+                <AuthsRegistration />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/MembersRegistration"
+            element={
+              <PrivateRoute permission="setYn">
+                <MembersRegistration />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/InventoryStatus"
+            element={
+              <PrivateRoute permission="inventoryYn">
+                <InventoryStatus />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/ReleasesRegistration"
+            element={
+              <PrivateRoute permission="shipYn">
+                <ReleasesRegistration />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/" element={<Navigate to="/login" />} />
+        </Routes>
+      </AuthContext.Provider>
+    </DarkModeProvider>
   );
 };
 

@@ -14,6 +14,7 @@ import {
   BarController,
 } from 'chart.js';
 
+// ChartJS 모듈을 등록합니다.
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -27,27 +28,39 @@ ChartJS.register(
   BarController,
 );
 
+/**
+ * MixChart 컴포넌트
+ *
+ * @param {Object} props - 컴포넌트에 전달된 속성
+ * @param {Object} props.data - 월별 입출고 데이터를 포함하는 객체
+ * @returns {JSX.Element} 혼합 차트를 렌더링하는 JSX 엘리먼트
+ */
 const MixChart = ({ data }) => {
+  // 월 이름 배열을 정의합니다.
   const months = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
-  const stockData = months.map((_, i) => {
+
+  // 월별 입고량 데이터를 계산합니다.
+  const monthlyStockData = months.map((_, i) => {
     const weeklyStockCount = data?.[i + 1]?.weeklyStockCount || {};
-    const totalStockCount = Object.values(weeklyStockCount).reduce((a, b) => a + b, 0);
-    return totalStockCount;
+    const totalMonthlyStockCount = Object.values(weeklyStockCount).reduce((a, b) => a + b, 0);
+    return totalMonthlyStockCount;
   });
-  const avgStockData = months.map((_, i) => {
-    const avgWeeklyStockCount = data?.[i + 1]?.avgWeeklyStockCount || {};
-    const avgStockCount = Object.keys(avgWeeklyStockCount).length
-      ? Object.values(avgWeeklyStockCount).reduce((a, b) => a + b, 0) / Object.keys(avgWeeklyStockCount).length
-      : 0;
-    return avgStockCount;
+
+  // 월별 출고량 데이터를 계산합니다.
+  const monthlyReleaseData = months.map((_, i) => {
+    const weeklyReleaseCount = data?.[i + 1]?.weeklyReleaseCount || {};
+    const totalMonthlyReleaseCount = Object.values(weeklyReleaseCount).reduce((a, b) => a + b, 0);
+    return totalMonthlyReleaseCount;
   });
+
+  // 차트에 사용할 데이터를 정의합니다.
   const chartData = {
     labels: months,
     datasets: [
       {
         type: 'bar',
         label: '출고량',
-        data: stockData,
+        data: monthlyReleaseData,
         backgroundColor: '#8FCDDA',
         borderColor: '#8FCDDA',
         borderWidth: 1,
@@ -55,22 +68,23 @@ const MixChart = ({ data }) => {
       },
       {
         type: 'line',
-        label: '평균입고량',
-        data: avgStockData,
-        backgroundColor: '#FFB3B3',
-        borderColor: '#FFB3B3',
+        label: '입고량',
+        data: monthlyStockData,
+        backgroundColor: '#ff7300',
+        borderColor: '#ff7300',
         fill: false,
         tension: 0,
-        pointBackgroundColor: '#C08787',
-        pointBorderColor: '#C08787',
-        pointHoverBackgroundColor: '#DC9A9A',
-        pointHoverBorderColor: '#DC9A9A',
+        pointBackgroundColor: '#ff7300',
+        pointBorderColor: '#ff7300',
+        pointHoverBackgroundColor: '#ff7300',
+        pointHoverBorderColor: '#ff7300',
         pointRadius: 4,
         order: 1,
       },
     ],
   };
 
+  // 차트 옵션을 정의합니다.
   const options = {
     responsive: true,
     plugins: {
@@ -128,8 +142,9 @@ const MixChart = ({ data }) => {
     },
   };
 
+  // 차트를 렌더링합니다.
   return (
-    <div style={{ width: '739px', height: '439px' }}>
+    <div style={{ width: '700px', height: '300px' }}>
       <Bar data={chartData} options={options} />
     </div>
   );

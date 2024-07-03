@@ -1,0 +1,31 @@
+/* DarkModeToggle.css */
+
+/* 다크 모드 토글 버튼 컨테이너 스타일 */
+.dark-mode-toggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* 다크 모드 아이콘 기본 스타일 */
+.dark-mode-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 15px;
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+/* 아이콘 호버 효과 */
+.dark-mode-toggle:hover .dark-mode-icon {
+  transform: scale(1.1);
+}
+
+/* 라이트 모드에서 아이콘 색상 (달 모양 - 검정색) */
+body:not(.dark-mode) .dark-mode-icon {
+  filter: invert(0) brightness(0);
+}
+
+/* 다크 모드에서 아이콘 색상 (태양 모양 - 흰색) */
+body.dark-mode .dark-mode-icon {
+  filter: invert(1);
+}

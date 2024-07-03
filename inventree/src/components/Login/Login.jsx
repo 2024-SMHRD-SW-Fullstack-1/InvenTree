@@ -1,9 +1,21 @@
+/**
+ * @fileoverview 로그인 컴포넌트
+ * 사용자 인증 및 로그인 기능을 제공합니다.
+ */
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReCAPTCHA from 'react-google-recaptcha';
+import axios from 'axios';
+import { useDarkMode } from '../DarkMode/DarkModeContext';
 import style from './Login.module.css';
 
+/**
+ * Login 컴포넌트
+ * @param {function} onLoginSuccess - 로그인 성공 시 호출될 콜백 함수
+ */
 const Login = ({ onLoginSuccess }) => {
+  // 상태 변수들
   const [mbId, setMbId] = useState('');
   const [mbPw, setMbPw] = useState('');
   const [corpIdx, setCorpIdx] = useState('');
@@ -11,8 +23,14 @@ const Login = ({ onLoginSuccess }) => {
   const [loginFailed, setLoginFailed] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [failedAttempts, setFailedAttempts] = useState(0);
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
+  const { setDarkMode } = useDarkMode();
+
+  /**
+   * 세션 체크 함수
+   * 사용자의 로그인 상태를 확인합니다.
+   */
   const checkSession = useCallback(async () => {
     try {
       const response = await fetch('http://localhost:8090/tree/api/checkSession', {
@@ -34,10 +52,15 @@ const Login = ({ onLoginSuccess }) => {
     }
   }, [navigate, onLoginSuccess]);
 
+  // 컴포넌트 마운트 시 세션 체크
   useEffect(() => {
     checkSession();
   }, [checkSession]);
 
+  /**
+   * 로그인 처리 함수
+   * 사용자 입력을 검증하고 서버에 로그인 요청을 보냅니다.
+   */
   const handleLogin = async () => {
     if (!captchaToken) {
       alert('로봇이 아닙니다에 체크해주세요.');
@@ -45,29 +68,40 @@ const Login = ({ onLoginSuccess }) => {
     }
 
     try {
-      const response = await fetch('http://localhost:8090/tree/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      const response = await axios.post(
+        'http://localhost:8090/tree/api/login',
+        {
           mbId,
           mbPw,
           corpIdx,
           captchaToken,
-        }),
-        credentials: 'include',
-      });
+        },
+        {
+          withCredentials: true,
+        },
+      );
 
-      const result = await response.text();
+      const result = response.data;
 
-      if (result.trim() === 'success') {
+      if (result.status === 'success') {
         localStorage.setItem('corpIdx', corpIdx);
+
+        // 테마 설정
+        const userTheme = result.theme;
+        if (userTheme === 'dark') {
+          localStorage.setItem('darkMode', 'true');
+          setDarkMode(true);
+        } else {
+          localStorage.setItem('darkMode', 'false');
+          setDarkMode(false);
+        }
+
         onLoginSuccess();
         navigate('/main');
       } else {
+        // 로그인 실패 처리
         let errorMsg = '로그인 실패: ';
-        switch (result.trim()) {
+        switch (result.error) {
           case 'invalid_email':
             errorMsg += '유효하지 않은 이메일 형식입니다.';
             break;
@@ -89,11 +123,12 @@ const Login = ({ onLoginSuccess }) => {
       }
     } catch (error) {
       console.error('로그인 중 에러 발생:', error);
-      setErrorMessage('로그인 중 에러 발생: ' + error.message);
+      setErrorMessage('로그인 중 에러 발생: ' + (error.response?.data || error.message));
       setLoginFailed(true);
     }
   };
 
+  // 로그인 폼 렌더링
   return (
     <div className={`${style.loginPage} ${style.flexColumn}`}>
       <div className={`${style.loginHeader} ${style.flexCenter} ${style.textCenter}`}>
@@ -104,6 +139,7 @@ const Login = ({ onLoginSuccess }) => {
       >
         <table className={style.loginTable}>
           <tbody>
+            {/* 아이디 입력 필드 */}
             <tr>
               <td>아이디*</td>
             </tr>
@@ -118,6 +154,7 @@ const Login = ({ onLoginSuccess }) => {
                 />
               </td>
             </tr>
+            {/* 비밀번호 입력 필드 */}
             <tr>
               <td>비밀번호*</td>
             </tr>
@@ -132,6 +169,7 @@ const Login = ({ onLoginSuccess }) => {
                 />
               </td>
             </tr>
+            {/* 회사코드 입력 필드 */}
             <tr>
               <td>회사코드*</td>
             </tr>
@@ -146,6 +184,7 @@ const Login = ({ onLoginSuccess }) => {
                 />
               </td>
             </tr>
+            {/* CAPTCHA */}
             <tr>
               <td>CAPTCHA*</td>
             </tr>
@@ -156,9 +195,11 @@ const Login = ({ onLoginSuccess }) => {
             </tr>
           </tbody>
         </table>
+        {/* 로그인 버튼 */}
         <button type="button" className={style.loginButton} onClick={handleLogin}>
           로그인
         </button>
+        {/* 로그인 실패 알림 */}
         {loginFailed && (
           <div className={`${style.loginFailedAlert} ${style.boxShadow} ${style.borderRadius} ${style.borderLight}`}>
             <div className={`${style.loginFailedContent} ${style.flexColumn} ${style.textCenter}`}>

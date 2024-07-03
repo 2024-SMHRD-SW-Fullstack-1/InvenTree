@@ -1,5 +1,8 @@
+/* WareRegistration.module.css */
 .tableContainer {
-    margin: 0 10%;
+    margin-left: 100px;
+    margin-right: 100px;
+    /* 왼쪽 여백 */
 }
 
 .headerContainer {
@@ -7,34 +10,46 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+    /* 버튼과 테이블 간의 간격을 위한 마진 */
     flex-wrap: wrap;
-    color:#9eb696;
+    /* 반응형을 위해 flex-wrap 추가 */
 }
 
 .buttonContainer {
     display: flex;
     gap: 5px;
+    /* 버튼 간의 간격 */
 }
 
 .defaultButton {
     background-color: transparent;
+    /* 배경색 제거 */
     color: black;
+    /* 기본 텍스트 색상 */
     border: none;
+    /* 테두리 제거 */
     padding: 10px 20px;
+    /* 패딩 */
     cursor: pointer;
+    /* 커서 포인터 */
     display: flex;
     align-items: center;
     gap: 5px;
-    transition: background-color 0.3s;
+    /* 아이콘과 텍스트 간의 간격 */
+    flex-direction: row;
+    /* 기본 정렬 방식 */
 }
 
 .defaultButton:hover {
     background-color: #f0f0f0;
+    /* 호버 시 배경색 */
 }
 
 .defaultButton img {
     width: 20px;
+    /* 아이콘 크기 */
     height: 20px;
+    /* 아이콘 크기 */
 }
 
 .addRowButton {
@@ -45,118 +60,94 @@
     cursor: pointer;
     border-radius: 4px;
     background-color: #9eb696;
-    transition: background-color 0.3s;
 }
 
 .addRowButton:hover {
     background-color: #6fa16f;
+    /* 호버 시 배경색 */
 }
 
 .table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;
+    /* 테이블 셀 경계 제거 */
 }
 
-.thead {
+.table thead {
     background-color: #e0e8d8;
+    /* 테이블 헤더 배경색 */
 }
 
 .table th,
 .table td {
     padding: 10px;
-    text-align: center;
+    /* 셀 패딩 */
+    text-align: left;
+    /* 텍스트 왼쪽 정렬 */
     border-bottom: 1px solid #ddd;
-    vertical-align: middle;
-}
-
-.table th:nth-child(1),
-.table td:nth-child(1) {
-    width: 40px;
+    /* 셀 하단 경계선 */
 }
 
 .table th {
-    height: 30px;
-    background-color: #e0e8d8;
+    cursor: pointer;
+    /* 커서 포인터 */
 }
 
 .table tbody tr:hover {
     background-color: #f5f5f5;
+    /* 행 호버 배경색 */
 }
 
-.table tbody tr {
-    height: 50px;
-}
-
-.tableInput {
-    width: 100%;
-    border: none;
-    padding: 8px;
-    box-sizing: border-box;
-    border-radius: 4px;
-    text-align: center;
-    height: 50px;
-    font-size: 16px;
-}
-
-.tableInput:focus {
-    border: none;
-    outline: none; /* 포커스 시 검정 테두리 제거 */
-}
-
-.selectInput {
-    width: 100%;
-    height: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-    border-radius: 4px;
-    text-align: center;
-    border: none;
-    background-color: white;
-    font-size: 16px;
-}
-
-.checkbox {
+/* 커스텀 체크박스 스타일 */
+input[type="checkbox"] {
     -webkit-appearance: none;
+    /* 기본 체크박스 숨기기 */
     -moz-appearance: none;
     appearance: none;
     width: 18px;
     height: 18px;
     border: 2px solid #7eb47e;
+    /* 체크박스 테두리 색상 */
     border-radius: 3px;
+    /* 체크박스 모서리 둥글게 */
     outline: none;
     cursor: pointer;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #7eb47e;
+    /* 체크박스 체크된 배경색 */
+    border: none;
     position: relative;
 }
 
-.checkbox:checked {
-    background-color: #7eb47e;
-    border: none;
-}
-
-.checkbox:checked::after {
+input[type="checkbox"]:checked::after {
     content: "✔";
+    /* 체크 표시 */
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
+    /* 체크 표시 색상 */
     font-size: 14px;
+    /* 체크 표시 크기 */
 }
 
+/* 조회 및 필터 스타일 */
 .searchFilterContainer {
+    margin-left: 320px;
     display: flex;
-    justify-content: flex-end; /* 우측 정렬 */
-    align-items: center; /* 아이템을 수직으로 가운데 정렬 */
+    gap: 10px;
+    justify-content: flex-end;
+    /* 우측 정렬 */
     margin-top: 10px;
-    margin-left: 170px; /* 헤더 아이콘에 맞추기 위해 조정 */
 }
 
 .searchInputContainer {
     position: relative;
     display: flex;
     align-items: center;
-    margin-right: 10px; /* 필터 버튼과의 간격 조정 */
 }
 
 .searchInputContainer .icon {
@@ -168,9 +159,13 @@
 
 .searchInput {
     padding: 10px 10px 10px 40px;
+    /* 아이콘 공간 확보 */
     border: 1px solid #ccc;
+    /* 테두리 추가 */
     border-radius: 12px;
+    /* 둥근 모서리 */
     width: 300px;
+    /* 조회 입력 필드 너비 */
 }
 
 .searchInput::placeholder {
@@ -179,13 +174,19 @@
 
 .filterButton {
     background-color: white;
+    /* 흰색 배경 */
     border: 1px solid #7eb47e;
-    padding: 10px 20px; /* 패딩 조정 */
+    /* 테두리 색상 */
+    padding: 5px 15px;
+    /* 패딩 */
     cursor: pointer;
+    /* 커서 포인터 */
     border-radius: 12px;
+    /* 둥근 모서리 */
     display: flex;
     align-items: center;
-    gap: 5px; /* 아이콘과 텍스트 간의 간격 */
+    gap: 5px;
+    /* 아이콘과 텍스트 간의 간격 */
 }
 
 .filterButton .icon {
@@ -195,7 +196,10 @@
 
 .filterButton:hover {
     background-color: #f0f0f0;
+    /* 호버 시 배경색 */
 }
+
+/* 반응형 CSS 추가 */
 
 @media only screen and (max-width: 768px) {
     h2 {
@@ -208,6 +212,7 @@
 
     .headerContainer {
         flex-direction: column;
+        /* 버튼을 세로로 나열 */
         justify-content: center;
         align-items: flex-start;
         flex-wrap: wrap;
@@ -215,12 +220,14 @@
 
     .buttonContainer {
         order: 3;
+        /* 버튼 컨테이너를 가장 아래로 이동 */
         width: 100%;
         justify-content: flex-start;
     }
 
     .searchFilterContainer {
         justify-content: center;
+        /* 중앙 정렬 */
         margin-left: 0;
     }
 
@@ -235,6 +242,7 @@
 
     .defaultButton {
         flex-direction: column;
+        /* 작은 화면에서는 텍스트와 아이콘을 세로로 정렬 */
         align-items: center;
         gap: 3px;
     }
@@ -247,87 +255,91 @@
 
 
 
-/* AuthsRegistration.module.css다크 모드 스타일 */
-:global(.dark-mode) .tableContainer {
+/* CorporatesRegistration.module.css 다크모드 스타일 추가 */
+:global(.dark-mode) .headerContainer {
     background-color: #333;
     color: #fff;
 }
 
-:global(.dark-mode) .headerContainer {
-    color:#9eb696;
-}
-
-:global(.dark-mode) .defaultButton {
-    color: #fff;
-}
-
-:global(.dark-mode) .defaultButton:hover {
-    background-color: #666;
+:global(.dark-mode) .buttonContainer {
+    background-color: #333;
 }
 
 :global(.dark-mode) .defaultButton img {
-    filter: invert(1);
+    filter: invert(100%)
 }
 
-:global(.dark-mode) .addRowButton {
+:global(.dark-mode) .defaultButton {
+    color: white;
+}
+
+:global(.dark-mode) .defaultButton:hover {
+    background-color: #444;
+}
+
+/* :global(.dark-mode) .addRowButton {
+    background-color: #95cf9f;
+} */
+
+:global(.dark-mode) .addRowButton:hover {
     background-color: #6fa16f;
 }
 
-:global(.dark-mode) .addRowButton:hover {
-    background-color: #4c804c;
-}
-
-:global(.dark-mode) .table {
-    border-color: #555;
-    color: #ccc;
-}
-
-:global(.dark-mode) .table th {
+:global(.dark-mode) .table thead {
     background-color: #555;
+    color: #ccc;
 }
 
 :global(.dark-mode) .table th,
 :global(.dark-mode) .table td {
-    border-color: #444;
+    border-color: #666;
 }
 
 :global(.dark-mode) .table tbody tr:hover {
-    background-color: #4d4d4d;
+    background-color: #505050;
 }
 
-:global(.dark-mode) .searchFilterContainer {
-    color: #fff;
+:global(.dark-mode) .checkbox {
+    border-color: #95cf9f;
 }
 
-:global(.dark-mode) .searchInputContainer .icon {
-    filter: invert(1);
-}
-
-:global(.dark-mode) .searchInput {
-    background-color: #333;
-    color: #fff;
-    border: 1px solid #555;
+:global(.dark-mode) .checkbox:checked {
+    background-color: #95cf9f;
 }
 
 :global(.dark-mode) .searchInput::placeholder {
-    color: #bbb;
+    color: #888;
+    
+}
+
+:global(.dark-mode) .searchInputContainer .icon {
+    filter: invert(100%)
+}
+
+:global(.dark-mode) .filterButton .icon {
+    filter: invert(100%)
 }
 
 :global(.dark-mode) .filterButton {
     background-color: #333;
-    border: 1px solid #7eb47e;
-    color: #fff;
+    color: #ffffff;
+    border: 1px solid #95cf9f;
 }
 
 :global(.dark-mode) .filterButton:hover {
-    background-color: #585858;
+    background-color: #444;
 }
 
-:global(.dark-mode) .filterButton .icon {
-    filter: invert(1);
-}
-
-:global(.dark-mode) .tableInput {
+:global(.dark-mode) .searchInput{
     background-color: #333;
-    color: #ccc;
+    color: #ffffff;
+}
+
+:global(.dark-mode) .tableInput{
+    
+    background-color: #333;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+    border-radius: 2px;
+    padding: 1px 3px 1px 3px;
 }

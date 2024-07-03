@@ -5,29 +5,33 @@ import axios from 'axios';
 import { FormControl, Select, MenuItem } from '@mui/material';
 import MixChart from './MixChart';
 import PieChart from './PieChart';
+import { styled } from '@mui/material/styles';
 
 const Statistics = () => {
   const today = new Date().toISOString().slice(0, 7); // YYYY-MM 형식의 오늘 날짜
-  const [yearMonth, setYearMonth] = useState(today);
-  const [productName, setProductName] = useState('');
-  const [report, setReport] = useState(null);
-  const [selectedYearMonth, setSelectedYearMonth] = useState(today);
-  const [selectedProduct, setSelectedProduct] = useState('');
-  const [productList, setProductList] = useState([]);
-  const [showProductList, setShowProductList] = useState(false);
-  const [filterColumn, setFilterColumn] = useState('type');
-  const [productCount, setProductCount] = useState(0);
-  const [monthlyReport, setMonthlyReport] = useState({});
+  const [yearMonth, setYearMonth] = useState(today); // 선택된 연도와 월 상태
+  const [productName, setProductName] = useState(''); // 선택된 제품명 상태
+  const [report, setReport] = useState(null); // 보고서 데이터 상태
+  const [selectedYearMonth, setSelectedYearMonth] = useState(today); // 선택된 연도와 월 상태
+  const [selectedProduct, setSelectedProduct] = useState(''); // 선택된 제품 상태
+  const [productList, setProductList] = useState([]); // 제품 리스트 상태
+  const [showProductList, setShowProductList] = useState(false); // 제품 리스트 표시 여부 상태
+  const [filterColumn, setFilterColumn] = useState('type'); // 필터 컬럼 상태
+  const [productCount, setProductCount] = useState(0); // 제품 수량 상태
+  const [monthlyReport, setMonthlyReport] = useState({}); // 월간 보고서 상태
 
   const filterColumns = [
     { value: 'type', label: '구분' },
     { value: 'productCode', label: '제품 코드' },
     { value: 'productName', label: '제품명' },
     { value: 'company', label: '업체명' },
-  ];
+  ]; // 필터 컬럼 옵션
 
-  const weeks = ['1주차', '2주차', '3주차', '4주차', '5주차'];
+  const weeks = ['1주차', '2주차', '3주차', '4주차', '5주차']; // 주차 배열
 
+  /**
+   * 필터 리스트를 가져오는 함수
+   */
   const fetchFilterList = useCallback(async () => {
     try {
       const response = await axios.get(`http://localhost:8090/tree/api/filterList`, {
@@ -43,6 +47,9 @@ const Statistics = () => {
     }
   }, [filterColumn]);
 
+  /**
+   * 보고서를 가져오는 함수
+   */
   const fetchReport = useCallback(
     async (newYearMonth, newFilterType, newFilterValue) => {
       const dateToFetch = newYearMonth || today;
@@ -111,6 +118,9 @@ const Statistics = () => {
     [today],
   );
 
+  /**
+   * 연간 보고서를 가져오는 함수
+   */
   const fetchYearlyReport = useCallback(async (year, filterType, filterValue) => {
     try {
       const response = await axios.get(`http://localhost:8090/tree/api/report`, {
@@ -129,6 +139,9 @@ const Statistics = () => {
     }
   }, []);
 
+  /**
+   * 보고서와 연간 보고서를 모두 가져오는 함수
+   */
   const fetchReportAndYearlyReport = useCallback(
     async (newYearMonth) => {
       const dateToFetch = newYearMonth || yearMonth;
@@ -159,10 +172,17 @@ const Statistics = () => {
     const totalReleaseCount = report ? Object.values(report.weeklyReleaseCount || {}).reduce((a, b) => a + b, 0) : 0;
     return { memoizedTotalStockCount: totalStockCount, memoizedTotalReleaseCount: totalReleaseCount };
   }, [report]);
+
+  /**
+   * 필터 리스트를 클릭할 때 호출되는 함수
+   */
   const handleInputClick = () => {
     fetchFilterList();
   };
 
+  /**
+   * 필터 컬럼이 변경될 때 호출되는 함수
+   */
   const handleFilterColumnChange = (event) => {
     const selectedColumn = event.target.value;
     setFilterColumn(selectedColumn);
@@ -171,36 +191,83 @@ const Statistics = () => {
     fetchFilterList();
   };
 
+  /**
+   * 제품명이 입력될 때 호출되는 함수
+   */
   const handleProductNameKeyPress = async (event) => {
     if (event.key === 'Enter') {
       await fetchReportAndYearlyReport();
     }
   };
 
+  /**
+   * 연도와 월이 변경될 때 호출되는 함수
+   */
   const handleYearMonthChange = async (event) => {
     const selectedYearMonth = event.target.value;
     setYearMonth(selectedYearMonth);
     await fetchReportAndYearlyReport(selectedYearMonth);
   };
 
+  /**
+   * 제품이 선택될 때 호출되는 함수
+   */
   const handleProductSelect = async (product) => {
     setProductName(product);
     setShowProductList(false);
     await fetchReportAndYearlyReport();
   };
 
+  /**
+   * 값을 반환하는 함수
+   */
   const getValue = (value) => value ?? 0;
 
-  const calculateAverage = (sum, count) => {
-    return count === 0 ? 0 : (sum / count).toFixed(2);
+  /**
+   * 평균을 계산하는 함수
+   */
+  const calculateAverage = (sum) => {
+    return sum === 0 ? 0 : Math.round(sum / 5);
   };
 
   const totalStockCount = report ? Object.values(report.weeklyStockCount || {}).reduce((a, b) => a + b, 0) : 0;
   const totalReleaseCount = report ? Object.values(report.weeklyReleaseCount || {}).reduce((a, b) => a + b, 0) : 0;
 
+  const avgWeeklyStockValues = Object.values(report?.avgWeeklyStockCount || {}).map((value) => parseFloat(value) || 0);
+  const totalAvgStockSum = avgWeeklyStockValues.reduce((a, b) => a + b, 0);
+
+  const totalAvgStock = calculateAverage(totalAvgStockSum);
+
   useEffect(() => {
     fetchReportAndYearlyReport(today);
   }, [fetchReport, fetchYearlyReport, filterColumn, productName, today]);
+
+  const isDarkMode = useMemo(() => {
+    return document.body.classList.contains('dark-mode');
+  }, []);
+
+  const DarkModeFormControl = styled(FormControl)(({ theme }) => ({
+    '& .MuiInputLabel-root': {
+      color: isDarkMode ? '#fff' : theme.palette.text.primary,
+    },
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: isDarkMode ? '#fff' : theme.palette.text.primary,
+      },
+      '&:hover fieldset': {
+        borderColor: isDarkMode ? '#fff' : theme.palette.text.primary,
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: isDarkMode ? '#fff' : theme.palette.primary.main,
+      },
+    },
+    '& .MuiSelect-select': {
+      color: isDarkMode ? '#fff' : theme.palette.text.primary,
+    },
+    '& .MuiSelect-icon': {
+      color: isDarkMode ? '#fff' : theme.palette.text.primary,
+    },
+  }));
 
   return (
     <div>
@@ -219,7 +286,11 @@ const Statistics = () => {
       </div>
       <div className={style.statisticsSearchFilterContainer}>
         <div className={style.statisticsSearchInputContainer}>
-          <FormControl variant="outlined" size="small" className={`${style.filterColumnSelect}`}>
+          <DarkModeFormControl
+            variant="outlined"
+            size="small"
+            className={style.filterColumnSelect}
+          >
             <Select id="filter-column" value={filterColumn} onChange={handleFilterColumnChange} displayEmpty>
               {filterColumns.map((column) => (
                 <MenuItem key={column.value} value={column.value}>
@@ -227,7 +298,7 @@ const Statistics = () => {
                 </MenuItem>
               ))}
             </Select>
-          </FormControl>
+          </DarkModeFormControl>
           <input
             className={style.statisticsSearchInput}
             type="text"
@@ -285,7 +356,9 @@ const Statistics = () => {
                 <td className={style.statisticsTableTBody2}>{getValue(report?.weeklyReleaseCount?.[index + 1])}</td>
                 <td className={style.statisticsTableTBody2}>{getValue(report?.minWeeklyStockCount?.[index + 1])}</td>
                 <td className={style.statisticsTableTBody2}>{getValue(report?.maxWeeklyStockCount?.[index + 1])}</td>
-                <td className={style.statisticsTableTBody2}>{getValue(report?.avgWeeklyStockCount?.[index + 1])}</td>
+                <td className={style.statisticsTableTBody2}>
+                  {Math.round(parseFloat(getValue(report?.avgWeeklyStockCount?.[index + 1])))}
+                </td>
               </tr>
             ))}
             <tr>
@@ -298,12 +371,7 @@ const Statistics = () => {
               <td className={style.statisticsTabletotal}>
                 {getValue(Math.max(...Object.values(report?.maxWeeklyStockCount || [0])))}
               </td>
-              <td className={style.statisticsTabletotal}>
-                {calculateAverage(
-                  getValue(Object.values(report?.avgWeeklyStockCount || {}).reduce((a, b) => a + b, 0)),
-                  getValue(Object.keys(report?.avgWeeklyStockCount || {}).length),
-                )}
-              </td>
+              <td className={style.statisticsTabletotal}>{totalAvgStock}</td>
             </tr>
           </tbody>
         </table>
