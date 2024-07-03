@@ -1,0 +1,194 @@
+/* 전체 테이블 컨테이너 스타일 */
+.tableContainer {
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
+/* 헤더 컨테이너 스타일 */
+.headerContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+/* 버튼 컨테이너 스타일 */
+.buttonContainer {
+    display: flex;
+    gap: 5px;
+}
+
+/* 필터 컨테이너 스타일 */
+.filterContainer {
+    display: flex;
+    gap: 10px; /* 간격 조정 */
+    align-items: center;
+}
+
+/* 필터 컬럼 선택 스타일 */
+.filterColumnSelect {
+    height: 40px;
+}
+
+/* 추가 행 버튼 호버 스타일 */
+.addRowButton:hover {
+    background-color: #6fa16f;
+}
+
+/* 테이블 스타일 */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* 테이블 헤더 스타일 */
+.table thead {
+    background-color: #e0e8d8;
+}
+
+/* 테이블 셀 스타일 */
+.table th,
+.table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+/* 테이블 헤더 클릭 가능 스타일 */
+.table th {
+    cursor: pointer;
+}
+
+/* 테이블 행 호버 스타일 */
+.table tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* 체크박스 스타일 */
+.checkbox {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #7eb47e;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+}
+
+/* 체크된 체크박스 스타일 */
+.checkbox:checked {
+    background-color: #7eb47e;
+    border: none;
+    position: relative;
+}
+
+/* 체크된 체크박스 후속 스타일 */
+.checkbox:checked::after {
+    content: "✔";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 14px;
+}
+
+/* 페이지네이션 스타일 */
+.pagination {
+    display: flex;
+    justify-content: center; /* 가운데 정렬 */
+    margin-top: 30px; /* 테이블과의 간격 조정 */
+}
+
+/* 페이지네이션 선택된 페이지 스타일 */
+.pagination .Mui-selected {
+    background-color: #6fa16f !important;
+    color: white !important;
+}
+
+/* 검색 입력 스타일 */
+.searchInput {
+    height: 40px;
+}
+
+/* 필터 버튼 스타일 */
+.filterButton {
+    background-color: #6fa16f;
+    color: white !important;
+    border: 1px solid #6fa16f;
+    padding: 5px 15px;
+    cursor: pointer;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* 필터 버튼 호버 스타일 */
+.filterButton:hover {
+    background-color: #5d8e5d;
+}
+
+/* 반응형 디자인을 위한 미디어 쿼리 */
+@media only screen and (max-width: 768px) {
+    .title {
+        margin-left: 3%;
+    }
+
+    .tableContainer {
+        margin-left: 3%;
+    }
+
+    .headerContainer {
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .buttonContainer {
+        order: 3;
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .filterContainer {
+        justify-content: center;
+        margin-left: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .searchInput {
+        padding: 6px 10px; /* 높이를 드롭다운 버튼과 맞추기 위해 조정 */
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 300px;
+        height: 0px;
+    }
+
+    .filterColumnSelect {
+        height: 30px; /* 드롭다운 버튼 높이 설정 */
+        border-radius: 4px;
+        min-width: 120px;
+    }
+
+    .searchInputContainer {
+        flex: 1;
+    }
+
+    .filterButton {
+        background-color: white;
+        border: 1px solid #7eb47e;
+        padding: 5px 15px;
+        cursor: pointer;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+}

@@ -1,0 +1,66 @@
+.warehouse-layout {
+    padding: 20px;
+}
+
+.warehouse-controls {
+    margin-bottom: 20px;
+}
+
+.racks {
+    display: flex;
+    gap: 20px;
+}
+
+.rack {
+    border: 1px solid #ccc;
+    padding: 10px;
+    position: relative;
+    width: 150px; /* 선반 폭 조정 */
+}
+
+.rack-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.shelves {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.shelf {
+    border: 1px solid #ccc;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f1f1f1;
+    position: relative;
+}
+
+.shelf span {
+    margin-right: 5px;
+}
+
+.rack-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: absolute;
+    bottom: -50px;
+    right: 0;
+    left: 0;
+    text-align: center;
+}
+
+.remove-shelf {
+    margin-left: 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+}
