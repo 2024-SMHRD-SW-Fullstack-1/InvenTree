@@ -35,19 +35,20 @@
 </ul>
 
 <h2>시스템 아키텍처</h2>
-<p>여기에 시스템 아키텍처 설명을 작성하세요.</p>
+
 <img src="https://github.com/2024-SMHRD-SW-Fullstack-1/InvenTree/assets/86646622/021b34e6-2ef5-42d8-8b21-344907b9986d" alt="시스템 아키텍처" />
 
 <h2>유스케이스</h2>
-<p>여기에 유스케이스 설명을 작성하세요.</p>
+
 <img src="https://github.com/2024-SMHRD-SW-Fullstack-1/InvenTree/assets/86646622/5bd0ed69-24ac-4907-abbc-4fa59900d400" alt="유스케이스 다이어그램" />
 
 <h2>ER 다이어그램</h2>
-<p>여기에 ER 다이어그램 설명을 작성하세요.</p>
-<img src="https://github.com/2024-SMHRD-SW-Fullstack-1/InvenTree/assets/86646622/1eaa02ae-ba96-4ad2-8114-5876080ec08b" alt="ER 다이어그램" />
+![image](https://github.com/2024-SMHRD-SW-Fullstack-1/InvenTree/assets/162680069/d77ce2af-1f3e-453b-a944-061cb78bc913)
+
+
 
 <h2>화면 구성</h2>
-<p>여기에 화면 구성 설명을 작성하세요.</p>
+
 <img src="https://github.com/2024-SMHRD-SW-Fullstack-1/InvenTree/assets/86646622/3f233a2b-3d85-4c25-9b28-37564a3f3449" alt="화면 구성" />
 
 <h2>팀원 역할</h2>
