@@ -43,8 +43,8 @@
 <img src="https://github.com/2024-SMHRD-SW-Fullstack-1/InvenTree/assets/86646622/5bd0ed69-24ac-4907-abbc-4fa59900d400" alt="유스케이스 다이어그램" />
 
 <h2>ER 다이어그램</h2>
-![image](https://github.com/2024-SMHRD-SW-Fullstack-1/InvenTree/assets/162680069/d77ce2af-1f3e-453b-a944-061cb78bc913)
 
+<img src="https://github.com/2024-SMHRD-SW-Fullstack-1/InvenTree/assets/162680069/d77ce2af-1f3e-453b-a944-061cb78bc913" alt="ERD"/>
 
 
 <h2>화면 구성</h2>
